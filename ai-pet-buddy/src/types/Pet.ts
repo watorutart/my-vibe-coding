@@ -13,6 +13,7 @@ export interface Pet {
   stats: PetStats;
   lastUpdate: number;
   expression: 'happy' | 'neutral' | 'sad' | 'excited' | 'tired';
+  experience?: number; // Experience points for leveling up
 }
 
 export const DEFAULT_PET: Pet = {
@@ -26,5 +27,6 @@ export const DEFAULT_PET: Pet = {
     level: 1
   },
   lastUpdate: Date.now(),
-  expression: 'happy'
+  expression: 'happy',
+  experience: 0
 };

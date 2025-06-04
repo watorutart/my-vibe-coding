@@ -23,24 +23,29 @@ const StatsPanel: React.FC<StatsPanelProps> = ({ stats }) => {
     }
   };
 
-  const StatBar = ({ label, value, maxValue = 100 }: { label: string; value: number; maxValue?: number }) => (
-    <div className="stat-item">
-      <div className="stat-header">
-        <span className="stat-icon">{getStatIcon(label.toLowerCase())}</span>
-        <span className="stat-label">{label}</span>
-        <span className="stat-value">{value}/{maxValue}</span>
+  const StatBar = ({ label, value, maxValue = 100 }: { label: string; value: number; maxValue?: number }) => {
+    // レベルは整数表示、他のステータスは小数点1桁までの表示に制限
+    const displayValue = label.toLowerCase() === 'level' ? Math.round(value) : Math.round(value * 10) / 10;
+    
+    return (
+      <div className="stat-item">
+        <div className="stat-header">
+          <span className="stat-icon">{getStatIcon(label.toLowerCase())}</span>
+          <span className="stat-label">{label}</span>
+          <span className="stat-value">{displayValue}/{maxValue}</span>
+        </div>
+        <div className="stat-bar">
+          <div 
+            className="stat-fill"
+            style={{ 
+              width: `${(value / maxValue) * 100}%`,
+              backgroundColor: getStatColor(value)
+            }}
+          />
+        </div>
       </div>
-      <div className="stat-bar">
-        <div 
-          className="stat-fill"
-          style={{ 
-            width: `${(value / maxValue) * 100}%`,
-            backgroundColor: getStatColor(value)
-          }}
-        />
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="stats-panel">

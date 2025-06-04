@@ -26,6 +26,23 @@
   font-weight: 300;
 }
 
+.progress-info {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.progress-info p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
 .app-main {
   max-width: 1200px;
   margin: 0 auto;
