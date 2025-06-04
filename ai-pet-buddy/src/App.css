@@ -1,0 +1,77 @@
+/* AI Pet Buddy App Styles */
+
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px 0;
+}
+
+.app-header {
+  text-align: center;
+  padding: 20px;
+  color: white;
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+}
+
+.app-header p {
+  font-size: 1.1rem;
+  margin: 10px 0 0 0;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.app-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 0 20px;
+}
+
+/* Responsive layout */
+@media (min-width: 768px) {
+  .app-main {
+    grid-template-columns: 1fr 300px;
+    grid-template-areas: 
+      "pet stats"
+      "actions actions";
+  }
+  
+  .pet-display {
+    grid-area: pet;
+  }
+  
+  .stats-panel {
+    grid-area: stats;
+  }
+  
+  .action-buttons {
+    grid-area: actions;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    grid-template-columns: 1fr 300px 300px;
+    grid-template-areas: "pet stats actions";
+  }
+}
+
+/* Animation for smooth transitions */
+* {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+}
