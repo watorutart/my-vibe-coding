@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/47</span>
+                <span class='fraction'>49/49</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.33% </span>
+                <span class="strong">94.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/15</span>
+                <span class='fraction'>16/17</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>47/47</span>
+                <span class='fraction'>49/49</span>
             </div>
         
             
@@ -121,8 +121,13 @@
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,6 +152,10 @@
 <span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">96x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-yes">96x</span>
@@ -164,6 +173,7 @@
 <span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
@@ -180,7 +190,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
-import { PetStats } from '../types/Pet';
+import type { PetStats } from '../types/Pet';
 import './StatsPanel.css';
 &nbsp;
 interface StatsPanelProps {
@@ -204,24 +214,29 @@ const StatsPanel: React.FC&lt;StatsPanelProps&gt; = ({ stats }) =&gt; {
     }
   };
 &nbsp;
-  const StatBar = ({ label, value, maxValue = 100 }: { label: string; value: number; maxValue?: number }) =&gt; (
-    &lt;div className="stat-item"&gt;
-      &lt;div className="stat-header"&gt;
-        &lt;span className="stat-icon"&gt;{getStatIcon(label.toLowerCase())}&lt;/span&gt;
-        &lt;span className="stat-label"&gt;{label}&lt;/span&gt;
-        &lt;span className="stat-value"&gt;{value}/{maxValue}&lt;/span&gt;
+  const StatBar = ({ label, value, maxValue = 100 }: { label: string; value: number; maxValue?: number }) =&gt; {
+    // レベルは整数表示、他のステータスは小数点1桁までの表示に制限
+    const displayValue = label.toLowerCase() === 'level' ? Math.round(value) : Math.round(value * 10) / 10;
+    
+    return (
+      &lt;div className="stat-item"&gt;
+        &lt;div className="stat-header"&gt;
+          &lt;span className="stat-icon"&gt;{getStatIcon(label.toLowerCase())}&lt;/span&gt;
+          &lt;span className="stat-label"&gt;{label}&lt;/span&gt;
+          &lt;span className="stat-value"&gt;{displayValue}/{maxValue}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div className="stat-bar"&gt;
+          &lt;div 
+            className="stat-fill"
+            style={{ 
+              width: `${(value / maxValue) * 100}%`,
+              backgroundColor: getStatColor(value)
+            }}
+          /&gt;
+        &lt;/div&gt;
       &lt;/div&gt;
-      &lt;div className="stat-bar"&gt;
-        &lt;div 
-          className="stat-fill"
-          style={{ 
-            width: `${(value / maxValue) * 100}%`,
-            backgroundColor: getStatColor(value)
-          }}
-        /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
+    );
+  };
 &nbsp;
   return (
     &lt;div className="stats-panel"&gt;
@@ -244,7 +259,7 @@ export default StatsPanel;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-04T15:09:16.973Z
+                at 2025-06-04T16:09:58.774Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
