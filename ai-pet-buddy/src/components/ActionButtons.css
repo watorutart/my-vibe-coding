@@ -1,0 +1,152 @@
+/* Action Buttons Component Styles - Modern card-based buttons */
+
+.action-buttons {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.actions-title {
+  text-align: center;
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(135deg, var(--btn-color), rgba(255, 255, 255, 0.1));
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+  left: 100%;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.btn-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Individual button styles */
+.feed-btn {
+  --btn-color: #e74c3c;
+}
+
+.play-btn {
+  --btn-color: #3498db;
+}
+
+.rest-btn {
+  --btn-color: #9b59b6;
+}
+
+/* Button press animation */
+.action-btn:active .btn-icon {
+  animation: buttonPress 0.1s ease;
+}
+
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .action-buttons {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  .action-btn {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .btn-icon {
+    font-size: 20px;
+  }
+  
+  .btn-label {
+    font-size: 10px;
+  }
+  
+  .actions-title {
+    font-size: 16px;
+  }
+}
