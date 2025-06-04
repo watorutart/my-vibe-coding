@@ -1,0 +1,34 @@
+
+ RUN  v3.2.1 /Users/suzukiwataru/src/my-vibe-coding/ai-pet-buddy
+      Coverage enabled with v8
+
+ ✓ src/types/Pet.test.ts (6 tests) 3ms
+ ✓ src/main.test.tsx (3 tests) 74ms
+ ✓ src/components/PetDisplay.test.tsx (11 tests) 39ms
+ ✓ src/components/StatsPanel.test.tsx (10 tests) 75ms
+ ✓ src/App.test.tsx (8 tests) 132ms
+ ✓ src/components/ActionButtons.test.tsx (12 tests) 162ms
+
+ Test Files  6 passed (6)
+      Tests  50 passed (50)
+   Start at  00:08:38
+   Duration  779ms (transform 133ms, setup 321ms, collect 333ms, tests 485ms, environment 1.33s, prepare 353ms)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   85.49 |    88.09 |   86.66 |   85.49 |                   
+ ai-pet-buddy      |       0 |        0 |       0 |       0 |                   
+  eslint.config.js |       0 |        0 |       0 |       0 | 1-28              
+ ai-pet-buddy/src  |   86.74 |    81.25 |   83.33 |   86.74 |                   
+  App.tsx          |   97.29 |    85.71 |     100 |   97.29 | 58-59             
+  main.tsx         |       0 |        0 |       0 |       0 | 1-10              
+  vite-env.d.ts    |       0 |        0 |       0 |       0 |                   
+ ...src/components |     100 |       96 |     100 |     100 |                   
+  ...onButtons.tsx |     100 |      100 |     100 |     100 |                   
+  PetDisplay.tsx   |     100 |      100 |     100 |     100 |                   
+  StatsPanel.tsx   |     100 |    93.33 |     100 |     100 | 22                
+ ...uddy/src/types |     100 |      100 |     100 |     100 |                   
+  Pet.ts           |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------

@@ -1,0 +1,20 @@
+
+ RUN  v3.2.1 /Users/suzukiwataru/src/my-vibe-coding/ai-pet-buddy
+      Coverage enabled with v8
+
+ ✓ src/types/Pet.test.ts (6 tests) 2ms
+ ❯ src/main.test.tsx (2 tests | 2 failed) 66ms
+   × Main Entry Point > should import main module without errors 65ms
+     → promise rejected "Error: Target container is not a DOM elem…" instead of resolving
+   × Main Entry Point > should be a valid JavaScript module 0ms
+     → Target container is not a DOM element.
+ ✓ src/components/PetDisplay.test.tsx (11 tests) 40ms
+ ✓ src/components/StatsPanel.test.tsx (10 tests) 72ms
+ ✓ src/App.test.tsx (8 tests) 130ms
+ ✓ src/components/ActionButtons.test.tsx (12 tests) 157ms
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  2 failed | 47 passed (49)
+   Start at  00:07:17
+   Duration  765ms (transform 100ms, setup 267ms, collect 353ms, tests 466ms, environment 1.35s, prepare 343ms)
+
