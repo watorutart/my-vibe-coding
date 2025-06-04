@@ -1,54 +1,81 @@
-# React + TypeScript + Vite
+# 🐾 AI Pet Buddy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GitHub Copilotを活用して開発したインタラクティブなAIペット育成アプリケーション
 
-Currently, two official plugins are available:
+![AI Pet Buddy Screenshot](https://via.placeholder.com/600x400?text=AI+Pet+Buddy+Screenshot)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ 特徴
 
-## Expanding the ESLint configuration
+- 🎮 **インタラクティブなペット育成**: 餌やり、遊び、休憩でペットと触れ合える
+- 📊 **リアルタイムステータス**: 幸福度、空腹度、エネルギーを視覚的に管理
+- 🎨 **美しいUI**: ポケモン風の可愛いデザイン + 遊戯王のスタイリッシュ要素
+- 📱 **レスポンシブ対応**: PC・スマホ両対応
+- ⚡ **高速動作**: Vite + React + TypeScript構成
+- 🎭 **表情変化**: ペットの状態に応じた自動表情変化
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ 技術スタック
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **フレームワーク**: React 18 + TypeScript
+- **ビルドツール**: Vite
+- **スタイリング**: CSS3（アニメーション豊富）
+- **状態管理**: React Hooks
+- **デプロイ**: Vercel（予定）
+
+## 🚀 クイックスタート
+
+```bash
+# 依存関係をインストール
+npm install
+
+# 開発サーバーを起動
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+ブラウザで `http://localhost:5173/` を開いてお楽しみください！
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🎮 使い方
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+1. **ペットと挨拶**: アプリを開くと可愛いドラゴンペットが出迎えます
+2. **ステータス確認**: 右側のパネルでペットの状態をチェック
+3. **お世話開始**:
+   - 🍖 **Feed**: 空腹度を回復
+   - 🎾 **Play**: 幸福度を上げる（エネルギー消費）
+   - 😴 **Rest**: エネルギーを回復
+
+## 📂 プロジェクト構造
+
 ```
+src/
+├── components/          # UIコンポーネント
+│   ├── PetDisplay.tsx   # ペット表示
+│   ├── StatsPanel.tsx   # ステータスパネル
+│   └── ActionButtons.tsx # アクションボタン
+├── types/              # TypeScript型定義
+└── App.tsx             # メインアプリ
+```
+
+## 🏗️ 開発ロードマップ
+
+### ✅ Phase 1: 基盤構築（完了）
+- React + TypeScript + Vite セットアップ
+- 基本UIコンポーネント実装
+- ペット表示・ステータス管理・アクション機能
+
+### 🚧 Phase 2: コア機能実装（次のステップ）
+- [ ] 自動ステータス減衰システム
+- [ ] レベルアップ・成長システム
+- [ ] AI会話機能（事前定義パターン）
+
+### 📋 Phase 3: エンゲージメント強化（予定）
+- [ ] ビジュアル強化・進化システム
+- [ ] ミニゲーム実装
+- [ ] カスタマイズ機能
+
+### 🚀 Phase 4: 完成・デプロイ（予定）
+- [ ] localStorage データ永続化
+- [ ] PWA対応
+- [ ] Vercelデプロイ
+
+---
+
+**Made with ❤️ and GitHub Copilot**
