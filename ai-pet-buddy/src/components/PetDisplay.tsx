@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pet } from '../types/Pet';
+import type { Pet } from '../types/Pet';
 import './PetDisplay.css';
 
 interface PetDisplayProps {

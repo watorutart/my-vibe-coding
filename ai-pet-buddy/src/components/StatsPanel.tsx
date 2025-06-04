@@ -1,5 +1,5 @@
 import React from 'react';
-import { PetStats } from '../types/Pet';
+import type { PetStats } from '../types/Pet';
 import './StatsPanel.css';
 
 interface StatsPanelProps {
