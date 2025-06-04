@@ -13,6 +13,10 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
+    "check:all": "npm run build && npm run test:run && npm run lint",
+    "check:types": "tsc --noEmit",
+    "check:enhanced": "./enhanced-quality-check.sh",
+    "precommit": "npm run check:enhanced",
     "pre-commit": "npm run test:run && npm run lint"
   },
   "dependencies": {
