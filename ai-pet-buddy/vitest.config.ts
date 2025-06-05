@@ -9,6 +9,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
     css: false,
+    watch: false, // デフォルトでwatch modeを無効化
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
