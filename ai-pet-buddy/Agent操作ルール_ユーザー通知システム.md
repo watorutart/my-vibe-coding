@@ -120,8 +120,8 @@ B) 高度なパターンマッチング方式
 以下の場面で音声通知を実行する：
 
 #### Agent動作ルール
-- **ユーザー操作待ち状態**になった際は `afplay /Library/Sounds/Basso.aiff` を実行
-- **作業完了**した際は `afplay /Library/Sounds/Basso.aiff` を実行
+- **ユーザー操作待ち状態**になった際は `afplay /System/Library/Sounds/Basso.aiff` を実行
+- **作業完了**した際は `afplay /System/Library/Sounds/Basso.aiff` を実行
 
 ---
 📅 作成日: 2025年6月5日
