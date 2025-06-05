@@ -18,7 +18,10 @@
     "check:types": "tsc --noEmit",
     "check:enhanced": "./enhanced-quality-check.sh",
     "precommit": "npm run check:enhanced",
-    "pre-commit": "npm run test:run && npm run lint"
+    "pre-commit": "npm run test:run && npm run lint",
+    "notify": "./notify.sh",
+    "test:complete": "npm run test && npm run notify",
+    "build:complete": "npm run build && npm run notify"
   },
   "dependencies": {
     "react": "^19.1.0",
