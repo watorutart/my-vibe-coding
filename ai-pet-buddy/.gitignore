@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary and debug files
+temp-*.js
+debug-*.js
+*.debug
+*.temp
