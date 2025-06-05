@@ -1,18 +1,38 @@
 import { useState, useEffect } from 'react'
 import type { Pet } from './types/Pet'
 import { DEFAULT_PET } from './types/Pet'
+import type { ConversationMessage } from './types/Conversation'
 import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
 import ActionButtons from './components/ActionButtons'
+import ConversationPanel from './components/ConversationPanel'
 import { useStatDecay } from './hooks/useStatDecay'
 import { usePetProgress } from './hooks/usePetProgress'
+import { useDataPersistence } from './hooks/useDataPersistence'
+import { generatePetResponse, createUserMessage } from './utils/conversationEngine'
 import './App.css'
 
 function App() {
   const [pet, setPet] = useState<Pet>(DEFAULT_PET)
+  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
+
+  // データ永続化システム
+  const { loadInitialData, saveData, setupAutoSave, clearAutoSave } = useDataPersistence({
+    autoSaveInterval: 30000, // 30秒間隔で自動保存
+    enableAutoSave: true
+  })
+
+  // 初期データロード
+  useEffect(() => {
+    const { pet: savedPet, conversationHistory: savedHistory } = loadInitialData()
+    if (savedPet) {
+      setPet(savedPet)
+    }
+    setConversationHistory(savedHistory)
+  }, [loadInitialData])
 
   // レベルアップシステム（レベル計算のみ使用）
-  const { getProgressInfo, getRequiredExperience } = usePetProgress(pet, setPet)
+  const { getProgressInfo, getRequiredExperience } = usePetProgress(pet)
 
   // レベルアップロジック
   const calculateLevelUp = (currentExperience: number, currentLevel: number) => {
@@ -42,6 +62,17 @@ function App() {
       energy: 0.8     // 30秒で0.8ポイント減少
     }
   })
+
+  // 自動保存設定
+  useEffect(() => {
+    setupAutoSave(pet, conversationHistory)
+    return () => clearAutoSave()
+  }, [pet, conversationHistory, setupAutoSave, clearAutoSave])
+
+  // 手動保存トリガー（アクション実行時）
+  const triggerSave = () => {
+    saveData(pet, conversationHistory)
+  }
 
   // Action handlers
   const handleFeed = () => {
@@ -73,6 +104,7 @@ function App() {
         lastUpdate: Date.now()
       }
     })
+    triggerSave() // データ保存
   }
 
   const handlePlay = () => {
@@ -104,6 +136,7 @@ function App() {
         lastUpdate: Date.now()
       }
     })
+    triggerSave() // データ保存
   }
 
   const handleRest = () => {
@@ -135,6 +168,20 @@ function App() {
         lastUpdate: Date.now()
       }
     })
+    triggerSave() // データ保存
+  }
+
+  // 会話メッセージ送信ハンドラー
+  const handleSendMessage = (message: string) => {
+    // ユーザーメッセージを追加
+    const userMessage = createUserMessage(message)
+    
+    // ペットの応答を生成
+    const petResponse = generatePetResponse(userMessage, pet, conversationHistory)
+    
+    // 会話履歴を更新
+    setConversationHistory(prev => [...prev, userMessage, petResponse])
+    triggerSave() // データ保存
   }
 
   // Auto-update pet expression based on stats
@@ -173,6 +220,11 @@ function App() {
           onFeed={handleFeed}
           onPlay={handlePlay}
           onRest={handleRest}
+        />
+        <ConversationPanel 
+          pet={pet}
+          conversationHistory={conversationHistory}
+          onSendMessage={handleSendMessage}
         />
       </main>
     </div>

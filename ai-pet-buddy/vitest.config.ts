@@ -7,8 +7,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    globals: true,
-    css: false,
+    globals: true, // globalsを有効にしてexpectを使用可能にする
+    css: true, // CSS処理を有効化してスタイルテストを可能にする
     watch: false, // デフォルトでwatch modeを無効化
     coverage: {
       provider: 'v8',
