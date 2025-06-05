@@ -2,8 +2,9 @@
 以下の場面で音声通知を実行する：
 
 #### Agent動作ルール
-- **ユーザー操作待ち状態**になった際は `afplay /System/Library/Sounds/Basso.aiff` を実行
-- **作業完了**した際は `afplay /System/Library/Sounds/Basso.aiff` を実行
+- **ユーザー操作待ち状態**になった際は `afplay /System/Library/Sounds/Basso.aiff` を**確認なしで自動実行**
+- **作業完了**した際は `afplay /System/Library/Sounds/Basso.aiff` を**確認なしで自動実行**
+- 音声通知は常にバックグラウンドで実行し、ユーザーの作業を中断しない
 
 ### Vitestテスト実行最適化（再発防止策）
 テスト無限待機状態の防止設定：
