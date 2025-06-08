@@ -1,0 +1,309 @@
+/* ミニゲームパネルのスタイル */
+
+.mini-game-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 600px;
+  max-height: 80vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.panel-content {
+  padding: 0 20px 20px;
+  max-height: calc(80vh - 80px);
+  overflow-y: auto;
+}
+
+.panel-title {
+  color: white;
+  text-align: center;
+  margin: 0 0 30px 0;
+  font-size: 28px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ゲーム選択画面 */
+.game-selection {
+  color: white;
+}
+
+.game-types {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.game-type-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.game-type-section:hover {
+  transform: translateY(-2px);
+}
+
+.game-type-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.game-icon {
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+}
+
+.game-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+}
+
+.game-info p {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.difficulty-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.difficulty-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.difficulty-button.green {
+  border-color: #4ade80;
+}
+
+.difficulty-button.orange {
+  border-color: #fb923c;
+}
+
+.difficulty-button.red {
+  border-color: #f87171;
+}
+
+.difficulty-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.difficulty-time {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.best-score {
+  font-size: 11px;
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* 最近の結果 */
+.recent-results {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.recent-results h3 {
+  margin: 0 0 15px 0;
+  color: white;
+  font-size: 18px;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: white;
+}
+
+.result-game {
+  font-size: 14px;
+}
+
+.result-score {
+  font-weight: bold;
+}
+
+.result-status.success {
+  color: #4ade80;
+}
+
+.result-status.failure {
+  color: #f87171;
+}
+
+/* ゲーム準備画面 */
+.game-ready {
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.game-ready h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+}
+
+.game-details {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.game-details p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.game-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.start-button {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  border: none;
+  border-radius: 10px;
+  padding: 15px 30px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 15px 30px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ゲームインターフェース */
+.game-interface {
+  color: white;
+}
+
+.error {
+  color: #f87171;
+  text-align: center;
+  padding: 20px;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .mini-game-panel {
+    width: 95vw;
+    max-height: 90vh;
+  }
+  
+  .game-type-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .difficulty-buttons {
+    justify-content: center;
+  }
+  
+  .game-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .start-button,
+  .back-button {
+    width: 200px;
+  }
+}

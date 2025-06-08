@@ -1,20 +1,22 @@
-import { useState, useEffect } from 'react'
-import type { Pet } from './types/Pet'
-import { DEFAULT_PET } from './types/Pet'
-import type { ConversationMessage } from './types/Conversation'
-import PetDisplay from './components/PetDisplay'
-import StatsPanel from './components/StatsPanel'
+import { useEffect, useState } from 'react'
+import './App.css'
 import ActionButtons from './components/ActionButtons'
 import ConversationPanel from './components/ConversationPanel'
-import { useStatDecay } from './hooks/useStatDecay'
-import { usePetProgress } from './hooks/usePetProgress'
+import MiniGamePanel from './components/MiniGamePanel'
+import PetDisplay from './components/PetDisplay'
+import StatsPanel from './components/StatsPanel'
 import { useDataPersistence } from './hooks/useDataPersistence'
-import { generatePetResponse, createUserMessage } from './utils/conversationEngine'
-import './App.css'
+import { usePetProgress } from './hooks/usePetProgress'
+import { useStatDecay } from './hooks/useStatDecay'
+import type { ConversationMessage } from './types/Conversation'
+import type { Pet } from './types/Pet'
+import { DEFAULT_PET } from './types/Pet'
+import { createUserMessage, generatePetResponse } from './utils/conversationEngine'
 
 function App() {
   const [pet, setPet] = useState<Pet>(DEFAULT_PET)
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
+  const [showGamePanel, setShowGamePanel] = useState(false)
 
   // データ永続化システム
   const { loadInitialData, saveData, setupAutoSave, clearAutoSave } = useDataPersistence({
@@ -171,13 +173,46 @@ function App() {
     triggerSave() // データ保存
   }
 
+  // ゲーム報酬適用ハンドラー
+  const handleGameReward = (reward: { experience: number; happiness: number; energy: number; coins: number }) => {
+    setPet(prev => {
+      // ステータス更新
+      const baseStats = {
+        ...prev.stats,
+        happiness: Math.min(100, prev.stats.happiness + (reward.happiness || 0)),
+        energy: Math.max(0, prev.stats.energy + (reward.energy || 0))
+      }
+      
+      // 経験値とレベルアップ計算
+      const currentExperience = prev.experience ?? 0
+      const { newExperience, newLevel, levelUpBonus } = calculateLevelUp(currentExperience + (reward.experience || 0), prev.stats.level)
+      
+      // 最終ステータス（レベルアップボーナス適用）
+      const finalStats = {
+        ...baseStats,
+        level: newLevel,
+        happiness: Math.min(100, baseStats.happiness + levelUpBonus.happiness),
+        energy: Math.min(100, baseStats.energy + levelUpBonus.energy)
+      }
+      
+      return {
+        ...prev,
+        stats: finalStats,
+        experience: newExperience,
+        expression: 'excited', // ゲーム後は興奮状態
+        lastUpdate: Date.now()
+      }
+    })
+    triggerSave() // データ保存
+  }
+
   // 会話メッセージ送信ハンドラー
   const handleSendMessage = (message: string) => {
     // ユーザーメッセージを追加
     const userMessage = createUserMessage(message)
     
     // ペットの応答を生成
-    const petResponse = generatePetResponse(userMessage, pet, conversationHistory)
+    const petResponse = generatePetResponse(pet, message, 'general')
     
     // 会話履歴を更新
     setConversationHistory(prev => [...prev, userMessage, petResponse])
@@ -214,18 +249,30 @@ function App() {
       </header>
       
       <main className="app-main">
-        <PetDisplay pet={pet} />
-        <StatsPanel stats={pet.stats} />
-        <ActionButtons 
-          onFeed={handleFeed}
-          onPlay={handlePlay}
-          onRest={handleRest}
-        />
-        <ConversationPanel 
-          pet={pet}
-          conversationHistory={conversationHistory}
-          onSendMessage={handleSendMessage}
-        />
+        {showGamePanel ? (
+          <div className="game-panel-container">
+            <MiniGamePanel 
+              onRewardEarned={handleGameReward}
+              onClose={() => setShowGamePanel(false)}
+            />
+          </div>
+        ) : (
+          <>
+            <PetDisplay pet={pet} />
+            <StatsPanel stats={pet.stats} />
+            <ActionButtons 
+              onFeed={handleFeed}
+              onPlay={handlePlay}
+              onRest={handleRest}
+              onGames={() => setShowGamePanel(true)}
+            />
+            <ConversationPanel 
+              pet={pet}
+              conversationHistory={conversationHistory}
+              onSendMessage={handleSendMessage}
+            />
+          </>
+        )}
       </main>
     </div>
   )

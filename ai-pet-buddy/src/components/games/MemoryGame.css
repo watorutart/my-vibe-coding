@@ -1,0 +1,294 @@
+/* メモリーゲームのスタイル */
+
+.memory-game {
+  color: white;
+  padding: 20px;
+}
+
+.memory-game.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.game-header h2 {
+  margin: 0 0 15px 0;
+  font-size: 24px;
+}
+
+.game-stats {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.game-stats > div {
+  text-align: center;
+  font-size: 14px;
+}
+
+.sequence-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sequence-length {
+  font-size: 16px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.showing-sequence {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 15px 0;
+}
+
+.showing-sequence p {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.sequence-progress {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4ade80;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 30px 0;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.color-button {
+  aspect-ratio: 1;
+  border: 3px solid transparent;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-size: 14px;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.color-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.color-button:not(:disabled):hover {
+  transform: scale(1.05);
+  border-color: white;
+}
+
+.color-button.active {
+  transform: scale(1.1);
+  border-color: white;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.color-button.clicked {
+  transform: scale(0.95);
+  border-color: #4ade80;
+}
+
+/* 色の定義 */
+.color-button.red {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.color-button.blue {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.color-button.green {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.color-button.yellow {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.color-button.purple {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.color-button.orange {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.color-name {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.player-sequence {
+  margin: 30px 0;
+}
+
+.player-sequence h3 {
+  text-align: center;
+  margin: 0 0 15px 0;
+  font-size: 18px;
+}
+
+.player-sequence .sequence-display {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sequence-item {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.sequence-item.empty {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+}
+
+.sequence-item.red {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.sequence-item.blue {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.sequence-item.green {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.sequence-item.yellow {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.sequence-item.purple {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.sequence-item.orange {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.feedback {
+  text-align: center;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.feedback.success {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+}
+
+.feedback.error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #f87171;
+}
+
+.feedback.info {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid #3b82f6;
+  color: #60a5fa;
+}
+
+.game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.reset-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reset-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.end-game-button {
+  background: rgba(239, 68, 68, 0.8);
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  padding: 12px 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.end-game-button:hover {
+  background: rgba(239, 68, 68, 1);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .game-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .color-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 250px;
+  }
+  
+  .color-button {
+    min-height: 60px;
+    font-size: 12px;
+  }
+  
+  .game-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .reset-button,
+  .end-game-button {
+    width: 150px;
+  }
+}

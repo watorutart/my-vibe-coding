@@ -1,0 +1,372 @@
+/* 反射神経ゲームのスタイル */
+
+.reflex-game {
+  color: white;
+  padding: 20px;
+}
+
+.reflex-game.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.game-header h2 {
+  margin: 0 0 15px 0;
+  font-size: 24px;
+}
+
+.game-stats {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.game-stats > div {
+  text-align: center;
+  font-size: 14px;
+}
+
+.game-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* 反応エリア */
+.reaction-area {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.start-reaction-button {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  border: none;
+  border-radius: 15px;
+  padding: 20px 40px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.start-reaction-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.start-reaction-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.instructions {
+  font-size: 16px;
+  opacity: 0.8;
+  margin: 0;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* 刺激エリア */
+.stimulus-area {
+  transition: all 0.5s ease;
+  border-radius: 15px;
+  padding: 40px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.stimulus-area.stimulus-green {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+}
+
+.stimulus-area.stimulus-red {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+}
+
+.stimulus-area.stimulus-sound {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+}
+
+.stimulus-area.stimulus-flash {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+  box-shadow: 0 0 30px rgba(234, 179, 8, 0.6);
+  animation: flash 0.2s infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.waiting-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.waiting-spinner {
+  font-size: 36px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.reaction-button {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: none;
+  border-radius: 20px;
+  padding: 30px 50px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+  animation: pulse-glow 1s infinite;
+}
+
+.reaction-button:hover {
+  transform: scale(1.05);
+}
+
+.reaction-button:active {
+  transform: scale(0.95);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 35px rgba(245, 158, 11, 0.6);
+  }
+}
+
+.stimulus-display {
+  font-size: 48px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* 結果表示 */
+.reaction-result {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+}
+
+.reaction-result h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reaction-time {
+  font-size: 18px;
+}
+
+.time-value {
+  font-weight: bold;
+  color: #4ade80;
+  font-size: 24px;
+}
+
+.target-comparison {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.comparison.success {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.comparison.miss {
+  color: #f87171;
+  font-weight: bold;
+}
+
+/* フィードバック */
+.feedback {
+  text-align: center;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.feedback.success {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+}
+
+.feedback.warning {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+}
+
+.feedback.info {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid #3b82f6;
+  color: #60a5fa;
+}
+
+/* 難易度情報 */
+.difficulty-info {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+}
+
+.difficulty-info h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+}
+
+.difficulty-info p {
+  margin: 8px 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.tips {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid #3b82f6;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 14px;
+  color: #60a5fa;
+}
+
+/* ゲームアクション */
+.game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.retry-button {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 25px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.end-game-button {
+  background: rgba(239, 68, 68, 0.8);
+  border: 1px solid #ef4444;
+  border-radius: 10px;
+  padding: 12px 25px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.end-game-button:hover {
+  background: rgba(239, 68, 68, 1);
+  transform: translateY(-2px);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .game-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .reaction-area {
+    padding: 20px;
+    min-height: 250px;
+  }
+  
+  .start-reaction-button {
+    padding: 15px 30px;
+    font-size: 16px;
+  }
+  
+  .reaction-button {
+    padding: 20px 30px;
+    font-size: 20px;
+  }
+  
+  .stimulus-display {
+    font-size: 36px;
+  }
+  
+  .game-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .retry-button,
+  .end-game-button {
+    width: 200px;
+  }
+}

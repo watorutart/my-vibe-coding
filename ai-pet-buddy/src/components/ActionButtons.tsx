@@ -5,10 +5,11 @@ interface ActionButtonsProps {
   onFeed: () => void;
   onPlay: () => void;
   onRest: () => void;
+  onGames?: () => void;
   disabled?: boolean;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, disabled = false }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, onGames, disabled = false }) => {
   const buttons = [
     {
       id: 'feed',
@@ -33,7 +34,15 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, d
       onClick: onRest,
       color: '#9b59b6',
       description: 'Restore energy'
-    }
+    },
+    ...(onGames ? [{
+      id: 'games',
+      label: 'Games',
+      icon: '🎮',
+      onClick: onGames,
+      color: '#f39c12',
+      description: 'Play mini-games'
+    }] : [])
   ];
 
   return (
