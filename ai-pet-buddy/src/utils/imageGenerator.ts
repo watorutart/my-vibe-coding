@@ -50,8 +50,7 @@ export const captureElement = async (
     const canvas = await html2canvas(element, {
       width: config.width,
       height: config.height,
-      scale: config.scale,
-      backgroundColor: config.backgroundColor,
+      background: config.backgroundColor,
       useCORS: true,
       allowTaint: true,
       removeContainer: true,

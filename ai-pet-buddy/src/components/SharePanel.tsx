@@ -3,7 +3,7 @@
  * スクリーンショット撮影とSNSシェアボタンを提供
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useShare } from '../hooks/useShare';
 import type { StatsCardData } from '../types/Share';
 import './SharePanel.css';
@@ -14,7 +14,7 @@ interface SharePanelProps {
   /** パネルを閉じるコールバック */
   onClose: () => void;
   /** キャプチャ対象の要素参照 */
-  captureTargetRef: React.RefObject<HTMLElement>;
+  captureTargetRef: React.RefObject<HTMLElement | null>;
   /** ペットの統計データ（オプション） */
   statsData?: StatsCardData;
 }

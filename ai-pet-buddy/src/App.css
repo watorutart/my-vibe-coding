@@ -43,6 +43,18 @@
   font-weight: 400;
 }
 
+.pet-display-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  margin: 0 20px;
+}
+
 .app-main {
   max-width: 1200px;
   margin: 0 auto;

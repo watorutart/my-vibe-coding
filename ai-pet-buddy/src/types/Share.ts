@@ -3,7 +3,16 @@
  * SNSシェア、スクリーンショット、画像生成機能の型を定義
  */
 
-import { PetStats } from './Pet';
+/**
+ * シェア用のペット統計情報
+ */
+export interface SharePetStats {
+  level: number;
+  happiness: number;
+  energy: number;
+  experience: number;
+  evolutionStage: string;
+}
 
 /**
  * シェアデータの基本情報
@@ -18,7 +27,7 @@ export interface ShareData {
   /** ハッシュタグ配列 */
   hashtags: string[];
   /** ペット統計情報（オプション） */
-  stats?: PetStats;
+  stats?: SharePetStats;
 }
 
 /**

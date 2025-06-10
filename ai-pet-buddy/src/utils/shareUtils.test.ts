@@ -31,7 +31,6 @@ const mockShareData: ShareData = {
     level: 5,
     happiness: 85,
     energy: 70,
-    health: 90,
     experience: 1250,
     evolutionStage: 'child'
   }

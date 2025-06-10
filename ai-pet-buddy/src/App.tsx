@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import ActionButtons from './components/ActionButtons'
 import ConversationPanel from './components/ConversationPanel'
 import MiniGamePanel from './components/MiniGamePanel'
 import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
+import { SharePanel } from './components/SharePanel'
 import { useDataPersistence } from './hooks/useDataPersistence'
 import { usePetProgress } from './hooks/usePetProgress'
 import { useStatDecay } from './hooks/useStatDecay'
 import type { ConversationMessage } from './types/Conversation'
 import type { Pet } from './types/Pet'
+import type { StatsCardData } from './types/Share'
 import { DEFAULT_PET } from './types/Pet'
 import { createUserMessage, generatePetResponse } from './utils/conversationEngine'
 
@@ -17,6 +19,10 @@ function App() {
   const [pet, setPet] = useState<Pet>(DEFAULT_PET)
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
   const [showGamePanel, setShowGamePanel] = useState(false)
+  const [showSharePanel, setShowSharePanel] = useState(false)
+  
+  // ペット表示エリアへの参照（スクリーンショット用）
+  const petDisplayRef = useRef<HTMLDivElement>(null)
 
   // データ永続化システム
   const { loadInitialData, saveData, setupAutoSave, clearAutoSave } = useDataPersistence({
@@ -219,6 +225,22 @@ function App() {
     triggerSave() // データ保存
   }
 
+  // シェアパネル用の統計データ生成
+  const generateStatsData = (): StatsCardData => {
+    // 仮のbirthDateを設定（実際はペットに追加するべき）
+    const birthDate = new Date(Date.now() - (pet.stats.level * 24 * 60 * 60 * 1000)); // レベル数分の日前
+    
+    return {
+      petName: pet.name,
+      level: pet.stats.level,
+      evolutionStage: pet.stats.level < 3 ? 'baby' : pet.stats.level < 6 ? 'child' : 'adult',
+      totalPlayTime: Math.floor((Date.now() - birthDate.getTime()) / 1000 / 60), // 分単位
+      gameWinRate: 0.75, // 仮の値（実際のゲーム統計が実装されたら更新）
+      achievementCount: pet.stats.level * 2, // レベルに基づく仮の実績数
+      birthDate: birthDate
+    };
+  };
+
   // Auto-update pet expression based on stats
   useEffect(() => {
     const { happiness, energy } = pet.stats
@@ -258,13 +280,16 @@ function App() {
           </div>
         ) : (
           <>
-            <PetDisplay pet={pet} />
-            <StatsPanel stats={pet.stats} />
+            <div ref={petDisplayRef} className="pet-display-area">
+              <PetDisplay pet={pet} />
+              <StatsPanel stats={pet.stats} />
+            </div>
             <ActionButtons 
               onFeed={handleFeed}
               onPlay={handlePlay}
               onRest={handleRest}
               onGames={() => setShowGamePanel(true)}
+              onShare={() => setShowSharePanel(true)}
             />
             <ConversationPanel 
               pet={pet}
@@ -274,6 +299,14 @@ function App() {
           </>
         )}
       </main>
+      
+      {/* シェアパネル */}
+      <SharePanel
+        isOpen={showSharePanel}
+        onClose={() => setShowSharePanel(false)}
+        captureTargetRef={petDisplayRef}
+        statsData={generateStatsData()}
+      />
     </div>
   )
 }

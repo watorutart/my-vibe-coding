@@ -205,7 +205,6 @@ export const useShare = (): UseShareReturn => {
         level: statsData.level,
         happiness: 85, // デフォルト値（実際は現在のペット状態から取得）
         energy: 75,
-        health: 90,
         experience: 1000,
         evolutionStage: statsData.evolutionStage
       };

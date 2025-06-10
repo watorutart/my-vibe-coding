@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useShare } from './useShare';
-import type { ShareData, StatsCardData, SocialShareOptions, WatermarkConfig } from '../types/Share';
+import type { ShareData, StatsCardData, SocialShareOptions } from '../types/Share';
 
 // モジュールをモック
 vi.mock('../utils/imageGenerator', () => ({
@@ -29,7 +29,6 @@ const mockCaptureElement = vi.mocked(imageGenerator.captureElement);
 const mockGenerateStatsCard = vi.mocked(imageGenerator.generateStatsCard);
 const mockAddWatermark = vi.mocked(imageGenerator.addWatermark);
 const mockShareToSocial = vi.mocked(shareUtils.shareToSocial);
-const mockDownloadImage = vi.mocked(shareUtils.downloadImage);
 const mockGenerateShareText = vi.mocked(shareUtils.generateShareText);
 const mockSaveShareData = vi.mocked(shareUtils.saveShareData);
 
