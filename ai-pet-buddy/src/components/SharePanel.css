@@ -1,0 +1,341 @@
+/**
+ * SharePanel コンポーネントのスタイル
+ */
+
+.share-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.share-panel {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.share-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.share-panel__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.share-panel__close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.share-panel__close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.share-panel__content {
+  padding: 20px 24px 24px;
+}
+
+.share-panel__capture {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.share-button {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+
+.share-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.share-button--capture {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  flex: 1;
+}
+
+.share-button--capture:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.share-button--stats {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  flex: 1;
+}
+
+.share-button--stats:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+}
+
+.share-panel__preview {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.share-preview__image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e5e7eb;
+}
+
+.share-panel__error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message {
+  color: #dc2626;
+  margin: 0;
+  font-size: 14px;
+}
+
+.error-dismiss {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.error-dismiss:hover {
+  background: #fee2e2;
+}
+
+.share-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.share-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.share-button--twitter {
+  background: #1da1f2;
+  color: white;
+}
+
+.share-button--twitter:hover:not(:disabled) {
+  background: #1991db;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(29, 161, 242, 0.4);
+}
+
+.share-button--facebook {
+  background: #4267b2;
+  color: white;
+}
+
+.share-button--facebook:hover:not(:disabled) {
+  background: #365899;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(66, 103, 178, 0.4);
+}
+
+.share-button--instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: white;
+}
+
+.share-button--instagram:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(240, 148, 51, 0.4);
+}
+
+.share-button--line {
+  background: #00c300;
+  color: white;
+}
+
+.share-button--line:hover:not(:disabled) {
+  background: #00a300;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 195, 0, 0.4);
+}
+
+.share-button--download {
+  background: #6b7280;
+  color: white;
+  width: 100%;
+}
+
+.share-button--download:hover:not(:disabled) {
+  background: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+}
+
+.share-panel__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  color: #6b7280;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 640px) {
+  .share-panel {
+    max-width: none;
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .share-panel__header {
+    padding: 16px 20px 12px;
+  }
+  
+  .share-panel__content {
+    padding: 16px 20px 20px;
+  }
+  
+  .share-panel__capture {
+    flex-direction: column;
+  }
+  
+  .share-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .share-button {
+    font-size: 16px;
+    padding: 14px 18px;
+    min-height: 48px;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .share-panel {
+    background: #1f2937;
+    color: white;
+  }
+  
+  .share-panel__header {
+    border-bottom-color: #374151;
+  }
+  
+  .share-panel__title {
+    color: white;
+  }
+  
+  .share-panel__close {
+    color: #9ca3af;
+  }
+  
+  .share-panel__close:hover {
+    background: #374151;
+    color: #d1d5db;
+  }
+  
+  .share-preview__image {
+    border-color: #374151;
+  }
+}
+
+/* アクセシビリティ */
+@media (prefers-reduced-motion: reduce) {
+  .share-panel {
+    animation: none;
+  }
+  
+  .share-button:hover:not(:disabled) {
+    transform: none;
+  }
+  
+  .loading-spinner {
+    animation: none;
+  }
+}
+
+/* フォーカス表示 */
+.share-button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.share-panel__close:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
