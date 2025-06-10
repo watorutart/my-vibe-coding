@@ -2,9 +2,8 @@
  * CustomizationPanel.test.tsx - カスタマイズパネルコンポーネントのテスト
  */
 
-import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CustomizationPanel from './CustomizationPanel';
 import { DEFAULT_CUSTOMIZATION, DEFAULT_ACCESSORIES } from '../types/Customization';
@@ -19,7 +18,7 @@ let mockCustomizationHook = {
   previewCustomization: DEFAULT_CUSTOMIZATION,
   isPreviewMode: false,
   isLoading: false,
-  error: null,
+  error: null as string | null,
   updateName: vi.fn(),
   updateColor: vi.fn(),
   addAccessory: vi.fn(),
@@ -50,7 +49,7 @@ describe('CustomizationPanel', () => {
       previewCustomization: DEFAULT_CUSTOMIZATION,
       isPreviewMode: false,
       isLoading: false,
-      error: null,
+      error: null as string | null,
       updateName: vi.fn().mockReturnValue({ isValid: true }),
       updateColor: vi.fn().mockReturnValue({ isValid: true }),
       addAccessory: vi.fn().mockReturnValue({ success: true }),

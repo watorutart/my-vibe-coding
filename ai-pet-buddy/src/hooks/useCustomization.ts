@@ -9,9 +9,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { 
   PetCustomization, 
-  Accessory, 
   CustomizationState, 
-  CustomizationAction,
   NameValidationResult,
   ColorValidationResult
 } from '../types/Customization';
@@ -113,7 +111,7 @@ export function useCustomization(options: UseCustomizationOptions = {}): UseCust
     
     // 既存のタイマーをクリア
     if (errorTimeoutRef.current) {
-      clearTimeout(errorTimeoutRef.current);
+      clearTimeout(errorTimeoutRef.current as any);
     }
     
     // 一定時間後にエラーをクリア
@@ -158,7 +156,7 @@ export function useCustomization(options: UseCustomizationOptions = {}): UseCust
     
     // 既存のタイマーをクリア
     if (autoSaveTimerRef.current) {
-      clearInterval(autoSaveTimerRef.current);
+      clearInterval(autoSaveTimerRef.current as any);
     }
     
     // 新しいタイマーを設定
@@ -171,10 +169,10 @@ export function useCustomization(options: UseCustomizationOptions = {}): UseCust
     
     return () => {
       if (autoSaveTimerRef.current) {
-        clearInterval(autoSaveTimerRef.current);
+        clearInterval(autoSaveTimerRef.current as any);
       }
       if (errorTimeoutRef.current) {
-        clearTimeout(errorTimeoutRef.current);
+        clearTimeout(errorTimeoutRef.current as any);
       }
     };
   }, [autoSave, saveInterval, saveCustomization]);

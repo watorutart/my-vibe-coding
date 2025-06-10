@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import ActionButtons from './components/ActionButtons'
 import ConversationPanel from './components/ConversationPanel'
+import CustomizationPanel from './components/CustomizationPanel'
 import MiniGamePanel from './components/MiniGamePanel'
 import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
@@ -17,6 +18,7 @@ function App() {
   const [pet, setPet] = useState<Pet>(DEFAULT_PET)
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
   const [showGamePanel, setShowGamePanel] = useState(false)
+  const [showCustomizationPanel, setShowCustomizationPanel] = useState(false)
 
   // データ永続化システム
   const { loadInitialData, saveData, setupAutoSave, clearAutoSave } = useDataPersistence({
@@ -265,6 +267,7 @@ function App() {
               onPlay={handlePlay}
               onRest={handleRest}
               onGames={() => setShowGamePanel(true)}
+              onCustomize={() => setShowCustomizationPanel(true)}
             />
             <ConversationPanel 
               pet={pet}
@@ -272,6 +275,13 @@ function App() {
               onSendMessage={handleSendMessage}
             />
           </>
+        )}
+        
+        {/* Customization Panel - shown as overlay */}
+        {showCustomizationPanel && (
+          <CustomizationPanel 
+            onClose={() => setShowCustomizationPanel(false)}
+          />
         )}
       </main>
     </div>
