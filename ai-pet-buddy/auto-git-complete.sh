@@ -1,5 +1,6 @@
 #!/bin/bash
 # auto-git-complete.sh - Git作業完了自動化スクリプト
+# コミット・プッシュ漏れ再発防止のための包括的チェック
 
 # 色付きメッセージ定義
 RED='\033[0;31m'
@@ -7,12 +8,15 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
 echo -e "${BLUE}🔄 Git作業完了チェック開始${NC}"
 echo "========================================"
 
-# 現在のGit状況分析
+# プロジェクトディレクトリに移動
+cd "$(dirname "$0")"
+
+# 1. 現在のGit状況分析
 echo -e "\n${PURPLE}📊 Git状況分析${NC}"
 
 STAGED_FILES=$(git diff --cached --name-only | wc -l)
@@ -25,9 +29,10 @@ echo "ステージング未済み: ${UNSTAGED_FILES}ファイル"
 echo "未追跡ファイル: ${UNTRACKED_FILES}ファイル"
 echo "変更総数: ${TOTAL_CHANGES}ファイル"
 
-# リモート同期状況確認
+# 2. リモート同期状況確認
 echo -e "\n${PURPLE}🌍 リモート同期状況${NC}"
 
+# リモート情報取得
 git fetch --quiet origin 2>/dev/null || echo "⚠️  リモート取得に問題あり"
 
 LOCAL_COMMIT=$(git rev-parse HEAD 2>/dev/null)
@@ -45,7 +50,7 @@ echo -e "${SYNC_COLOR}リモート同期: ${SYNC_STATUS}${NC}"
 echo "ローカル:  ${LOCAL_COMMIT:0:8}"
 echo "リモート:  ${REMOTE_COMMIT:0:8}"
 
-# 作業完了判定
+# 3. 作業完了判定
 echo -e "\n${PURPLE}🎯 作業完了判定${NC}"
 
 if [ $TOTAL_CHANGES -eq 0 ] && [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
@@ -66,7 +71,7 @@ if [ $TOTAL_CHANGES -eq 0 ] && [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
     exit 0
 fi
 
-# 未完了の場合の対応提案
+# 4. 未完了の場合の対応提案
 echo -e "${YELLOW}⚠️  作業未完了 - 対応が必要です${NC}"
 
 if [ $TOTAL_CHANGES -gt 0 ]; then
@@ -100,6 +105,7 @@ echo "3. git push origin main  # プッシュ"
 echo ""
 echo "または 'gitdone' エイリアスを使用してください"
 
+# 最終確認メッセージ
 echo -e "\n${PURPLE}📊 処理完了レポート${NC}"
 echo "==================="
 echo "実行時刻: $(date '+%Y-%m-%d %H:%M:%S')"
