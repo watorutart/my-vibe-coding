@@ -122,8 +122,7 @@ describe('imageGenerator', () => {
       expect(mockHtml2Canvas).toHaveBeenCalledWith(mockElement, {
         width: DEFAULT_SCREENSHOT_OPTIONS.width,
         height: DEFAULT_SCREENSHOT_OPTIONS.height,
-        scale: DEFAULT_SCREENSHOT_OPTIONS.scale,
-        backgroundColor: DEFAULT_SCREENSHOT_OPTIONS.backgroundColor,
+        background: DEFAULT_SCREENSHOT_OPTIONS.backgroundColor,
         useCORS: true,
         allowTaint: true,
         removeContainer: true,
@@ -148,8 +147,7 @@ describe('imageGenerator', () => {
       expect(mockHtml2Canvas).toHaveBeenCalledWith(mockElement, {
         width: 500,
         height: 500,
-        scale: 1,
-        backgroundColor: '#ffffff',
+        background: '#ffffff',
         useCORS: true,
         allowTaint: true,
         removeContainer: true,
