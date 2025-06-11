@@ -348,4 +348,334 @@ sequenceDiagram
 3. **テスト容易性**: 255のテストケースで動作を保証
 4. **ドキュメント化**: 明確なインターフェース定義
 
+---
+
+## 5. シェア機能フロー
+
+ペットのスクリーンショット撮影、統計カード生成、SNSシェア機能の処理フローです。ユーザーがペットの状態や成長を他のユーザーと共有するための包括的なシステムです。
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant AB as ActionButtons
+    participant SP as SharePanel
+    participant US as useShare Hook
+    participant IG as imageGenerator
+    participant SU as shareUtils
+    participant H2C as html2canvas
+    participant SNS as Social Media
+    participant Browser as Browser
+
+    Note over U,Browser: シェアパネル起動フロー
+    U->>AB: "Share" ボタンクリック
+    AB->>AB: handleShareClick()
+    AB-->>App: setSharePanelOpen(true)
+    App-->>SP: isOpen=true props
+    SP->>SP: componentMount & initialization
+    SP->>US: useShare() hook initialization
+    US->>US: 状態初期化 (isSharing, error, shareHistory)
+
+    Note over U,Browser: スクリーンショット撮影フロー
+    U->>SP: "スクリーンショット撮影" ボタンクリック
+    SP->>SP: handleCaptureScreenshot()
+    SP->>US: captureScreenshot(captureTargetRef.current, options)
+    US->>US: setIsSharing(true), clearError()
+    
+    US->>IG: captureElement(element, options)
+    IG->>IG: merge DEFAULT_SCREENSHOT_OPTIONS
+    IG->>H2C: html2canvas(element, canvasConfig)
+    H2C->>H2C: DOM要素をCanvas描画
+    H2C->>H2C: CSSスタイル適用・画像変換
+    H2C-->>IG: return Canvas object
+    IG->>IG: canvas.toDataURL('image/png', quality)
+    IG-->>US: return imageDataUrl (base64)
+    
+    US->>US: setLastShareImageUrl(imageDataUrl)
+    US->>US: setIsSharing(false)
+    US-->>SP: return imageDataUrl
+    SP->>SP: setShareImageUrl(imageDataUrl)
+    SP->>SP: UI更新 - プレビュー画像表示
+
+    Note over U,Browser: 統計カード生成フロー（オプション）
+    alt 統計カード生成が選択された場合
+        U->>SP: "統計カード生成" ボタンクリック
+        SP->>SP: setShareMode('stats')
+        SP->>US: generateStatsCard(statsData, config)
+        US->>US: setIsSharing(true), clearError()
+        
+        US->>IG: generateStatsCard(statsData, config)
+        IG->>IG: create virtual DOM elements
+        IG->>IG: build stats card HTML structure
+        IG->>IG: apply CSS styling & layout
+        IG->>IG: create temporary container
+        IG->>Browser: appendChild(container) - DOM追加
+        IG->>H2C: html2canvas(container, options)
+        H2C-->>IG: return rendered canvas
+        IG->>Browser: removeChild(container) - DOM削除
+        IG->>IG: canvas.toDataURL()
+        IG-->>US: return statsCardImageUrl
+        
+        US->>US: setLastShareImageUrl(statsCardImageUrl)
+        US-->>SP: return statsCardImageUrl
+        SP->>SP: setShareImageUrl(statsCardImageUrl)
+    end
+
+    Note over U,Browser: ウォーターマーク追加フロー
+    alt ウォーターマーク表示が有効な場合
+        SP->>US: addWatermark(shareImageUrl, watermarkConfig)
+        US->>IG: addWatermark(imageDataUrl, config)
+        IG->>IG: create Image object from dataUrl
+        IG->>IG: create Canvas & 2D context
+        IG->>IG: drawImage(originalImage)
+        IG->>IG: calculate watermark position
+        IG->>IG: draw watermark text with styling
+        IG->>IG: canvas.toDataURL()
+        IG-->>US: return watermarkedImageUrl
+        US-->>SP: return watermarkedImageUrl
+        SP->>SP: 画像プレビュー更新
+    end
+
+    Note over U,Browser: SNSシェア実行フロー
+    U->>SP: SNSプラットフォーム選択 (Twitter/Facebook/Instagram/LINE)
+    U->>SP: "シェア" ボタンクリック
+    SP->>SP: handleSocialShare(platform)
+    SP->>US: generateShareData(shareImageUrl, statsData)
+    US->>US: createShareData() - title, description, hashtags
+    US-->>SP: return ShareData
+    
+    SP->>US: shareToSocial({platform, shareData})
+    US->>US: setIsSharing(true), clearError()
+    US->>SU: shareToSocial(options)
+    
+    SU->>SU: generateShareText(shareData, platform)
+    SU->>SU: validateTextLength(text, platform.maxLength)
+    SU->>SU: buildShareUrl(platform, shareData)
+    alt Twitterの場合
+        SU->>SU: URL = "https://twitter.com/intent/tweet"
+        SU->>SU: params = {text, hashtags}
+    else Facebookの場合
+        SU->>SU: URL = "https://www.facebook.com/sharer/sharer.php"
+        SU->>SU: params = {u: shareUrl, quote: text}
+    else LINEの場合
+        SU->>SU: URL = "https://social-plugins.line.me/lineit/share"
+        SU->>SU: params = {url: shareUrl, text}
+    else Instagramの場合
+        Note over SU: WebからのInstagram直接投稿は不可
+        SU->>SU: return error message
+    end
+    
+    alt 有効なプラットフォームの場合
+        SU->>Browser: window.open(shareUrl, '_blank')
+        Browser->>SNS: ブラウザでSNSサイトを開く
+        SNS->>SNS: シェア用フォーム表示
+        SU-->>US: return {success: true, shareUrl}
+    else 無効なプラットフォームの場合
+        SU-->>US: return {success: false, error}
+    end
+    
+    Note over U,Browser: シェア履歴管理・保存
+    US->>US: createHistoryEntry(platform, content, success)
+    US->>US: addToHistory(historyEntry)
+    US->>SU: saveShareData(shareData, filename)
+    SU->>SU: generateFileName('ai-pet-share')
+    SU->>Browser: 画像をlocalStorage/indexedDBに保存（オプション）
+    
+    US->>US: setIsSharing(false)
+    US-->>SP: return ShareResult
+    SP->>SP: UI更新 - 成功メッセージ表示
+
+    Note over U,Browser: 画像ダウンロードフロー
+    alt ユーザーがダウンロードを選択した場合
+        U->>SP: "ダウンロード" ボタンクリック
+        SP->>US: downloadImage(shareImageUrl, filename)
+        US->>SU: downloadImage(dataUrl, filename)
+        SU->>SU: generateFileName('ai-pet-buddy')
+        SU->>SU: create downloadable link element
+        SU->>Browser: element.href = dataUrl
+        SU->>Browser: element.download = filename
+        SU->>Browser: element.click() - ダウンロード実行
+        SU->>US: addToHistory(downloadEntry)
+        Note over Browser: ブラウザのダウンロード処理開始
+    end
+
+    Note over U,Browser: エラーハンドリング・フォールバック
+    alt エラーが発生した場合
+        IG->>IG: catch screenshot/generation error
+        IG-->>US: throw Error(message)
+        US->>US: setError(errorMessage)
+        US->>US: setIsSharing(false)
+        US-->>SP: error state updated
+        SP->>SP: show error message to user
+        SP->>SP: enable retry functionality
+    end
+    
+    Note over U,Browser: パネル終了・クリーンアップ
+    U->>SP: "閉じる" ボタンクリック or ESCキー
+    SP->>SP: onClose() callback
+    SP-->>App: setSharePanelOpen(false)
+    SP->>SP: componentWillUnmount
+    SP->>SP: cleanup temporary URLs
+    SP->>Browser: URL.revokeObjectURL() if needed
+```
+
+### シェア機能フローの説明
+
+#### 1. シェアパネル起動 (Lines 1-8)
+- ActionButtonsの"Share"ボタンクリックでSharePanelが起動
+- useShareフックが初期化され、シェア状態管理を開始
+
+#### 2. スクリーンショット撮影 (Lines 9-23)
+- html2canvasライブラリを使用してDOM要素を高品質画像に変換
+- 1080x1080pxの正方形フォーマットで撮影（Instagram対応）
+- エラーハンドリングと品質設定をサポート
+
+#### 3. 統計カード生成 (Lines 24-40)
+- ペットのレベル、進化段階、プレイ時間、実績を含む美しいカードを動的生成
+- 仮想DOM要素を作成してhtml2canvasで画像化
+- 一時的なDOM操作を使用し、生成後にクリーンアップ
+
+#### 4. ウォーターマーク追加 (Lines 41-53)
+- Canvasの2D描画コンテキストを使用してブランディング追加
+- 位置、透明度、フォントサイズをカスタマイズ可能
+- 「AI Pet Buddy」ブランドの自動挿入
+
+#### 5. SNSシェア実行 (Lines 54-85)
+- プラットフォーム別URL生成とパラメータ最適化
+- Twitter、Facebook、LINEで各プラットフォームのAPI仕様に準拠
+- Instagramは技術的制約によりWeb直接投稿不可
+
+#### 6. シェア履歴管理 (Lines 86-96)
+- 最大50件のシェア履歴を保持
+- 成功/失敗の記録とタイムスタンプ管理
+- ローカルストレージでのデータ永続化
+
+#### 7. 画像ダウンロード (Lines 97-107)
+- ブラウザのダウンロード機能を使用した画像保存
+- 自動生成されるファイル名（日時付き）
+- ダウンロード履歴の記録
+
+#### 8. エラーハンドリング (Lines 108-117)
+- 各段階での例外キャッチと適切なエラーメッセージ
+- ユーザーフレンドリーなリトライ機能
+- フォールバック処理の実装
+
+---
+
+## 6. 統計カード生成詳細フロー
+
+統計カード生成の内部処理を詳細に説明するサブフローです。
+
+```mermaid
+sequenceDiagram
+    participant US as useShare Hook
+    participant IG as imageGenerator
+    participant DOM as Virtual DOM
+    participant CSS as CSS Engine
+    participant H2C as html2canvas
+    participant Canvas as Canvas API
+
+    Note over US,Canvas: 統計カード生成の詳細フロー
+    US->>IG: generateStatsCard(statsData, config)
+    IG->>IG: validateStatsData(statsData)
+    IG->>IG: mergeConfig(DEFAULT_CONFIG, config)
+    
+    Note over IG,DOM: 仮想DOM構築フェーズ
+    IG->>DOM: createElement('div') - container
+    IG->>DOM: container.className = 'stats-card'
+    IG->>DOM: createElement('div') - header
+    IG->>DOM: header.textContent = petName + evolutionStage
+    IG->>DOM: createElement('div') - stats section
+    
+    loop 統計項目ごと (level, playtime, achievements等)
+        IG->>DOM: createElement('div') - stat item
+        IG->>DOM: createElement('span') - label
+        IG->>DOM: createElement('span') - value
+        IG->>DOM: apply formatting (数値変換、単位付与)
+        IG->>DOM: appendChild(statItem to statsSection)
+    end
+    
+    IG->>DOM: createElement('div') - footer
+    IG->>DOM: footer.textContent = 'AI Pet Buddy'
+    IG->>DOM: appendChild(all sections to container)
+    
+    Note over IG,CSS: スタイリング適用フェーズ
+    IG->>CSS: apply inline styles to container
+    CSS->>CSS: background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+    CSS->>CSS: border-radius: 20px, padding: 30px
+    CSS->>CSS: font-family: 'SF Pro Display', sans-serif
+    CSS->>CSS: color: white, text-align: center
+    
+    IG->>CSS: apply header styles
+    CSS->>CSS: font-size: 28px, font-weight: bold
+    CSS->>CSS: margin-bottom: 20px
+    
+    IG->>CSS: apply stats section styles
+    CSS->>CSS: display: flex, justify-content: space-around
+    CSS->>CSS: flex-wrap: wrap, gap: 15px
+    
+    loop 各統計項目
+        IG->>CSS: apply stat item styles
+        CSS->>CSS: background: rgba(255,255,255,0.1)
+        CSS->>CSS: border-radius: 10px, padding: 15px
+        CSS->>CSS: backdrop-filter: blur(10px)
+    end
+    
+    IG->>CSS: apply footer styles
+    CSS->>CSS: font-size: 14px, opacity: 0.8
+    CSS->>CSS: margin-top: 20px
+    
+    Note over IG,Canvas: DOM描画・Canvas変換フェーズ
+    IG->>DOM: document.body.appendChild(container)
+    IG->>DOM: container.style.position = 'absolute'
+    IG->>DOM: container.style.left = '-9999px' - 画面外配置
+    
+    IG->>H2C: html2canvas(container, renderOptions)
+    H2C->>H2C: traverse DOM tree
+    H2C->>H2C: compute final styles for each element
+    H2C->>H2C: render text with font loading
+    H2C->>H2C: apply gradients and filters
+    H2C->>H2C: render to Canvas context
+    H2C-->>IG: return Canvas element
+    
+    IG->>Canvas: canvas.toDataURL('image/png', 1.0)
+    Canvas-->>IG: return base64 imageDataUrl
+    
+    Note over IG,Canvas: クリーンアップフェーズ
+    IG->>DOM: document.body.removeChild(container)
+    IG->>DOM: cleanup temporary references
+    IG-->>US: return imageDataUrl
+    
+    Note over US,Canvas: エラーハンドリング
+    alt 生成エラーの場合
+        IG->>IG: catch any rendering errors
+        IG->>DOM: ensure cleanup (removeChild)
+        IG->>IG: log error details
+        IG-->>US: throw descriptive error
+    end
+```
+
+### 統計カード生成の技術的特徴
+
+#### 1. データ検証・設定統合
+- 入力されたStatsCardDataの整合性チェック
+- デフォルト設定とユーザー設定のマージ
+- 必須フィールドの存在確認
+
+#### 2. 動的DOM構築
+- JavaScriptでの完全な仮想DOM要素作成
+- 統計データに基づく動的コンテンツ生成
+- レスポンシブレイアウトの実装
+
+#### 3. 高度なCSS適用
+- グラデーション背景とガラスモーフィズム効果
+- フレックスボックスレイアウトでの配置制御
+- Backdrop-filterによる視覚効果
+
+#### 4. Canvas最適化
+- html2canvasの詳細オプション設定
+- フォントローディングとレンダリング最適化
+- 高DPI対応でのスケーリング調整
+
+---
+
 これらのシーケンス図により、AI Pet Buddyの複雑なシステム間相互作用が明確になり、新規開発者の理解促進やデバッグ・メンテナンス作業の効率化が期待されます。
