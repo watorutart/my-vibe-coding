@@ -2,7 +2,7 @@
  * ミニゲーム関連の型定義
  */
 
-export type GameType = 'memory' | 'reflex' | 'quiz';
+export type GameType = 'memory' | 'reflex' | 'quiz' | 'rock-paper-scissors' | 'number-guessing';
 
 export type GameDifficulty = 'easy' | 'medium' | 'hard';
 
@@ -73,6 +73,26 @@ export interface QuizGameData {
   correctAnswer: number; // 正解のインデックス
   explanation?: string;
   category: 'pet' | 'general';
+}
+
+// Rock Paper Scissors Game 用の型
+export interface RockPaperScissorsData {
+  playerChoice: 'rock' | 'paper' | 'scissors' | null;
+  aiChoice: 'rock' | 'paper' | 'scissors' | null;
+  result: 'win' | 'lose' | 'draw' | null;
+  consecutiveWins: number;
+  totalRounds: number;
+  currentRound: number;
+}
+
+// Number Guessing Game 用の型
+export interface NumberGuessingData {
+  targetNumber: number;
+  currentGuess: number | null;
+  attemptsLeft: number;
+  hints: string[];
+  minNumber: number;
+  maxNumber: number;
 }
 
 export interface GameState {

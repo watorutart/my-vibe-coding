@@ -12,8 +12,10 @@ import type {
     GameState,
     GameType,
     MemoryGameData,
+    NumberGuessingData,
     QuizGameData,
-    ReflexGameData
+    ReflexGameData,
+    RockPaperScissorsData
 } from '../types/Game';
 
 export class GameEngine {
