@@ -43,7 +43,7 @@ describe('GameEngine', () => {
       const gameState = gameEngine.getGameState();
       
       expect(gameState.currentSession).toBeNull();
-      expect(gameState.availableGames).toHaveLength(9); // 3 types × 3 difficulties
+      expect(gameState.availableGames).toHaveLength(15); // 5 types × 3 difficulties
       expect(gameState.recentResults).toEqual([]);
       expect(gameState.totalGamesPlayed).toBe(0);
       expect(gameState.totalExperienceEarned).toBe(0);
@@ -53,10 +53,12 @@ describe('GameEngine', () => {
     it('利用可能なゲームが正しく設定される', () => {
       const availableGames = gameEngine.getAvailableGames();
       
-      expect(availableGames).toHaveLength(9);
+      expect(availableGames).toHaveLength(15);
       expect(availableGames.some(g => g.type === 'memory' && g.difficulty === 'easy')).toBe(true);
       expect(availableGames.some(g => g.type === 'reflex' && g.difficulty === 'medium')).toBe(true);
       expect(availableGames.some(g => g.type === 'quiz' && g.difficulty === 'hard')).toBe(true);
+      expect(availableGames.some(g => g.type === 'rock-paper-scissors' && g.difficulty === 'easy')).toBe(true);
+      expect(availableGames.some(g => g.type === 'number-guessing' && g.difficulty === 'medium')).toBe(true);
     });
   });
 
