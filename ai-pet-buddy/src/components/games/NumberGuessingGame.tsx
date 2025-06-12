@@ -43,7 +43,6 @@ export const NumberGuessingGame: React.FC<NumberGuessingGameProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [showHint, setShowHint] = useState(false);
 
   const settings = DIFFICULTY_SETTINGS[session.config.difficulty];
   const timeRemaining = session.config.duration - timeElapsed;
@@ -78,10 +77,9 @@ export const NumberGuessingGame: React.FC<NumberGuessingGameProps> = ({
     };
 
     setGameData(newGameData);
-    setShowHint(true);
 
     // ゲームエンジンに結果を送信
-    const isCorrect = onSubmitAnswer(guess);
+    onSubmitAnswer(guess);
 
     if (evaluation === 'correct' || newGameData.attemptsLeft <= 0) {
       setIsGameOver(true);

@@ -11,8 +11,7 @@ import {
   getChoiceIcon,
   getChoiceName,
   getResultMessage,
-  type Choice,
-  type GameResult
+  type Choice
 } from './rockPaperScissorsLogic';
 
 describe('rockPaperScissorsLogic', () => {
