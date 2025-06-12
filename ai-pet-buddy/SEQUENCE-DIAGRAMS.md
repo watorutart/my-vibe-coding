@@ -678,4 +678,381 @@ sequenceDiagram
 
 ---
 
+## 7. ペットカスタマイズシステムフロー
+
+Phase 4で実装されたペットカスタマイズシステムの処理フローです。名前変更、色変更、アクセサリー管理の各機能を含みます。
+
+### 7.1 カスタマイズパネル開始・初期化フロー
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant AB as ActionButtons
+    participant A as App
+    participant CP as CustomizationPanel
+    participant UC as useCustomization Hook
+    participant CU as customizationUtils
+    participant LS as localStorage
+
+    Note over U,LS: カスタマイズパネル開始フロー
+    U->>AB: "🎨 Customize" ボタンクリック
+    AB-->>A: onCustomize()
+    A->>A: setShowCustomizationPanel(true)
+    A->>CP: mount CustomizationPanel
+    
+    Note over CP,LS: カスタマイズ状態初期化
+    CP->>UC: useCustomization() - Hook初期化
+    UC->>UC: useState初期化 (DEFAULT_CUSTOMIZATION)
+    UC->>UC: loadInitialCustomization()
+    UC->>CU: loadCustomizationData()
+    
+    CU->>LS: getItem('ai-pet-buddy-customization-data')
+    LS-->>CU: return current customization | null
+    CU->>LS: getItem('ai-pet-buddy-available-accessories')
+    LS-->>CU: return accessories | null
+    CU->>LS: getItem('ai-pet-buddy-customization-presets')
+    LS-->>CU: return presets | null
+    
+    alt 保存データが存在する場合
+        CU->>CU: JSON.parse(savedData)
+        CU->>CU: isValidCustomization(data)
+        CU->>CU: restore Date objects
+        CU-->>UC: return {current, available, presets}
+    else 保存データが存在しない場合
+        CU-->>UC: return default state
+    end
+    
+    UC->>UC: setCustomizationState(loadedState)
+    UC->>UC: setPreviewCustomization(current)
+    UC-->>CP: customizationState updated
+    
+    Note over CP,LS: UI初期化・レンダリング
+    CP->>CP: useState - activeTab: 'name'
+    CP->>CP: setTempName(current.name)
+    CP->>CP: setTempColor(current.color)
+    CP->>CP: render tabbed interface
+    CP->>CP: render preview section
+```
+
+### 7.2 名前変更フロー
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CP as CustomizationPanel
+    participant UC as useCustomization Hook
+    participant CU as customizationUtils
+    participant Val as Validation
+    participant LS as localStorage
+
+    Note over U,LS: 名前変更フロー
+    U->>CP: Name tab選択
+    CP->>CP: setActiveTab('name')
+    U->>CP: input field入力
+    CP->>CP: handleNameChange(newName)
+    CP->>CP: setTempName(newName)
+    
+    alt プレビューモードの場合
+        CP->>UC: updateName(newName)
+        UC->>Val: validatePetName(newName)
+        
+        Val->>Val: check length (1-20 chars)
+        Val->>Val: check invalid characters
+        Val->>Val: check not empty
+        
+        alt バリデーション成功
+            Val-->>UC: {isValid: true}
+            UC->>UC: update previewCustomization
+            UC->>UC: setError(null)
+            UC-->>CP: validation success
+            CP->>CP: remove error styling
+        else バリデーション失敗
+            Val-->>UC: {isValid: false, error: message}
+            UC->>UC: setError(errorMessage)
+            UC-->>CP: validation error
+            CP->>CP: show error message
+            CP->>CP: apply error styling
+        end
+    end
+    
+    Note over U,LS: 変更適用フロー
+    U->>CP: "適用" ボタンクリック
+    CP->>CP: handleApply()
+    
+    alt プレビューモード中の場合
+        CP->>UC: applyPreview()
+        UC->>UC: setCustomizationState(previewData)
+        UC->>UC: setIsPreviewMode(false)
+    else 通常モードの場合
+        CP->>UC: updateName(tempName)
+        UC->>UC: setCustomizationState(updated)
+    end
+    
+    Note over U,LS: データ保存・終了
+    UC->>UC: auto-save timer trigger
+    UC->>CU: saveCustomizationData(state)
+    CU->>CU: JSON.stringify(current)
+    CU->>LS: setItem('ai-pet-buddy-customization-data', data)
+    CP-->>U: パネル閉じる
+```
+
+### 7.3 色変更・カラーパレットフロー
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CP as CustomizationPanel
+    participant UC as useCustomization Hook
+    participant CU as customizationUtils
+    participant Val as Validation
+
+    Note over U,Val: 色変更フロー
+    U->>CP: Color tab選択
+    CP->>CP: setActiveTab('color')
+    CP->>CP: render color palette
+    CP->>CP: render custom color picker
+    
+    alt プリセットカラー選択
+        U->>CP: カラーパレットから色選択
+        CP->>CP: handleColorChange(selectedColor)
+        CP->>CP: setTempColor(selectedColor)
+        
+        alt プレビューモード中
+            CP->>UC: updateColor(selectedColor)
+            UC->>Val: validateColor(selectedColor)
+            Val->>Val: check HEX format (#RRGGBB or #RGB)
+            Val->>Val: validate color code
+            Val-->>UC: {isValid: true}
+            UC->>UC: update previewCustomization.color
+            UC-->>CP: preview updated
+            CP->>CP: update preview pet color
+        end
+    
+    else カスタム色入力
+        U->>CP: カスタムカラーピッカー操作
+        CP->>CP: onChange(colorEvent)
+        CP->>CP: handleColorChange(e.target.value)
+        
+        alt 色テキスト入力
+            U->>CP: HEX入力フィールド入力
+            CP->>CP: validate pattern="#[0-9A-Fa-f]{6}"
+            
+            alt 無効なフォーマット
+                CP->>CP: apply error styling
+                CP->>CP: show validation message
+            else 有効なフォーマット
+                CP->>UC: updateColor(hexCode)
+                UC->>Val: validateColor(hexCode)
+                Val-->>UC: validation result
+                UC-->>CP: update preview/state
+            end
+        end
+    end
+    
+    Note over U,Val: リアルタイムプレビュー
+    CP->>CP: render color preview circle
+    CP->>CP: style={{ backgroundColor: tempColor }}
+    CP->>CP: update pet preview background
+    CP->>CP: show current color display
+```
+
+### 7.4 アクセサリー管理フロー
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CP as CustomizationPanel
+    participant UC as useCustomization Hook
+    participant CU as customizationUtils
+    participant Val as Validation
+
+    Note over U,Val: アクセサリー管理フロー
+    U->>CP: Accessories tab選択
+    CP->>CP: setActiveTab('accessories')
+    CP->>CP: render accessories grid
+    
+    loop アクセサリー一覧表示
+        CP->>CP: map over available accessories
+        CP->>CP: check accessory.unlocked status
+        CP->>CP: check current wearing status
+        CP->>CP: render accessory item with icon
+        CP->>CP: show lock/unlock state
+    end
+    
+    Note over U,Val: アクセサリー装着/解除フロー
+    U->>CP: アクセサリーボタンクリック
+    CP->>CP: handleAccessoryToggle(accessoryId)
+    CP->>CP: check isWearing status
+    
+    alt 現在装着中の場合
+        CP->>UC: removeAccessory(accessoryId)
+        UC->>CU: removeAccessoryFromCustomization(current, id)
+        CU->>CU: filter out accessory by id
+        CU->>CU: update lastModified timestamp
+        CU-->>UC: return updated customization
+        UC->>UC: update preview/current state
+    
+    else 未装着の場合
+        CP->>UC: addAccessory(accessoryId)
+        UC->>Val: validateAccessoryId(id, available)
+        
+        Val->>Val: check accessory exists
+        Val->>Val: check accessory.unlocked status
+        
+        alt バリデーション成功
+            Val-->>UC: {isValid: true}
+            UC->>CU: addAccessoryToCustomization(current, accessory)
+            CU->>CU: remove same type accessories (override)
+            CU->>CU: add new accessory
+            CU->>CU: update lastModified
+            CU-->>UC: return updated customization
+            UC-->>CP: {success: true}
+            
+        else バリデーション失敗 (ロック中など)
+            Val-->>UC: {isValid: false, error: message}
+            UC->>UC: setError(errorMessage)
+            UC-->>CP: {success: false, error}
+            CP->>CP: show error message
+        end
+    end
+    
+    Note over U,Val: UI状態更新
+    UC-->>CP: customization state updated
+    CP->>CP: re-render accessories grid
+    CP->>CP: update wearing/not-wearing styles
+    CP->>CP: update pet preview accessories
+    CP->>CP: show accessory icons on preview pet
+```
+
+### 7.5 プレビューシステムフロー
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CP as CustomizationPanel
+    participant UC as useCustomization Hook
+    participant State as React State
+
+    Note over U,State: プレビューシステムフロー
+    U->>CP: "プレビュー開始" ボタンクリック
+    CP->>UC: startPreview()
+    UC->>UC: setPreviewCustomization(current)
+    UC->>UC: setIsPreviewMode(true)
+    UC-->>CP: isPreviewMode updated
+    
+    CP->>CP: hide "プレビュー開始" button
+    CP->>CP: show preview controls
+    CP->>CP: enable real-time preview
+    
+    Note over U,State: リアルタイム変更プレビュー
+    loop ユーザーが変更を行う
+        U->>CP: 名前/色/アクセサリー変更
+        CP->>UC: updateName/updateColor/addAccessory
+        UC->>UC: update previewCustomization only
+        UC->>UC: current customization not modified
+        UC-->>CP: preview state updated
+        CP->>CP: render updated preview
+        CP->>CP: show temporary changes in UI
+    end
+    
+    Note over U,State: プレビュー適用・キャンセル分岐
+    alt ユーザーが適用を選択
+        U->>CP: "適用" ボタンクリック
+        CP->>CP: handleApply()
+        CP->>UC: applyPreview()
+        UC->>UC: setCustomizationState(preview)
+        UC->>UC: current = previewCustomization
+        UC->>UC: setIsPreviewMode(false)
+        UC-->>CP: changes applied
+        CP-->>CP: close panel
+        
+    else ユーザーがキャンセルを選択
+        U->>CP: "キャンセル" ボタンクリック
+        CP->>CP: handleCancel()
+        CP->>UC: cancelPreview()
+        UC->>UC: setPreviewCustomization(current)
+        UC->>UC: setIsPreviewMode(false)
+        UC->>UC: discard all preview changes
+        UC-->>CP: preview cancelled
+        CP-->>CP: close panel
+        
+    else ユーザーがリセットを選択
+        U->>CP: "リセット" ボタンクリック
+        CP->>CP: handleReset()
+        CP->>UC: resetToDefault()
+        UC->>UC: apply DEFAULT_CUSTOMIZATION
+        UC->>UC: setError(null)
+        UC-->>CP: reset to defaults
+        CP->>CP: update temp values
+        CP->>CP: refresh all UI elements
+    end
+```
+
+### 7.6 カスタマイズデータ永続化フロー
+
+```mermaid
+sequenceDiagram
+    participant UC as useCustomization Hook
+    participant Timer as Auto-save Timer
+    participant CU as customizationUtils
+    participant LS as localStorage
+    participant Error as Error Handler
+
+    Note over UC,Error: 自動保存システム初期化
+    UC->>UC: useEffect - autoSave setup
+    UC->>Timer: setInterval(saveCallback, 5000)
+    UC->>UC: setup lastSaveTimeRef
+    
+    Note over UC,Error: 自動保存実行フロー
+    loop 5秒間隔での自動保存
+        Timer->>UC: auto-save interval trigger
+        UC->>UC: check time since last save
+        alt 保存間隔を満たした場合
+            UC->>UC: saveCustomization()
+            UC->>CU: saveCustomizationData(state)
+            
+            CU->>CU: JSON.stringify(current)
+            CU->>LS: setItem('ai-pet-buddy-customization-data', json)
+            
+            CU->>CU: JSON.stringify(available)
+            CU->>LS: setItem('ai-pet-buddy-available-accessories', json)
+            
+            CU->>CU: JSON.stringify(presets)
+            CU->>LS: setItem('ai-pet-buddy-customization-presets', json)
+            
+            alt 保存成功
+                CU-->>UC: return true
+                UC->>UC: lastSaveTimeRef.current = Date.now()
+                UC->>UC: console.log('saved successfully')
+                
+            else 保存失敗
+                LS-->>CU: throw error (quota exceeded, etc.)
+                CU->>Error: catch error
+                CU->>Error: console.error('save failed', error)
+                CU-->>UC: return false
+                UC->>UC: setError('保存に失敗しました')
+            end
+        end
+    end
+    
+    Note over UC,Error: 手動保存・コンポーネント終了時
+    UC->>UC: component unmount
+    UC->>Timer: clearInterval(autoSaveTimer)
+    UC->>UC: final save attempt
+    UC->>CU: saveCustomizationData(finalState)
+    CU->>LS: setItem() - 最終保存
+    
+    Note over UC,Error: エラー処理・フォールバック
+    alt ストレージエラー発生時
+        LS-->>CU: QuotaExceededError
+        CU->>Error: handleError('storage quota exceeded')
+        Error->>Error: log error details
+        Error->>Error: show user-friendly message
+        Error-->>UC: return false, continue operation
+        Note over UC: アプリは動作継続、一時的にメモリ内で管理
+    end
+```
+
+---
+
 これらのシーケンス図により、AI Pet Buddyの複雑なシステム間相互作用が明確になり、新規開発者の理解促進やデバッグ・メンテナンス作業の効率化が期待されます。

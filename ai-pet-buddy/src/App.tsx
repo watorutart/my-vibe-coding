@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import ActionButtons from './components/ActionButtons'
 import ConversationPanel from './components/ConversationPanel'
+import CustomizationPanel from './components/CustomizationPanel'
 import MiniGamePanel from './components/MiniGamePanel'
 import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
@@ -20,7 +21,8 @@ function App() {
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
   const [showGamePanel, setShowGamePanel] = useState(false)
   const [showSharePanel, setShowSharePanel] = useState(false)
-  
+  const [showCustomizationPanel, setShowCustomizationPanel] = useState(false)
+
   // ペット表示エリアへの参照（スクリーンショット用）
   const petDisplayRef = useRef<HTMLDivElement>(null)
 
@@ -290,6 +292,7 @@ function App() {
               onRest={handleRest}
               onGames={() => setShowGamePanel(true)}
               onShare={() => setShowSharePanel(true)}
+              onCustomize={() => setShowCustomizationPanel(true)}
             />
             <ConversationPanel 
               pet={pet}
@@ -297,6 +300,13 @@ function App() {
               onSendMessage={handleSendMessage}
             />
           </>
+        )}
+        
+        {/* Customization Panel - shown as overlay */}
+        {showCustomizationPanel && (
+          <CustomizationPanel 
+            onClose={() => setShowCustomizationPanel(false)}
+          />
         )}
       </main>
       
