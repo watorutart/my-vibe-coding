@@ -12,8 +12,10 @@ import type {
     GameState,
     GameType,
     MemoryGameData,
+    NumberGuessingData,
     QuizGameData,
-    ReflexGameData
+    ReflexGameData,
+    RockPaperScissorsData
 } from '../types/Game';
 
 export class GameEngine {
@@ -46,6 +48,12 @@ export class GameEngine {
       { type: 'quiz', difficulty: 'easy', duration: 60 },
       { type: 'quiz', difficulty: 'medium', duration: 90 },
       { type: 'quiz', difficulty: 'hard', duration: 120 },
+      { type: 'rock-paper-scissors', difficulty: 'easy', duration: 60 },
+      { type: 'rock-paper-scissors', difficulty: 'medium', duration: 90 },
+      { type: 'rock-paper-scissors', difficulty: 'hard', duration: 120 },
+      { type: 'number-guessing', difficulty: 'easy', duration: 120 },
+      { type: 'number-guessing', difficulty: 'medium', duration: 150 },
+      { type: 'number-guessing', difficulty: 'hard', duration: 180 },
     ];
   }
 
@@ -235,6 +243,10 @@ export class GameEngine {
         return this.generateReflexQuestion(difficulty);
       case 'quiz':
         return this.generateQuizQuestion(difficulty);
+      case 'rock-paper-scissors':
+        return this.generateRockPaperScissorsQuestion(difficulty);
+      case 'number-guessing':
+        return this.generateNumberGuessingQuestion(difficulty);
       default:
         throw new Error(`未対応のゲームタイプ: ${type}`);
     }
@@ -335,6 +347,44 @@ export class GameEngine {
   }
 
   /**
+   * じゃんけんゲームの問題を生成
+   */
+  private generateRockPaperScissorsQuestion(difficulty: GameDifficulty): RockPaperScissorsData {
+    return {
+      playerChoice: null,
+      aiChoice: null,
+      result: null,
+      consecutiveWins: 0,
+      totalRounds: difficulty === 'easy' ? 3 : difficulty === 'medium' ? 5 : 7,
+      currentRound: 1
+    };
+  }
+
+  /**
+   * 数当てゲームの問題を生成
+   */
+  private generateNumberGuessingQuestion(difficulty: GameDifficulty): NumberGuessingData {
+    // Import difficulty settings locally to avoid circular dependency
+    const settings = {
+      easy: { min: 1, max: 50, maxAttempts: 8 },
+      medium: { min: 1, max: 100, maxAttempts: 10 },
+      hard: { min: 1, max: 200, maxAttempts: 12 }
+    };
+
+    const setting = settings[difficulty];
+    const targetNumber = Math.floor(Math.random() * (setting.max - setting.min + 1)) + setting.min;
+
+    return {
+      targetNumber,
+      currentGuess: null,
+      attemptsLeft: setting.maxAttempts,
+      hints: [],
+      minNumber: setting.min,
+      maxNumber: setting.max
+    };
+  }
+
+  /**
    * 回答を検証
    */
   private validateAnswer(type: GameType, question: any, answer: any): boolean {
@@ -345,6 +395,10 @@ export class GameEngine {
         return this.validateReflexAnswer(question as ReflexGameData, answer);
       case 'quiz':
         return this.validateQuizAnswer(question as QuizGameData, answer);
+      case 'rock-paper-scissors':
+        return this.validateRockPaperScissorsAnswer(question as RockPaperScissorsData, answer);
+      case 'number-guessing':
+        return this.validateNumberGuessingAnswer(question as NumberGuessingData, answer);
       default:
         return false;
     }
@@ -370,6 +424,23 @@ export class GameEngine {
    */
   private validateQuizAnswer(question: QuizGameData, answer: number): boolean {
     return answer === question.correctAnswer;
+  }
+
+  /**
+   * じゃんけんゲームの回答を検証
+   */
+  private validateRockPaperScissorsAnswer(_question: RockPaperScissorsData, answer: string): boolean {
+    // For rock-paper-scissors, we'll determine the winner in the game logic
+    // The answer validation here just confirms it's a valid choice
+    const validChoices = ['rock', 'paper', 'scissors'];
+    return validChoices.includes(answer);
+  }
+
+  /**
+   * 数当てゲームの回答を検証
+   */
+  private validateNumberGuessingAnswer(question: NumberGuessingData, answer: number): boolean {
+    return answer === question.targetNumber;
   }
 
   /**

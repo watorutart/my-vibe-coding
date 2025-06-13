@@ -9,6 +9,8 @@ import GameResults from './GameResults';
 import MemoryGame from './games/MemoryGame';
 import QuizGame from './games/QuizGame';
 import ReflexGame from './games/ReflexGame';
+import RockPaperScissorsGame from './games/RockPaperScissorsGame';
+import NumberGuessingGame from './games/NumberGuessingGame';
 import './MiniGamePanel.css';
 
 export interface MiniGamePanelProps {
@@ -101,6 +103,10 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
         return <ReflexGame {...commonProps} />;
       case 'quiz':
         return <QuizGame {...commonProps} />;
+      case 'rock-paper-scissors':
+        return <RockPaperScissorsGame {...commonProps} />;
+      case 'number-guessing':
+        return <NumberGuessingGame {...commonProps} />;
       default:
         return <div className="error">未対応のゲームタイプです</div>;
     }
@@ -125,6 +131,18 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
         name: 'クイズゲーム',
         icon: '❓',
         description: 'ペットに関する質問に答えよう！',
+      },
+      {
+        type: 'rock-paper-scissors',
+        name: 'じゃんけんゲーム',
+        icon: '✊',
+        description: 'AIと勝負！連勝を目指そう！',
+      },
+      {
+        type: 'number-guessing',
+        name: '数当てゲーム',
+        icon: '🔢',
+        description: '隠された数字を効率的に当てよう！',
       },
     ];
 
@@ -188,6 +206,8 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
                     {result.type === 'memory' && '🧠'}
                     {result.type === 'reflex' && '⚡'}
                     {result.type === 'quiz' && '❓'}
+                    {result.type === 'rock-paper-scissors' && '✊'}
+                    {result.type === 'number-guessing' && '🔢'}
                     {result.difficulty}
                   </span>
                   <span className="result-score">{result.score.points}pt</span>
@@ -228,6 +248,8 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
               {selectedGame.type === 'memory' && '🧠 メモリーゲーム'}
               {selectedGame.type === 'reflex' && '⚡ 反射神経ゲーム'}
               {selectedGame.type === 'quiz' && '❓ クイズゲーム'}
+              {selectedGame.type === 'rock-paper-scissors' && '✊ じゃんけんゲーム'}
+              {selectedGame.type === 'number-guessing' && '🔢 数当てゲーム'}
             </h2>
             <div className="game-details">
               <p>難易度: {selectedGame.difficulty}</p>

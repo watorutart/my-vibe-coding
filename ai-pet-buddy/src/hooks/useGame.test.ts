@@ -23,7 +23,7 @@ describe('useGame', () => {
       expect(result.current.gameState.totalGamesPlayed).toBe(0);
       expect(result.current.isGameActive).toBe(false);
       expect(result.current.timeElapsed).toBe(0);
-      expect(result.current.availableGames).toHaveLength(9);
+      expect(result.current.availableGames).toHaveLength(15);
     });
 
     it('利用可能なゲームが取得できる', () => {
