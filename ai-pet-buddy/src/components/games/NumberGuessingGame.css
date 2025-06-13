@@ -139,6 +139,7 @@
   text-align: center;
   transition: all 0.3s ease;
   background: white;
+  color: #2c3e50;
 }
 
 .guess-input:focus {
