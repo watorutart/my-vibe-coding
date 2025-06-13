@@ -5,22 +5,25 @@
  * タブ形式のUIでペットの名前、色、アクセサリーをカスタマイズできる機能を提供します。
  */
 
-import React, { useState } from 'react';
-import { useCustomization } from '../hooks/useCustomization';
+import React, { useState, useEffect } from 'react';
+import type { UseCustomizationReturn } from '../hooks/useCustomization';
 import './CustomizationPanel.css';
 
 interface CustomizationPanelProps {
-  /** パネルを閉じるコールバック */
+  customizationApi: UseCustomizationReturn; // Appから渡されるAPI
   onClose: () => void;
+  onApply: () => void; // 適用ボタン用のコールバック
 }
 
 type TabType = 'name' | 'color' | 'accessories';
 
-export default function CustomizationPanel({ onClose }: CustomizationPanelProps) {
+export default function CustomizationPanel({ customizationApi, onClose, onApply }: CustomizationPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>('name');
+  // tempName と tempColor は customizationApi.previewCustomization から取得するため、ローカルステートは不要になるか、初期化方法を変更
   const [tempName, setTempName] = useState('');
   const [tempColor, setTempColor] = useState('');
-  
+
+  // customizationApi から必要な関数と状態を取得
   const {
     customizationState,
     previewCustomization,
@@ -32,10 +35,25 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
     addAccessory,
     removeAccessory,
     startPreview,
-    applyPreview,
+    // applyPreview, // App側で処理するため、ここでは直接使わない
     cancelPreview,
     resetToDefault
-  } = useCustomization();
+  } = customizationApi;
+
+  // パネルが開かれたときやプレビューモードが変更されたときに tempName と tempColor を更新
+  useEffect(() => {
+    if (isPreviewMode) {
+      setTempName(previewCustomization.name);
+      setTempColor(previewCustomization.color);
+    } else {
+      // customizationState.current が存在する場合のみ値を設定
+      if (customizationState && customizationState.current) {
+        setTempName(customizationState.current.name);
+        setTempColor(customizationState.current.color);
+      }
+    }
+  }, [isPreviewMode, previewCustomization, customizationState]);
+
 
   // タブ変更時の処理
   const handleTabChange = (tab: TabType) => {
@@ -45,28 +63,20 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
   // プレビュー開始
   const handleStartPreview = () => {
     startPreview();
-    const current = customizationState.current;
-    setTempName(current.name);
-    setTempColor(current.color);
+    // useEffect で tempName, tempColor が更新される
   };
 
   // 名前変更
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    setTempName(newName);
-    
-    if (isPreviewMode) {
-      updateName(newName);
-    }
+    setTempName(newName); // UI即時反映のためローカルも更新
+    updateName(newName); // プレビュー状態を更新 (フック側で isPreviewMode を考慮)
   };
 
   // 色変更
-  const handleColorChange = (color: string) => {
-    setTempColor(color);
-    
-    if (isPreviewMode) {
-      updateColor(color);
-    }
+  const handleColorChange = (colorValue: string) => {
+    setTempColor(colorValue); // UI即時反映のためローカルも更新
+    updateColor(colorValue); // プレビュー状態を更新 (フック側で isPreviewMode を考慮)
   };
 
   // アクセサリー装着/解除
@@ -80,32 +90,21 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
     }
   };
 
-  // 適用
+  // 適用ボタンの処理 (props経由でApp.tsxの関数を呼び出す)
   const handleApply = () => {
-    if (isPreviewMode) {
-      applyPreview();
-    } else {
-      // プレビューモードでない場合は、tempの値を適用
-      updateName(tempName);
-      updateColor(tempColor);
-    }
-    onClose();
+    onApply(); 
   };
 
   // キャンセル
   const handleCancel = () => {
-    if (isPreviewMode) {
-      cancelPreview();
-    }
+    cancelPreview(); // プレビューモードだった場合はキャンセル
     onClose();
   };
 
   // リセット
   const handleReset = () => {
     resetToDefault();
-    const defaultCustomization = customizationState.current;
-    setTempName(defaultCustomization.name);
-    setTempColor(defaultCustomization.color);
+    // useEffect で tempName, tempColor が更新される
   };
 
   // カラーパレット
@@ -122,7 +121,7 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
         <input
           id="pet-name"
           type="text"
-          value={tempName}
+          value={isPreviewMode ? previewCustomization.name : tempName} // プレビュー中はフックの値を、それ以外はローカルの値を表示
           onChange={handleNameChange}
           maxLength={20}
           placeholder="ペットの名前を入力..."
@@ -145,7 +144,7 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
         <div className="color-preview">
           <div 
             className="color-circle" 
-            style={{ backgroundColor: tempColor || previewCustomization.color }}
+            style={{ backgroundColor: isPreviewMode ? previewCustomization.color : tempColor }} // プレビュー中はフックの値を表示
           />
           <span>現在の色</span>
         </div>
@@ -170,12 +169,12 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
           <input
             id="custom-color"
             type="color"
-            value={tempColor || previewCustomization.color}
+            value={isPreviewMode ? previewCustomization.color : tempColor} // プレビュー中はフックの値を表示
             onChange={(e) => handleColorChange(e.target.value)}
           />
           <input
             type="text"
-            value={tempColor || previewCustomization.color}
+            value={isPreviewMode ? previewCustomization.color : tempColor} // プレビュー中はフックの値を表示
             onChange={(e) => handleColorChange(e.target.value)}
             placeholder="#FF6B6B"
             pattern="#[0-9A-Fa-f]{6}"
@@ -190,44 +189,52 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
     </div>
   );
 
-  const renderAccessoriesTab = () => (
-    <div className="tab-content">
-      <h3>アクセサリー</h3>
-      <div className="accessories-grid">
-        {customizationState.available.map(accessory => {
-          const isWearing = previewCustomization.accessories.some(acc => acc.id === accessory.id);
-          const isUnlocked = accessory.unlocked;
-          
-          return (
-            <div
-              key={accessory.id}
-              className={`accessory-item ${isWearing ? 'wearing' : ''} ${!isUnlocked ? 'locked' : ''}`}
-            >
-              <div className="accessory-icon">
-                {getAccessoryIcon(accessory.type)}
-              </div>
-              <div className="accessory-info">
-                <h4>{accessory.name}</h4>
-                <p className="accessory-type">{getAccessoryTypeText(accessory.type)}</p>
-              </div>
-              <button
-                className={`accessory-button ${isWearing ? 'remove' : 'add'}`}
-                onClick={() => handleAccessoryToggle(accessory.id)}
-                disabled={!isUnlocked}
-                aria-label={isWearing ? `${accessory.name}を外す` : `${accessory.name}を装着`}
+  const renderAccessoriesTab = () => {
+    // Determine which accessories list to use based on isPreviewMode
+    const currentPetAccessories = isPreviewMode 
+      ? previewCustomization.accessories 
+      : customizationState.current.accessories;
+
+    return (
+      <div className="tab-content">
+        <h3>アクセサリー</h3>
+        <div className="accessories-grid">
+          {customizationState.available.map(accessory => {
+            // Use currentPetAccessories to determine if an accessory is being worn
+            const isWearing = currentPetAccessories.some(acc => acc.id === accessory.id);
+            const isUnlocked = accessory.unlocked;
+            
+            return (
+              <div
+                key={accessory.id}
+                className={`accessory-item ${isWearing ? 'wearing' : ''} ${!isUnlocked ? 'locked' : ''}`}
               >
-                {!isUnlocked ? '🔒' : isWearing ? '外す' : '装着'}
-              </button>
-            </div>
-          );
-        })}
+                <div className="accessory-icon">
+                  {getAccessoryIcon(accessory.type)}
+                </div>
+                <div className="accessory-info">
+                  <h4>{accessory.name}</h4>
+                  <p className="accessory-type">{getAccessoryTypeText(accessory.type)}</p>
+                </div>
+                <button
+                  className={`accessory-button ${isWearing ? 'remove' : 'add'}`}
+                  onClick={() => handleAccessoryToggle(accessory.id)}
+                  disabled={!isUnlocked}
+                  aria-label={isWearing ? `${accessory.name}を外す` : `${accessory.name}を装着`}
+                >
+                  {!isUnlocked ? '🔒' : isWearing ? '外す' : '装着'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        
+        {error && error.includes('アクセサリー') && (
+          <div className="error-message">{error}</div>
+        )}
       </div>
-      
-      {error && error.includes('アクセサリー') && (
-        <div className="error-message">{error}</div>
-      )}
-    </div>
-  );
+    );
+  };
 
   // アクセサリーアイコンを取得
   const getAccessoryIcon = (type: string) => {
@@ -275,17 +282,17 @@ export default function CustomizationPanel({ onClose }: CustomizationPanelProps)
           <div className="preview-pet">
             <div 
               className="pet-preview" 
-              style={{ backgroundColor: tempColor || previewCustomization.color }}
+              style={{ backgroundColor: isPreviewMode ? previewCustomization.color : tempColor }} // プレビュー中はフックの値を表示
             >
               🐾
-              {previewCustomization.accessories.map(accessory => (
+              {(isPreviewMode ? previewCustomization.accessories : customizationState.current.accessories).map(accessory => (
                 <span key={accessory.id} className="accessory-on-pet">
                   {getAccessoryIcon(accessory.type)}
                 </span>
               ))}
             </div>
             <div className="preview-name">
-              {tempName || previewCustomization.name}
+              {isPreviewMode ? previewCustomization.name : tempName} {/* プレビュー中はフックの値を表示 */}
             </div>
           </div>
           

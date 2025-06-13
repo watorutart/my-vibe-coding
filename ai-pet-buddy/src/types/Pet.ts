@@ -6,6 +6,12 @@ export interface PetStats {
   level: number;     // 1-10
 }
 
+export interface Accessory {
+  id: string;
+  name: string;
+  type: string;
+}
+
 export interface Pet {
   id: string;
   name: string;
@@ -14,6 +20,8 @@ export interface Pet {
   lastUpdate: number;
   expression: 'happy' | 'neutral' | 'sad' | 'excited' | 'tired';
   experience?: number; // Experience points for leveling up
+  color?: string; // カスタマイズされた色
+  accessories?: Accessory[]; // カスタマイズされたアクセサリー
 }
 
 export const DEFAULT_PET: Pet = {
@@ -28,5 +36,7 @@ export const DEFAULT_PET: Pet = {
   },
   lastUpdate: Date.now(),
   expression: 'happy',
-  experience: 0
+  experience: 0,
+  color: '#FF6B6B', // デフォルトの色
+  accessories: [] // デフォルトのアクセサリー
 };

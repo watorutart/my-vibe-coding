@@ -17,9 +17,15 @@ const PetDisplay: React.FC<PetDisplayProps> = ({ pet }) => {
     }
   };
 
-  const getPetBodyColor = (level: number) => {
-    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'];
-    return colors[Math.min(level - 1, colors.length - 1)];
+  const getAccessoryIcon = (type: string | undefined) => {
+    if (!type) return null;
+    switch (type) {
+      case 'hat': return '🎩';
+      case 'ribbon': return '🎀';
+      case 'glasses': return '👓';
+      case 'necklace': return '📿';
+      default: return '✨'; // デフォルトアイコンまたはnull
+    }
   };
 
   return (
@@ -27,7 +33,7 @@ const PetDisplay: React.FC<PetDisplayProps> = ({ pet }) => {
       <div className="pet-container">
         <div 
           className={`pet-body ${pet.expression}`}
-          style={{ backgroundColor: getPetBodyColor(pet.stats.level) }}
+          style={{ backgroundColor: pet.color || '#FF6B6B' }} // カスタマイズされた色を使用、なければデフォルト
         >
           <div className="pet-face">
             <div className="pet-eyes">
@@ -37,6 +43,13 @@ const PetDisplay: React.FC<PetDisplayProps> = ({ pet }) => {
             <div className="pet-expression">
               {getExpressionEmoji(pet.expression)}
             </div>
+          </div>
+          <div className="pet-accessories">
+            {pet.accessories && pet.accessories.map(acc => (
+              <div key={acc.id} className={`accessory ${acc.type}`}>
+                {getAccessoryIcon(acc.type)}
+              </div>
+            ))}
           </div>
           <div className="pet-wings">
             <div className="wing left-wing"></div>
