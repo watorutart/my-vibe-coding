@@ -1,0 +1,472 @@
+/**
+ * UpdateNotification.css
+ * PWA更新通知コンポーネントのスタイル
+ */
+
+.update-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(100%);
+  transition: all 0.4s ease;
+  
+  /* iOS Safe Area対応 */
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: max(20px, env(safe-area-inset-left));
+  right: max(20px, env(safe-area-inset-right));
+}
+
+.update-notification--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.update-notification__content {
+  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+  color: white;
+  border-radius: 16px;
+  box-shadow: 
+    0 16px 48px rgba(78, 205, 196, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow: hidden;
+  position: relative;
+}
+
+.update-notification__main {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  gap: 16px;
+}
+
+.update-notification__icon {
+  font-size: 32px;
+  animation: bounce 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.update-notification__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.update-notification__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.update-notification__subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.update-notification__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.update-notification__button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.update-notification__button--primary {
+  background: white;
+  color: #4ECDC4;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.update-notification__button--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.update-notification__button--secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.update-notification__button--secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.update-notification__button--text {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  padding: 6px 12px;
+  text-decoration: underline;
+}
+
+.update-notification__button--text:hover {
+  color: white;
+}
+
+.update-notification__details-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+}
+
+.update-notification__details-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.update-notification__chevron {
+  transition: transform 0.2s ease;
+}
+
+.update-notification__chevron--up {
+  transform: rotate(90deg);
+}
+
+.update-notification__progress {
+  width: 120px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.update-notification__progress-bar {
+  height: 100%;
+  background: white;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.update-notification__progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 詳細情報 */
+.update-notification__details {
+  padding: 0 20px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  100% {
+    opacity: 1;
+    max-height: 500px;
+    padding-top: 16px;
+    padding-bottom: 20px;
+  }
+}
+
+.update-notification__update-info {
+  margin-bottom: 16px;
+}
+
+.update-notification__info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.update-notification__info-item:last-child {
+  border-bottom: none;
+}
+
+.update-notification__info-item strong {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.update-notification__description {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.update-notification__description strong {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+.update-notification__description p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.update-notification__benefits {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.update-notification__benefits-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.update-notification__benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.update-notification__benefits-list li {
+  font-size: 12px;
+  padding: 3px 0;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.update-notification__detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 更新中のオーバーレイ */
+.update-notification__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(78, 205, 196, 0.95);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.update-notification__loading {
+  text-align: center;
+  padding: 20px;
+}
+
+.update-notification__loading-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.update-notification__loading-text {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.update-notification__loading-subtext {
+  font-size: 13px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 480px) {
+  .update-notification {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+  
+  .update-notification__main {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .update-notification__icon {
+    font-size: 28px;
+  }
+  
+  .update-notification__title {
+    font-size: 15px;
+  }
+  
+  .update-notification__subtitle {
+    font-size: 12px;
+  }
+  
+  .update-notification__button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
+  .update-notification__details {
+    padding: 0 16px 16px;
+  }
+  
+  .update-notification__detail-actions {
+    gap: 6px;
+  }
+  
+  .update-notification__loading {
+    padding: 16px;
+  }
+  
+  .update-notification__loading-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+  
+  .update-notification__loading-text {
+    font-size: 15px;
+  }
+}
+
+/* タブレット横向き */
+@media (min-width: 768px) {
+  .update-notification {
+    max-width: 480px;
+    left: auto;
+    right: 20px;
+  }
+  
+  .update-notification__detail-actions {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* デスクトップ */
+@media (min-width: 1024px) {
+  .update-notification {
+    max-width: 420px;
+  }
+  
+  .update-notification__main {
+    padding: 18px 20px;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .update-notification__content {
+    background: linear-gradient(135deg, #2D3748, #4A5568);
+  }
+  
+  .update-notification__overlay {
+    background: rgba(45, 55, 72, 0.95);
+  }
+}
+
+/* 高コントラストモード対応 */
+@media (prefers-contrast: high) {
+  .update-notification__content {
+    border: 2px solid white;
+  }
+  
+  .update-notification__button--primary {
+    border: 2px solid #4ECDC4;
+  }
+  
+  .update-notification__button--secondary {
+    border-width: 3px;
+  }
+}
+
+/* アニメーション設定を尊重 */
+@media (prefers-reduced-motion: reduce) {
+  .update-notification,
+  .update-notification__icon,
+  .update-notification__loading-icon,
+  .update-notification__progress-bar::after {
+    animation: none;
+  }
+  
+  .update-notification--visible {
+    transform: none;
+  }
+  
+  .update-notification__button,
+  .update-notification__chevron,
+  .update-notification__progress-bar {
+    transition: none;
+  }
+}
