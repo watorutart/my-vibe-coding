@@ -37,7 +37,7 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAMES.static)
       .then((cache) => {
         console.log('[SW] Caching static resources');
-        return cache.addAll(STATIC_CACHE_URLS.filter(url => url !== '/'));
+        return cache.addAll(STATIC_CACHE_URLS);
       })
       .then(() => {
         console.log('[SW] Static resources cached successfully');
