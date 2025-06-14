@@ -1,0 +1,75 @@
+{
+  "name": "AI Pet Buddy",
+  "short_name": "Pet Buddy",
+  "description": "可愛いペットと一緒に遊ぼう！",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#FF6B6B",
+  "background_color": "#FFFFFF",
+  "lang": "ja",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/desktop-1.png", 
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ペットと遊ぶ",
+      "short_name": "遊ぶ",
+      "description": "ペットとすぐに遊び始める",
+      "url": "/?action=play",
+      "icons": [
+        {
+          "src": "/icons/shortcut-play.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "ペットの世話",
+      "short_name": "世話",
+      "description": "ペットにご飯をあげる",
+      "url": "/?action=care",
+      "icons": [
+        {
+          "src": "/icons/shortcut-care.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

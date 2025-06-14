@@ -7,6 +7,7 @@ import MiniGamePanel from './components/MiniGamePanel'
 import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
 import { SharePanel } from './components/SharePanel'
+import PWAProvider from './components/PWAProvider'
 import { useDataPersistence } from './hooks/useDataPersistence'
 import { usePetProgress } from './hooks/usePetProgress'
 import { useStatDecay } from './hooks/useStatDecay'
@@ -270,65 +271,67 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🐾 AI Pet Buddy</h1>
-        <p>Take care of your virtual pet!</p>
-        <div className="progress-info">
-          <p>レベル {getProgressInfo().currentLevel} | 経験値: {Math.round(getProgressInfo().currentExperience * 10) / 10}</p>
-          <p>次のレベルまで: {Math.round(getProgressInfo().experienceToNextLevel * 10) / 10}経験値</p>
-        </div>
-      </header>
-      
-      <main className="app-main">
-        {showGamePanel ? (
-          <div className="game-panel-container">
-            <MiniGamePanel
-              onRewardEarned={handleGameReward}
-              onClose={() => setShowGamePanel(false)}
-            />
+    <PWAProvider pet={pet}>
+      <div className="app">
+        <header className="app-header">
+          <h1>🐾 AI Pet Buddy</h1>
+          <p>Take care of your virtual pet!</p>
+          <div className="progress-info">
+            <p>レベル {getProgressInfo().currentLevel} | 経験値: {Math.round(getProgressInfo().currentExperience * 10) / 10}</p>
+            <p>次のレベルまで: {Math.round(getProgressInfo().experienceToNextLevel * 10) / 10}経験値</p>
           </div>
-        ) : (
-          <>
-            <div ref={petDisplayRef} className="pet-display-area">
-              <PetDisplay pet={pet} />
-              <StatsPanel stats={pet.stats} />
-            </div>
-            <ActionButtons
-              onFeed={handleFeed}
-              onPlay={handlePlay}
-              onRest={handleRest}
-              onGames={() => setShowGamePanel(true)}
-              onShare={() => setShowSharePanel(true)}
-              onCustomize={() => setShowCustomizationPanel(true)}
-            />
-            <ConversationPanel 
-              pet={pet}
-              conversationHistory={conversationHistory}
-              onSendMessage={handleSendMessage}
-            />
-          </>
-        )}
+        </header>
         
-        {showCustomizationPanel && (
-          <CustomizationPanel
-            customizationApi={customizationApi}
-            onClose={() => {
-              customizationApi.cancelPreview(); // プレビューをキャンセルする処理を追加
-              setShowCustomizationPanel(false);
-            }}
-            onApply={handleApplyCustomization}
-          />
-        )}
-      </main>
-      
-      <SharePanel
-        isOpen={showSharePanel}
-        onClose={() => setShowSharePanel(false)}
-        captureTargetRef={petDisplayRef}
-        statsData={generateStatsData()}
-      />
-    </div>
+        <main className="app-main">
+          {showGamePanel ? (
+            <div className="game-panel-container">
+              <MiniGamePanel
+                onRewardEarned={handleGameReward}
+                onClose={() => setShowGamePanel(false)}
+              />
+            </div>
+          ) : (
+            <>
+              <div ref={petDisplayRef} className="pet-display-area">
+                <PetDisplay pet={pet} />
+                <StatsPanel stats={pet.stats} />
+              </div>
+              <ActionButtons
+                onFeed={handleFeed}
+                onPlay={handlePlay}
+                onRest={handleRest}
+                onGames={() => setShowGamePanel(true)}
+                onShare={() => setShowSharePanel(true)}
+                onCustomize={() => setShowCustomizationPanel(true)}
+              />
+              <ConversationPanel 
+                pet={pet}
+                conversationHistory={conversationHistory}
+                onSendMessage={handleSendMessage}
+              />
+            </>
+          )}
+          
+          {showCustomizationPanel && (
+            <CustomizationPanel
+              customizationApi={customizationApi}
+              onClose={() => {
+                customizationApi.cancelPreview(); // プレビューをキャンセルする処理を追加
+                setShowCustomizationPanel(false);
+              }}
+              onApply={handleApplyCustomization}
+            />
+          )}
+        </main>
+        
+        <SharePanel
+          isOpen={showSharePanel}
+          onClose={() => setShowSharePanel(false)}
+          captureTargetRef={petDisplayRef}
+          statsData={generateStatsData()}
+        />
+      </div>
+    </PWAProvider>
   )
 }
 
