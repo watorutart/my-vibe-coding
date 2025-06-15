@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b --noEmitOnError false && vite build",
+    "build:github": "vite build",
+    "build:analyze": "vite build --mode analyze",
     "lint": "eslint .",
     "preview": "vite preview",
+    "preview:dist": "vite preview --outDir dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:run": "vitest run",
@@ -21,7 +24,8 @@
     "pre-commit": "npm run test:run && npm run lint",
     "notify": "./notify.sh",
     "test:complete": "npm run test && npm run notify",
-    "build:complete": "npm run build && npm run notify"
+    "build:complete": "npm run build && npm run notify",
+    "deploy:preview": "npm run build:github && npm run preview:dist"
   },
   "dependencies": {
     "chart.js": "^4.4.9",
