@@ -1,0 +1,386 @@
+/**
+ * @file BadgeDisplay.css
+ * @description Styles for BadgeDisplay component with rarity effects and animations
+ */
+
+.badge-display {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Size Variants */
+.badge-display--small {
+  padding: 8px;
+  gap: 8px;
+  border-radius: 8px;
+}
+
+.badge-display--medium {
+  padding: 16px;
+  gap: 12px;
+  border-radius: 12px;
+}
+
+.badge-display--large {
+  padding: 20px;
+  gap: 16px;
+  border-radius: 16px;
+}
+
+/* Unlock Status */
+.badge-display--unlocked {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-color: var(--rarity-color, #10b981);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge-display--locked {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-color: #cbd5e1;
+  opacity: 0.7;
+}
+
+/* Rarity Variants */
+.badge-display--common {
+  --rarity-accent: #10b981;
+}
+
+.badge-display--rare {
+  --rarity-accent: #3b82f6;
+}
+
+.badge-display--epic {
+  --rarity-accent: #8b5cf6;
+}
+
+.badge-display--legendary {
+  --rarity-accent: #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+/* Clickable State */
+.badge-display--clickable {
+  cursor: pointer;
+}
+
+.badge-display--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  border-color: var(--rarity-color, #10b981);
+}
+
+.badge-display--clickable:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge-display--clickable:focus-visible {
+  outline: 2px solid var(--rarity-color, #10b981);
+  outline-offset: 2px;
+}
+
+/* Icon Container */
+.badge-display__icon-container {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid var(--rarity-color, #e2e8f0);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge-display--small .badge-display__icon-container {
+  width: 48px;
+  height: 48px;
+}
+
+.badge-display--large .badge-display__icon-container {
+  width: 80px;
+  height: 80px;
+}
+
+.badge-display__icon {
+  font-size: 32px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.badge-display--small .badge-display__icon {
+  font-size: 24px;
+}
+
+.badge-display--large .badge-display__icon {
+  font-size: 40px;
+}
+
+.badge-display--locked .badge-display__icon {
+  filter: grayscale(100%) opacity(0.5);
+}
+
+/* Unlock Indicator */
+.badge-display__unlock-indicator {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 16px;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+}
+
+/* Category Icon */
+.badge-display__category-icon {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  font-size: 14px;
+  background: var(--rarity-color, #6b7280);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  font-size: 12px;
+}
+
+/* Content */
+.badge-display__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.badge-display__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.badge-display__name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.badge-display--small .badge-display__name {
+  font-size: 14px;
+}
+
+.badge-display--large .badge-display__name {
+  font-size: 18px;
+}
+
+.badge-display--locked .badge-display__name {
+  color: #64748b;
+}
+
+.badge-display__rarity {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rarity-color, #6b7280);
+  text-transform: capitalize;
+  background: var(--rarity-color, #e2e8f0);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.badge-display__description {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.badge-display--small .badge-display__description {
+  font-size: 12px;
+}
+
+.badge-display--locked .badge-display__description {
+  color: #94a3b8;
+}
+
+.badge-display__requirements {
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+/* Progress Bar */
+.badge-display__progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.badge-display__progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.badge-display__progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  background: linear-gradient(90deg, var(--progress-color) 0%, var(--progress-color) 100%);
+}
+
+.badge-display__progress-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--progress-color);
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Unlock Date */
+.badge-display__unlock-date {
+  font-size: 11px;
+  color: #10b981;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Rarity Border Effect */
+.badge-display__rarity-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    var(--rarity-color, transparent) 50%,
+    transparent 70%
+  );
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.badge-display--unlocked .badge-display__rarity-border {
+  opacity: 0.2;
+}
+
+/* Shine Effect */
+.badge-display__shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+}
+
+/* Legendary Special Effects */
+.badge-display--legendary.badge-display--unlocked {
+  animation: legendaryGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes legendaryGlow {
+  0% { box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3); }
+  100% { box-shadow: 0 8px 16px rgba(245, 158, 11, 0.5); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .badge-display {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .badge-display__icon-container {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .badge-display__icon {
+    font-size: 28px;
+  }
+  
+  .badge-display__name {
+    font-size: 15px;
+  }
+  
+  .badge-display__description {
+    font-size: 13px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .badge-display {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-color: #475569;
+    color: #e2e8f0;
+  }
+  
+  .badge-display--unlocked {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+  
+  .badge-display--locked {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    opacity: 0.6;
+  }
+  
+  .badge-display__name {
+    color: #f1f5f9;
+  }
+  
+  .badge-display--locked .badge-display__name {
+    color: #94a3b8;
+  }
+  
+  .badge-display__description {
+    color: #cbd5e1;
+  }
+  
+  .badge-display--locked .badge-display__description {
+    color: #64748b;
+  }
+}
