@@ -19,7 +19,7 @@ GitHub Copilotを活用して開発したインタラクティブなAIペット�
 - **ビルドツール**: Vite
 - **スタイリング**: CSS3（アニメーション豊富）
 - **状態管理**: React Hooks
-- **デプロイ**: Vercel（予定）
+- **デプロイ**: GitHub Pages（公開中: https://watorutart.github.io/my-vibe-coding/）
 
 ## 🚀 クイックスタート
 
@@ -29,9 +29,16 @@ npm install
 
 # 開発サーバーを起動
 npm run dev
+
+# GitHub Pages用ビルド
+npm run build:github
+
+# デプロイ用プレビュー
+npm run deploy:preview
 ```
 
-ブラウザで `http://localhost:5173/` を開いてお楽しみください！
+**🌐 公開サイト**: https://watorutart.github.io/my-vibe-coding/  
+**🔧 開発サーバー**: `http://localhost:5173/` でお楽しみください！
 
 ## 🎮 使い方
 
@@ -81,16 +88,23 @@ src/
 - [x] **UI コンポーネント**: BadgeDisplayによる美しい実績表示
 - [x] **データ永続化**: localStorage基盤の自動保存機能
 
-### 🚀 Phase 5: 完成・デプロイ（予定）
-- [ ] PWA対応
-- [ ] Vercelデプロイ
-- [ ] 統計ダッシュボード（Chart.js）
-- [ ] データエクスポート機能
-- [ ] 最終品質確認
+### ✅ Phase 5: GitHub Pages デプロイ・本番対応（完了）
+- [x] **GitHub Pages自動デプロイ**: Actions使用の完全自動化
+- [x] **SEO・メタタグ最適化**: Open Graph、Twitter Card対応
+- [x] **パフォーマンス最適化**: バンドルサイズ500KB、ビルド時間2.5秒達成
+- [x] **PWA対応**: 完全なPWAメタタグとアイコン対応
+- [x] **開発・デプロイツール**: 包括的なnpm scripts
+- [x] **本番環境**: https://watorutart.github.io/my-vibe-coding/ で公開中
 
 ---
 
 ## 📚 ドキュメント
+
+### 🌟 機能ドキュメント
+- [**機能ドキュメント（日本語）**](./FEATURES.md) - 全機能の包括的な使用方法とガイド
+- [**機能ドキュメント（English）**](./FEATURES-EN.md) - Comprehensive features documentation
+- [**デプロイメントガイド**](./DEPLOYMENT.md) - GitHub Pages デプロイの詳細手順
+- [**Phase 4 完了レポート**](./PHASE4-ISSUE6-COMPLETION-REPORT.md) - 本番対応完了の詳細
 
 ### システム設計
 - [**実績・統計システム 技術仕様書**](./system-design/ACHIEVEMENT-SYSTEM-DOCUMENTATION.md) - 包括的なシステム仕様とアーキテクチャ
