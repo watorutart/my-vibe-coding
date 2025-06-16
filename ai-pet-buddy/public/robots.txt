@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://watorutart.github.io/my-vibe-coding/sitemap.xml
