@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CustomizationPanel from './CustomizationPanel';
 import { DEFAULT_CUSTOMIZATION, DEFAULT_ACCESSORIES } from '../types/Customization';
@@ -37,10 +37,21 @@ describe('CustomizationPanel', () => {
   const mockOnClose = vi.fn();
   const mockOnApply = vi.fn();
 
+  // Helper function to render the panel with all required props
+  const renderPanel = () => {
+    return render(
+      <CustomizationPanel 
+        customizationApi={mockCustomizationHook} 
+        onClose={mockOnClose} 
+        onApply={mockOnApply} 
+      />
+    );
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     
-    // モック状態をリセット
+    // Reset mock state to prevent cross-test leakage
     mockCustomizationHook = {
       customizationState: {
         current: DEFAULT_CUSTOMIZATION,
@@ -64,7 +75,7 @@ describe('CustomizationPanel', () => {
 
   describe('レンダリング', () => {
     it('should render customization panel', () => {
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       expect(screen.getByText('🎨 ペットカスタマイズ')).toBeInTheDocument();
       expect(screen.getByText('名前')).toBeInTheDocument();
@@ -75,7 +86,7 @@ describe('CustomizationPanel', () => {
     it('should render loading state', () => {
       mockCustomizationHook.isLoading = true;
       
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
       
       expect(screen.getByText('読み込み中...')).toBeInTheDocument();
     });
@@ -83,7 +94,7 @@ describe('CustomizationPanel', () => {
     it('should render error message', () => {
       mockCustomizationHook.error = 'テストエラー';
       
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
       
       expect(screen.getByText('テストエラー')).toBeInTheDocument();
     });
@@ -92,7 +103,7 @@ describe('CustomizationPanel', () => {
   describe('タブ切り替え', () => {
     it('should switch to color tab', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       await user.click(screen.getByText('色'));
 
@@ -102,7 +113,7 @@ describe('CustomizationPanel', () => {
 
     it('should switch to accessories tab', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       await user.click(screen.getByRole('button', { name: 'アクセサリー' }));
 
@@ -113,7 +124,7 @@ describe('CustomizationPanel', () => {
 
     it('should show active tab styling', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const colorTab = screen.getByText('色');
       await user.click(colorTab);
@@ -125,7 +136,7 @@ describe('CustomizationPanel', () => {
   describe('名前編集', () => {
     it('should update name input', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const nameInput = screen.getByLabelText('ペット名:');
       await user.clear(nameInput);
@@ -136,7 +147,7 @@ describe('CustomizationPanel', () => {
 
     it('should show character count', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const nameInput = screen.getByLabelText('ペット名:');
       await user.clear(nameInput);
@@ -148,20 +159,21 @@ describe('CustomizationPanel', () => {
     it('should call updateName when in preview mode', async () => {
       mockCustomizationHook.isPreviewMode = true;
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const nameInput = screen.getByLabelText('ペット名:');
-      await user.type(nameInput, 'x');
+      
+      // Use fireEvent.change to simulate a change event with the exact value
+      fireEvent.change(nameInput, { target: { value: 'プレビュー名' } });
 
-      // updateName should be called when typing
-      expect(mockCustomizationHook.updateName).toHaveBeenCalled();
+      expect(mockCustomizationHook.updateName).toHaveBeenCalledWith('プレビュー名');
     });
   });
 
   describe('色編集', () => {
     beforeEach(async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
       await user.click(screen.getByText('色'));
     });
 
@@ -202,7 +214,7 @@ describe('CustomizationPanel', () => {
   describe('アクセサリー管理', () => {
     beforeEach(async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
       await user.click(screen.getByText('アクセサリー'));
     });
 
@@ -243,7 +255,7 @@ describe('CustomizationPanel', () => {
   describe('プレビュー機能', () => {
     it('should start preview mode', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const previewButton = screen.getByText('プレビュー開始');
       await user.click(previewButton);
@@ -253,7 +265,7 @@ describe('CustomizationPanel', () => {
 
     it('should not show preview button when in preview mode', () => {
       mockCustomizationHook.isPreviewMode = true;
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       expect(screen.queryByText('プレビュー開始')).not.toBeInTheDocument();
     });
@@ -266,7 +278,7 @@ describe('CustomizationPanel', () => {
         color: '#00FF00'
       };
       
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       expect(screen.getByText('プレビューペット')).toBeInTheDocument();
     });
@@ -275,7 +287,7 @@ describe('CustomizationPanel', () => {
   describe('ボタンアクション', () => {
     it('should apply changes', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const applyButton = screen.getByText('適用');
       await user.click(applyButton);
@@ -285,7 +297,7 @@ describe('CustomizationPanel', () => {
 
     it('should cancel changes', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const cancelButton = screen.getByText('キャンセル');
       await user.click(cancelButton);
@@ -295,7 +307,7 @@ describe('CustomizationPanel', () => {
 
     it('should reset to default', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const resetButton = screen.getByText('リセット');
       await user.click(resetButton);
@@ -305,7 +317,7 @@ describe('CustomizationPanel', () => {
 
     it('should close panel when close button clicked', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const closeButton = screen.getByLabelText('閉じる');
       await user.click(closeButton);
@@ -317,7 +329,7 @@ describe('CustomizationPanel', () => {
   describe('エラーハンドリング', () => {
     it('should display name validation error', () => {
       mockCustomizationHook.error = '名前が無効です';
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       expect(screen.getByText('名前が無効です')).toBeInTheDocument();
       
@@ -329,7 +341,7 @@ describe('CustomizationPanel', () => {
       const user = userEvent.setup();
       mockCustomizationHook.error = '色コードが無効です';
       
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
       await user.click(screen.getByText('色'));
 
       expect(screen.getByText('色コードが無効です')).toBeInTheDocument();
@@ -339,7 +351,7 @@ describe('CustomizationPanel', () => {
       const user = userEvent.setup();
       mockCustomizationHook.error = 'アクセサリーエラー';
       
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
       await user.click(screen.getByText('アクセサリー'));
 
       expect(screen.getByText('アクセサリーエラー')).toBeInTheDocument();
@@ -348,7 +360,7 @@ describe('CustomizationPanel', () => {
 
   describe('アクセシビリティ', () => {
     it('should have proper ARIA labels', () => {
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       expect(screen.getByLabelText('閉じる')).toBeInTheDocument();
       expect(screen.getByLabelText('ペット名:')).toBeInTheDocument();
@@ -356,7 +368,7 @@ describe('CustomizationPanel', () => {
 
     it('should support keyboard navigation', async () => {
       const user = userEvent.setup();
-      render(<CustomizationPanel customizationApi={mockCustomizationHook} onClose={mockOnClose} onApply={mockOnApply} />);
+      renderPanel();
 
       const nameInput = screen.getByLabelText('ペット名:');
       await user.click(nameInput);
