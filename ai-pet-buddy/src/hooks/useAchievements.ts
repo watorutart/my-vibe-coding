@@ -102,19 +102,23 @@ export function useAchievements(
    */
   const saveAchievements = useCallback(async (): Promise<void> => {
     try {
-      const dataToSave = {
-        ...achievementState,
-        lastSaved: Date.now()
-      };
-      localStorage.setItem(ACHIEVEMENT_STORAGE_KEY, JSON.stringify(dataToSave));
-      setError(null);
+      // Use a ref or get current state at time of execution
+      setAchievementState(currentState => {
+        const dataToSave = {
+          ...currentState,
+          lastSaved: Date.now()
+        };
+        localStorage.setItem(ACHIEVEMENT_STORAGE_KEY, JSON.stringify(dataToSave));
+        setError(null);
+        return currentState; // Return unchanged state
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save achievements';
       setError(errorMessage);
       console.error('Failed to save achievements:', err);
       throw err;
     }
-  }, [achievementState]);
+  }, []);
 
   /**
    * Load achievements from localStorage
@@ -149,69 +153,128 @@ export function useAchievements(
   }, []);
 
   /**
-   * Update achievement state and check for new unlocks
-   */
-  const updateAchievements = useCallback((
-    newProgress: AchievementProgress,
-    pet: Pet
-  ): void => {
-    const newState = { ...achievementState, progress: newProgress };
-    const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
-    
-    setAchievementState(updatedState);
-    
-    // Add new notifications (limit total count)
-    if (newNotifications.length > 0) {
-      setNotifications(prev => {
-        const combined = [...prev, ...newNotifications];
-        return combined.slice(-opts.maxNotifications);
-      });
-    }
-    
-    // Schedule auto-save
-    if (opts.autoSave) {
-      clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = setTimeout(() => {
-        saveAchievements().catch(console.error);
-      }, opts.saveInterval);
-    }
-  }, [achievementState, opts.autoSave, opts.saveInterval, opts.maxNotifications, saveAchievements]);
-
-  /**
    * Record game result and update achievements
    */
   const recordGameResult = useCallback((gameData: GameData): void => {
-    const newProgress = updateGameProgress(achievementState.progress, gameData);
-    updateAchievements(newProgress, pet);
-    actionsCountRef.current += 1;
-  }, [achievementState.progress, updateAchievements, pet]);
+    setAchievementState(currentState => {
+      const newProgress = updateGameProgress(currentState.progress, gameData);
+      actionsCountRef.current += 1;
+      
+      const newState = { ...currentState, progress: newProgress };
+      const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
+      
+      // Add new notifications (limit total count)
+      if (newNotifications.length > 0) {
+        setNotifications(prev => {
+          const combined = [...prev, ...newNotifications];
+          return combined.slice(-opts.maxNotifications);
+        });
+      }
+      
+      // Schedule auto-save
+      if (opts.autoSave) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          saveAchievements().catch(console.error);
+        }, opts.saveInterval);
+      }
+      
+      return updatedState;
+    });
+  }, [pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
 
   /**
    * Record care action and update achievements
    */
   const recordCareAction = useCallback((careData: CareActionData): void => {
-    const newProgress = updateCareProgress(achievementState.progress, careData);
-    updateAchievements(newProgress, pet);
-    actionsCountRef.current += 1;
-  }, [achievementState.progress, updateAchievements, pet]);
+    setAchievementState(currentState => {
+      const newProgress = updateCareProgress(currentState.progress, careData);
+      actionsCountRef.current += 1;
+      
+      const newState = { ...currentState, progress: newProgress };
+      const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
+      
+      // Add new notifications (limit total count)
+      if (newNotifications.length > 0) {
+        setNotifications(prev => {
+          const combined = [...prev, ...newNotifications];
+          return combined.slice(-opts.maxNotifications);
+        });
+      }
+      
+      // Schedule auto-save  
+      if (opts.autoSave) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          saveAchievements().catch(console.error);
+        }, opts.saveInterval);
+      }
+      
+      return updatedState;
+    });
+  }, [pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
 
   /**
    * Record level up and update achievements
    */
   const recordLevelUp = useCallback((updatedPet: Pet): void => {
-    const newProgress = updateLevelProgress(achievementState.progress, updatedPet);
-    updateAchievements(newProgress, updatedPet);
-    actionsCountRef.current += 1;
-  }, [achievementState.progress, updateAchievements]);
+    setAchievementState(currentState => {
+      const newProgress = updateLevelProgress(currentState.progress, updatedPet);
+      actionsCountRef.current += 1;
+      
+      const newState = { ...currentState, progress: newProgress };
+      const { updatedState, notifications: newNotifications } = checkAchievements(newState, updatedPet);
+      
+      // Add new notifications (limit total count)
+      if (newNotifications.length > 0) {
+        setNotifications(prev => {
+          const combined = [...prev, ...newNotifications];
+          return combined.slice(-opts.maxNotifications);
+        });
+      }
+      
+      // Schedule auto-save
+      if (opts.autoSave) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          saveAchievements().catch(console.error);
+        }, opts.saveInterval);
+      }
+      
+      return updatedState;
+    });
+  }, [opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
 
   /**
    * Record evolution and update achievements
    */
   const recordEvolution = useCallback((timestamp: number = Date.now()): void => {
-    const newProgress = updateEvolutionProgress(achievementState.progress, { timestamp });
-    updateAchievements(newProgress, pet);
-    actionsCountRef.current += 1;
-  }, [achievementState.progress, updateAchievements, pet]);
+    setAchievementState(currentState => {
+      const newProgress = updateEvolutionProgress(currentState.progress, { timestamp });
+      actionsCountRef.current += 1;
+      
+      const newState = { ...currentState, progress: newProgress };
+      const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
+      
+      // Add new notifications (limit total count)
+      if (newNotifications.length > 0) {
+        setNotifications(prev => {
+          const combined = [...prev, ...newNotifications];
+          return combined.slice(-opts.maxNotifications);
+        });
+      }
+      
+      // Schedule auto-save
+      if (opts.autoSave) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          saveAchievements().catch(console.error);
+        }, opts.saveInterval);
+      }
+      
+      return updatedState;
+    });
+  }, [pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
 
   /**
    * Start a new session
@@ -234,29 +297,54 @@ export function useAchievements(
         actionsPerformed: actionsCountRef.current
       };
       
-      const newProgress = updateSessionProgress(achievementState.progress, sessionData);
-      updateAchievements(newProgress, pet);
+      setAchievementState(currentState => {
+        const newProgress = updateSessionProgress(currentState.progress, sessionData);
+        
+        const newState = { ...currentState, progress: newProgress };
+        const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
+        
+        // Add new notifications (limit total count)
+        if (newNotifications.length > 0) {
+          setNotifications(prev => {
+            const combined = [...prev, ...newNotifications];
+            return combined.slice(-opts.maxNotifications);
+          });
+        }
+        
+        // Schedule auto-save
+        if (opts.autoSave) {
+          clearTimeout(saveTimeoutRef.current);
+          saveTimeoutRef.current = setTimeout(() => {
+            saveAchievements().catch(console.error);
+          }, opts.saveInterval);
+        }
+        
+        return updatedState;
+      });
       
       sessionStartRef.current = null;
       actionsCountRef.current = 0;
     }
-  }, [opts.enableSessionTracking, achievementState.progress, updateAchievements, pet]);
+  }, [opts.enableSessionTracking, pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
 
   /**
    * Activate a specific title
    */
   const setActiveTitle = useCallback((titleId: string): void => {
-    const newState = activateTitle(achievementState, titleId);
-    setAchievementState(newState);
-    
-    // Auto-save if enabled
-    if (opts.autoSave) {
-      clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = setTimeout(() => {
-        saveAchievements().catch(console.error);
-      }, opts.saveInterval);
-    }
-  }, [achievementState, opts.autoSave, opts.saveInterval, saveAchievements]);
+    setAchievementState(currentState => {
+      const newState = activateTitle(currentState, titleId);
+      
+      // Auto-save if enabled
+      if (opts.autoSave) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          saveAchievements().catch(console.error);
+        }, opts.saveInterval);
+      }
+      
+      return newState;
+    });
+  }, [opts.autoSave, opts.saveInterval, saveAchievements]);
 
   /**
    * Dismiss a specific notification
@@ -324,10 +412,37 @@ export function useAchievements(
 
   // Save on pet level changes
   useEffect(() => {
-    if (!isLoading && pet.stats.level !== achievementState.progress.maxLevel) {
-      recordLevelUp(pet);
+    if (!isLoading) {
+      setAchievementState(currentState => {
+        if (pet.stats.level !== currentState.progress.maxLevel) {
+          const newProgress = updateLevelProgress(currentState.progress, pet);
+          actionsCountRef.current += 1;
+          
+          const newState = { ...currentState, progress: newProgress };
+          const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
+          
+          // Add new notifications (limit total count)
+          if (newNotifications.length > 0) {
+            setNotifications(prev => {
+              const combined = [...prev, ...newNotifications];
+              return combined.slice(-opts.maxNotifications);
+            });
+          }
+          
+          // Schedule auto-save
+          if (opts.autoSave) {
+            clearTimeout(saveTimeoutRef.current);
+            saveTimeoutRef.current = setTimeout(() => {
+              saveAchievements().catch(console.error);
+            }, opts.saveInterval);
+          }
+          
+          return updatedState;
+        }
+        return currentState;
+      });
     }
-  }, [pet.stats.level, achievementState.progress.maxLevel, recordLevelUp, isLoading]);
+  }, [pet.stats.level, isLoading, pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
 
   // Clean up timeouts on unmount
   useEffect(() => {
