@@ -123,6 +123,34 @@ export function useAchievements(
   }, []);
 
   /**
+   * Helper function to handle common operations after state updates:
+   * - Check for new achievements
+   * - Add notifications
+   * - Schedule auto-save
+   */
+  const handleStateUpdate = useCallback((newState: AchievementState, petData: Pet): AchievementState => {
+    const { updatedState, notifications: newNotifications } = checkAchievements(newState, petData);
+    
+    // Add new notifications (limit total count)
+    if (newNotifications.length > 0) {
+      setNotifications(prev => {
+        const combined = [...prev, ...newNotifications];
+        return combined.slice(-opts.maxNotifications);
+      });
+    }
+    
+    // Schedule auto-save
+    if (opts.autoSave) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = setTimeout(() => {
+        saveAchievements().catch(console.error);
+      }, opts.saveInterval);
+    }
+    
+    return updatedState;
+  }, [opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+
+  /**
    * Load achievements from localStorage
    */
   const loadAchievements = useCallback(async (): Promise<void> => {
@@ -163,27 +191,9 @@ export function useAchievements(
       actionsCountRef.current += 1;
       
       const newState = { ...currentState, progress: newProgress };
-      const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
-      
-      // Add new notifications (limit total count)
-      if (newNotifications.length > 0) {
-        setNotifications(prev => {
-          const combined = [...prev, ...newNotifications];
-          return combined.slice(-opts.maxNotifications);
-        });
-      }
-      
-      // Schedule auto-save
-      if (opts.autoSave) {
-        clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
-          saveAchievements().catch(console.error);
-        }, opts.saveInterval);
-      }
-      
-      return updatedState;
+      return handleStateUpdate(newState, pet);
     });
-  }, [pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+  }, [pet, handleStateUpdate]);
 
   /**
    * Record care action and update achievements
@@ -194,27 +204,9 @@ export function useAchievements(
       actionsCountRef.current += 1;
       
       const newState = { ...currentState, progress: newProgress };
-      const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
-      
-      // Add new notifications (limit total count)
-      if (newNotifications.length > 0) {
-        setNotifications(prev => {
-          const combined = [...prev, ...newNotifications];
-          return combined.slice(-opts.maxNotifications);
-        });
-      }
-      
-      // Schedule auto-save  
-      if (opts.autoSave) {
-        clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
-          saveAchievements().catch(console.error);
-        }, opts.saveInterval);
-      }
-      
-      return updatedState;
+      return handleStateUpdate(newState, pet);
     });
-  }, [pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+  }, [pet, handleStateUpdate]);
 
   /**
    * Record level up and update achievements
@@ -225,27 +217,9 @@ export function useAchievements(
       actionsCountRef.current += 1;
       
       const newState = { ...currentState, progress: newProgress };
-      const { updatedState, notifications: newNotifications } = checkAchievements(newState, updatedPet);
-      
-      // Add new notifications (limit total count)
-      if (newNotifications.length > 0) {
-        setNotifications(prev => {
-          const combined = [...prev, ...newNotifications];
-          return combined.slice(-opts.maxNotifications);
-        });
-      }
-      
-      // Schedule auto-save
-      if (opts.autoSave) {
-        clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
-          saveAchievements().catch(console.error);
-        }, opts.saveInterval);
-      }
-      
-      return updatedState;
+      return handleStateUpdate(newState, updatedPet);
     });
-  }, [opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+  }, [handleStateUpdate]);
 
   /**
    * Record evolution and update achievements
@@ -256,27 +230,9 @@ export function useAchievements(
       actionsCountRef.current += 1;
       
       const newState = { ...currentState, progress: newProgress };
-      const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
-      
-      // Add new notifications (limit total count)
-      if (newNotifications.length > 0) {
-        setNotifications(prev => {
-          const combined = [...prev, ...newNotifications];
-          return combined.slice(-opts.maxNotifications);
-        });
-      }
-      
-      // Schedule auto-save
-      if (opts.autoSave) {
-        clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
-          saveAchievements().catch(console.error);
-        }, opts.saveInterval);
-      }
-      
-      return updatedState;
+      return handleStateUpdate(newState, pet);
     });
-  }, [pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+  }, [pet, handleStateUpdate]);
 
   /**
    * Start a new session
@@ -303,31 +259,13 @@ export function useAchievements(
         const newProgress = updateSessionProgress(currentState.progress, sessionData);
         
         const newState = { ...currentState, progress: newProgress };
-        const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
-        
-        // Add new notifications (limit total count)
-        if (newNotifications.length > 0) {
-          setNotifications(prev => {
-            const combined = [...prev, ...newNotifications];
-            return combined.slice(-opts.maxNotifications);
-          });
-        }
-        
-        // Schedule auto-save
-        if (opts.autoSave) {
-          clearTimeout(saveTimeoutRef.current);
-          saveTimeoutRef.current = setTimeout(() => {
-            saveAchievements().catch(console.error);
-          }, opts.saveInterval);
-        }
-        
-        return updatedState;
+        return handleStateUpdate(newState, pet);
       });
       
       sessionStartRef.current = null;
       actionsCountRef.current = 0;
     }
-  }, [opts.enableSessionTracking, pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+  }, [opts.enableSessionTracking, pet, handleStateUpdate]);
 
   /**
    * Activate a specific title
@@ -421,30 +359,12 @@ export function useAchievements(
           actionsCountRef.current += 1;
           
           const newState = { ...currentState, progress: newProgress };
-          const { updatedState, notifications: newNotifications } = checkAchievements(newState, pet);
-          
-          // Add new notifications (limit total count)
-          if (newNotifications.length > 0) {
-            setNotifications(prev => {
-              const combined = [...prev, ...newNotifications];
-              return combined.slice(-opts.maxNotifications);
-            });
-          }
-          
-          // Schedule auto-save
-          if (opts.autoSave) {
-            clearTimeout(saveTimeoutRef.current);
-            saveTimeoutRef.current = setTimeout(() => {
-              saveAchievements().catch(console.error);
-            }, opts.saveInterval);
-          }
-          
-          return updatedState;
+          return handleStateUpdate(newState, pet);
         }
         return currentState;
       });
     }
-  }, [pet.stats.level, isLoading, pet, opts.maxNotifications, opts.autoSave, opts.saveInterval, saveAchievements]);
+  }, [pet.stats.level, isLoading, pet, handleStateUpdate]);
 
   // Clean up timeouts on unmount
   useEffect(() => {
