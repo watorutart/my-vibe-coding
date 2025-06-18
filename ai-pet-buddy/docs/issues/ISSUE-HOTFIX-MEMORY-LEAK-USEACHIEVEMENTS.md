@@ -22,6 +22,11 @@
 - `src/types/achievements.d.ts` (または関連する型定義ファイル)
 - 上記フックを使用している可能性のあるコンポーネント
 
+## 修正状況 (Fix Status)
+- `useAchievements` フック内のメモリリークは修正されました。
+- 関連するテスト (`useAchievements.test.ts`) を実行し、"heap out of memory" エラーが解消されたことを確認しました。
+- コードにエラーはなく、期待通りに動作しています。
+
 ## 開発者向け指示 (Instructions for AI Agent)
 - **優先度 (Priority):** High
 - **目標 (Goal):** `useAchievements.ts` 内のメモリリークを特定し修正する。修正後、関連テストが成功し、メモリ使用量が安定することを確認する。
