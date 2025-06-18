@@ -96,22 +96,24 @@ export function useAchievements(
   const sessionStartRef = useRef<number | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
   const actionsCountRef = useRef(0);
+  const achievementStateRef = useRef<AchievementState>(achievementState);
+
+  // Keep the ref in sync with state
+  useEffect(() => {
+    achievementStateRef.current = achievementState;
+  }, [achievementState]);
 
   /**
    * Save achievements to localStorage
    */
   const saveAchievements = useCallback(async (): Promise<void> => {
     try {
-      // Use a ref or get current state at time of execution
-      setAchievementState(currentState => {
-        const dataToSave = {
-          ...currentState,
-          lastSaved: Date.now()
-        };
-        localStorage.setItem(ACHIEVEMENT_STORAGE_KEY, JSON.stringify(dataToSave));
-        setError(null);
-        return currentState; // Return unchanged state
-      });
+      const dataToSave = {
+        ...achievementStateRef.current,
+        lastSaved: Date.now()
+      };
+      localStorage.setItem(ACHIEVEMENT_STORAGE_KEY, JSON.stringify(dataToSave));
+      setError(null);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save achievements';
       setError(errorMessage);
