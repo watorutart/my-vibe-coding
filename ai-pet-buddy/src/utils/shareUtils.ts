@@ -49,19 +49,20 @@ export const PLATFORM_CONFIG = {
 } as const;
 
 /**
- * 現在の日時からファイル名を生成
+ * 現在の日時からファイル名を生成 (UTC基準)
  * @param prefix ファイル名のプレフィックス
  * @param extension ファイル拡張子
- * @returns 生成されたファイル名
+ * @returns 生成されたファイル名 (YYYYMMDD-HHMMSS形式、UTC基準)
  */
 export const generateFileName = (prefix: string = 'pet-buddy', extension: string = 'png'): string => {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
+  // Use UTC methods to ensure consistent filenames across different timezones
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(now.getUTCDate()).padStart(2, '0');
+  const hours = String(now.getUTCHours()).padStart(2, '0');
+  const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(now.getUTCSeconds()).padStart(2, '0');
   
   return `${prefix}-${year}${month}${day}-${hours}${minutes}${seconds}.${extension}`;
 };

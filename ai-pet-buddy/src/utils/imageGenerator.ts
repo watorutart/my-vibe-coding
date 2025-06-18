@@ -243,12 +243,12 @@ export const generateStatsCard = async (
     ctx.fillText(`【${statsData.specialTitle}】`, canvas.width / 2, statsY + 280);
   }
   
-  // 日付
+  // 日付 (UTC基準で表示)
   ctx.textAlign = 'center';
   ctx.font = '20px Arial, sans-serif';
   ctx.fillStyle = '#718096';
   const now = new Date();
-  const dateString = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  const dateString = `${now.getUTCFullYear()}年${now.getUTCMonth() + 1}月${now.getUTCDate()}日`;
   ctx.fillText(dateString, canvas.width / 2, cardY + cardHeight - 40);
   
   let result = canvas.toDataURL('image/png');
