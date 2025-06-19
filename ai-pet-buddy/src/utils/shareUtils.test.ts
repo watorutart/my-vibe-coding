@@ -67,6 +67,7 @@ describe('shareUtils', () => {
     it('should generate consistent filename regardless of timezone', () => {
       // Test that the filename is generated in UTC regardless of system timezone
       // This test ensures files have consistent names across different user timezones
+      vi.setSystemTime(new Date('2024-01-01T12:00:00Z'));
       const filename = generateFileName();
       
       // The filename should be based on UTC time, not local time
