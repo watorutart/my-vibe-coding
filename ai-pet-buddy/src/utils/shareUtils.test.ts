@@ -63,6 +63,33 @@ describe('shareUtils', () => {
       const filename = generateFileName();
       expect(filename).toMatch(/pet-buddy-\d{8}-\d{6}\.png/);
     });
+
+    it('should generate consistent filename regardless of timezone', () => {
+      // Test that the filename is generated in UTC regardless of system timezone
+      // This test ensures files have consistent names across different user timezones
+      vi.setSystemTime(new Date('2024-01-01T12:00:00Z'));
+      const filename = generateFileName();
+      
+      // The filename should be based on UTC time, not local time
+      // When system time is set to 2024-01-01T12:00:00Z, 
+      // the filename should always be pet-buddy-20240101-120000.png
+      // regardless of the user's local timezone
+      expect(filename).toBe('pet-buddy-20240101-120000.png');
+    });
+
+    it('should handle different times consistently in UTC', () => {
+      // Test different times to ensure UTC handling is consistent
+      vi.setSystemTime(new Date('2024-12-31T23:59:59Z'));
+      const filename1 = generateFileName();
+      expect(filename1).toBe('pet-buddy-20241231-235959.png');
+
+      vi.setSystemTime(new Date('2024-01-01T00:00:01Z'));
+      const filename2 = generateFileName();
+      expect(filename2).toBe('pet-buddy-20240101-000001.png');
+
+      // Reset to original time for other tests
+      vi.setSystemTime(new Date('2024-01-01T12:00:00Z'));
+    });
   });
 
   describe('generateShareText', () => {
