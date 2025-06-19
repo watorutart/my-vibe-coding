@@ -1,0 +1,64 @@
+# GitHub Copilot Workspace Configuration
+# AI Pet Buddy プロジェクト専用設定
+
+# ワークスペース設定
+workspace:
+  name: "AI Pet Buddy Development"
+  description: "Interactive AI pet companion with modern web technologies"
+  
+# 言語・フレームワーク設定
+languages:
+  primary: "typescript"
+  secondary: ["javascript", "css", "html"]
+  
+frameworks:
+  - "react"
+  - "vite"
+  - "vitest"
+  - "pwa"
+
+# プロジェクト固有の設定
+project_context:
+  type: "web-application"
+  architecture: "spa"
+  testing_framework: "vitest"
+  ui_library: "react"
+  build_tool: "vite"
+  
+# 開発ルール
+development_rules:
+  language_preference: "japanese"
+  methodology: "tdd"
+  type_safety: "strict"
+  test_coverage_minimum: 99
+  
+# ファイル命名規則
+naming_conventions:
+  components: "PascalCase"
+  utilities: "camelCase"
+  types: "PascalCase"
+  tests: "*.test.tsx|*.test.ts"
+  
+# 品質基準
+quality_standards:
+  typescript_strict: true
+  eslint_zero_warnings: true
+  test_coverage: 99
+  lighthouse_performance: 90
+  lighthouse_accessibility: 100
+
+# 自動化スクリプト
+automation:
+  sound_notification: true
+  quality_check: "./enhanced-quality-check.sh"
+  auto_review: "./auto-review.sh"
+  git_automation: "./auto-git-complete.sh"
+
+# Phase別開発指針
+phases:
+  current_phase: "Phase 4"
+  phase_goals:
+    - "PWA完全対応"
+    - "ミニゲーム統合"
+    - "実績・統計システム"
+    - "本番環境デプロイ"
