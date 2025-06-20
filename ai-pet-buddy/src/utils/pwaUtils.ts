@@ -36,13 +36,27 @@ export const detectPlatform = (): 'ios' | 'android' | 'desktop' => {
  * PWA機能サポート状況を検出
  */
 export const detectPWACapabilities = (): PWACapabilities => {
-  return {
-    serviceWorker: 'serviceWorker' in navigator,
-    pushNotifications: 'Notification' in window && 'PushManager' in window,
-    installPrompt: 'BeforeInstallPromptEvent' in window,
-    backgroundSync: 'serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype,
-    webShare: 'share' in navigator
-  };
+  try {
+    return {
+      serviceWorker: 'serviceWorker' in navigator,
+      pushNotifications: 'Notification' in window && 'PushManager' in window,
+      installPrompt: 'BeforeInstallPromptEvent' in window,
+      backgroundSync: 'serviceWorker' in navigator && 
+        typeof ServiceWorkerRegistration !== 'undefined' && 
+        ServiceWorkerRegistration.prototype && 
+        'sync' in ServiceWorkerRegistration.prototype,
+      webShare: 'share' in navigator
+    };
+  } catch (error) {
+    // Fallback for test environments or missing APIs
+    return {
+      serviceWorker: false,
+      pushNotifications: false,
+      installPrompt: false,
+      backgroundSync: false,
+      webShare: false
+    };
+  }
 };
 
 /**
