@@ -19,6 +19,10 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         'vite.config.ts',
         'vitest.config.ts',
+        'eslint.config.js',
+        'public/sw.js',
+        'src/main.tsx', // Entry point, harder to test meaningfully
+        'src/vite-env.d.ts', // Type declarations only
       ],
       thresholds: {
         global: {
