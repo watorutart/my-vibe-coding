@@ -10,8 +10,8 @@ import type {
   PetNotificationConfig,
   PWACapabilities,
   PWAEvent
-} from '../PWA';
-import { DEFAULT_PWA_CONFIG } from '../PWA';
+} from './PWA';
+import { DEFAULT_PWA_CONFIG } from './PWA';
 
 describe('PWA Types', () => {
   describe('DEFAULT_PWA_CONFIG', () => {
