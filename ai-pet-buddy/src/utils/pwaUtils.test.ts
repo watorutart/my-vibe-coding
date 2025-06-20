@@ -15,7 +15,7 @@ import {
   InstallPromptManager,
   PWAMetrics,
   checkPWAAvailability
-} from '../pwaUtils';
+} from './pwaUtils';
 
 // モックの設定
 const mockNavigator = {
