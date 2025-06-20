@@ -9,11 +9,7 @@ Object.defineProperty(Element.prototype, 'scrollIntoView', {
 
 // PWA API mocks for test environment
 // ServiceWorkerRegistration mock
-class MockServiceWorkerRegistration {
-  prototype = {
-    sync: true
-  }
-}
+class MockServiceWorkerRegistration {}
 
 // ServiceWorker mock
 const mockServiceWorker = {
@@ -27,6 +23,13 @@ const mockServiceWorker = {
 Object.defineProperty(globalThis, 'ServiceWorkerRegistration', {
   value: MockServiceWorkerRegistration,
   writable: true
+})
+
+// Define `sync` on the prototype of ServiceWorkerRegistration
+Object.defineProperty(globalThis.ServiceWorkerRegistration.prototype, 'sync', {
+  value: true,
+  writable: true,
+  configurable: true
 })
 
 // Mock navigator.serviceWorker
