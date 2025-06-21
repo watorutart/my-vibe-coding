@@ -2,9 +2,65 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import App from './App'
 
+// Mock the data storage module
+vi.mock('./utils/dataStorage', () => ({
+  loadPetData: vi.fn(),
+  loadConversationHistory: vi.fn(),
+  savePetData: vi.fn(),
+  saveConversationHistory: vi.fn(),
+  loadAppSettings: vi.fn(),
+  saveAppSettings: vi.fn(),
+  clearAllData: vi.fn(),
+  exportData: vi.fn(),
+  importData: vi.fn(),
+  DEFAULT_SETTINGS: {
+    notifications: {
+      enabled: false,
+      petStats: true,
+      levelUp: true,
+      achievements: true,
+      quietHours: false,
+      quietStart: '22:00',
+      quietEnd: '08:00'
+    },
+    autoSave: {
+      enabled: true,
+      interval: 30000
+    },
+    theme: {
+      mode: 'auto',
+      accentColor: '#007bff'
+    }
+  }
+}))
+
 describe('App Integration Tests', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    
+    // Set up default mocks
+    const { loadPetData, loadConversationHistory, loadAppSettings } = await import('./utils/dataStorage')
+    vi.mocked(loadPetData).mockReturnValue(null)
+    vi.mocked(loadConversationHistory).mockReturnValue([])
+    vi.mocked(loadAppSettings).mockReturnValue({
+      notifications: {
+        enabled: false,
+        petStats: true,
+        levelUp: true,
+        achievements: true,
+        quietHours: false,
+        quietStart: '22:00',
+        quietEnd: '08:00'
+      },
+      autoSave: {
+        enabled: true,
+        interval: 30000
+      },
+      theme: {
+        mode: 'auto',
+        accentColor: '#007bff'
+      }
+    })
   })
 
   it('should render the app with initial pet state', () => {
@@ -117,5 +173,35 @@ describe('App Integration Tests', () => {
     expect(screen.getByText('40/100')).toBeInTheDocument() // Hunger (100-60=40)
     expect(screen.getByText('70/100')).toBeInTheDocument() // Energy
     expect(screen.getByText('1/10')).toBeInTheDocument() // Level
+  })
+
+  it('should load saved conversation history if available', async () => {
+    // Mock saved conversation history
+    const { loadConversationHistory } = await import('./utils/dataStorage')
+    const mockConversationHistory = [
+      {
+        id: '1',
+        type: 'user' as const,
+        content: 'Hello pet!',
+        timestamp: Date.now()
+      },
+      {
+        id: '2',
+        type: 'pet' as const,
+        content: 'Woof! Hello there!',
+        timestamp: Date.now()
+      }
+    ]
+    
+    vi.mocked(loadConversationHistory).mockReturnValue(mockConversationHistory)
+    
+    render(<App />)
+    
+    // Check that the app renders without error when conversation history is loaded
+    expect(screen.getByText('🐾 AI Pet Buddy')).toBeInTheDocument()
+    expect(screen.getByText('Buddy')).toBeInTheDocument()
+    
+    // The conversation history loading should be called during initialization
+    expect(loadConversationHistory).toHaveBeenCalled()
   })
 })
