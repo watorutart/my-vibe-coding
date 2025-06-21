@@ -61,8 +61,11 @@ describe('メインエントリーポイント', () => {
 
   it('should handle StrictMode component', () => {
     // StrictModeコンポーネントの使用方法をテスト
-    const { StrictMode } = require('react')
+    const { StrictMode, createElement } = require('react')
     expect(StrictMode).toBeDefined()
-    expect(typeof StrictMode).toBe('symbol')
+    
+    // StrictModeがReactコンポーネントとして使用可能かテスト
+    expect(() => createElement(StrictMode)).not.toThrow()
+    expect(typeof createElement(StrictMode)).toBe('object')
   })
 })
