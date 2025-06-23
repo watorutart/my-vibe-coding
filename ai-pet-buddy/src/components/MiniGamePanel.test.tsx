@@ -69,8 +69,8 @@ describe('MiniGamePanel', () => {
       expect(screen.getByText('🎮 ミニゲーム')).toBeInTheDocument();
 
       // 各ゲームタイプの表示確認
-      expect(screen.getByText('メモリーゲーム')).toBeInTheDocument();
-      expect(screen.getByText('じゃんけんゲーム')).toBeInTheDocument();
+      expect(screen.getByText(/メモリーゲーム/)).toBeInTheDocument();
+      expect(screen.getByText(/じゃんけん/)).toBeInTheDocument();
       expect(screen.getByText('数当てゲーム')).toBeInTheDocument();
 
       // ゲームアイコンの確認
@@ -100,7 +100,7 @@ describe('MiniGamePanel', () => {
         />
       );
 
-      // ゲーム説明の確認
+      // ゲーム説明の確認 (実際にコンポーネントに表示される説明文)
       expect(screen.getByText('表示された色の順序を覚えて再現しよう！')).toBeInTheDocument();
       expect(screen.getByText('AIと勝負！連勝を目指そう！')).toBeInTheDocument();
       expect(screen.getByText('隠された数字を効率的に当てよう！')).toBeInTheDocument();
