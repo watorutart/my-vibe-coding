@@ -71,7 +71,7 @@ describe('MiniGamePanel', () => {
       // 各ゲームタイプの表示確認
       expect(screen.getByText(/メモリーゲーム/)).toBeInTheDocument();
       expect(screen.getByText(/じゃんけん/)).toBeInTheDocument();
-      expect(screen.getByText('数当てゲーム')).toBeInTheDocument();
+      expect(screen.getByText(/数当て/)).toBeInTheDocument();
 
       // ゲームアイコンの確認
       expect(screen.getByText('🧠')).toBeInTheDocument();

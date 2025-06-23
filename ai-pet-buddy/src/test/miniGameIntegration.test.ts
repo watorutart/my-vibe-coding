@@ -131,11 +131,11 @@ describe('Mini-Game Integration End-to-End', () => {
       let attempts = 0;
       let gameCompleted = false;
       
-      // ターゲット番号をモックして確実に完了させる
-      const mockTargetNumber = 25;
+      // セッションから実際のターゲット番号を取得して確実に当てる
+      const targetNumber = session.currentQuestion?.targetNumber || 25;
       
       while (attempts < 8 && !gameCompleted) {
-        const guess = mockTargetNumber; // モックされたターゲット番号を使用
+        const guess = targetNumber; // 実際のターゲット番号を使用
         const result = gameEngine.submitAnswer(guess);
         attempts++;
         
@@ -197,7 +197,7 @@ describe('Mini-Game Integration End-to-End', () => {
   });
 
   describe('Game Engine Integration', () => {
-    it('should handle game switching', () => {
+    it('should handle game switching', async () => {
       // 1. じゃんけんゲーム開始
       const rpsConfig = {
         type: 'rock-paper-scissors' as const,
@@ -215,11 +215,22 @@ describe('Mini-Game Integration End-to-End', () => {
       // 完了まで待つ（タイムアウトを設定）
       const startTime = Date.now();
       const timeout = 5000; // 5秒
+      let submissionCount = 0;
+      const maxSubmissions = 10; // 最大提出回数を制限
+      
       while (gameCompletedResults.length === 0) {
         if (Date.now() - startTime > timeout) {
           throw new Error('ゲームがタイムアウトしました: gameCompletedResults が更新されませんでした');
         }
+        if (submissionCount >= maxSubmissions) {
+          throw new Error('最大提出回数に達しました。ゲームが正常に完了しませんでした。');
+        }
+        
         gameEngine.submitAnswer('rock');
+        submissionCount++;
+        
+        // 短い待機時間を追加してイベントループを回す
+        await new Promise(resolve => setTimeout(resolve, 10));
       }
 
       expect(gameCompletedResults).toHaveLength(1);
