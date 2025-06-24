@@ -1,0 +1,74 @@
+/* AchievementNotificationContainer.css */
+
+.achievement-notification-container {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Position variants */
+.achievement-notification-container--top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.achievement-notification-container--top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.achievement-notification-container--bottom-right {
+  bottom: 20px;
+  right: 20px;
+  flex-direction: column-reverse;
+}
+
+.achievement-notification-container--bottom-left {
+  bottom: 20px;
+  left: 20px;
+  flex-direction: column-reverse;
+}
+
+.achievement-notification-container__item {
+  pointer-events: auto;
+  position: relative;
+  transform: translateY(calc(var(--stack-index) * -8px));
+  z-index: calc(1000 - var(--stack-index));
+}
+
+/* Stacking effect for multiple notifications */
+.achievement-notification-container__item:not(:first-child) {
+  margin-top: -8px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .achievement-notification-container--top-right,
+  .achievement-notification-container--top-left {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  
+  .achievement-notification-container--bottom-right,
+  .achievement-notification-container--bottom-left {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  
+  .achievement-notification-container {
+    gap: 8px;
+  }
+  
+  .achievement-notification-container__item {
+    transform: translateY(calc(var(--stack-index) * -4px));
+  }
+  
+  .achievement-notification-container__item:not(:first-child) {
+    margin-top: -4px;
+  }
+}

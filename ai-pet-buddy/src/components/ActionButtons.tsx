@@ -8,10 +8,11 @@ interface ActionButtonsProps {
   onGames?: () => void;
   onShare?: () => void;
   onCustomize?: () => void;
+  onAchievements?: () => void;
   disabled?: boolean;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, onGames, onShare, onCustomize, disabled = false }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, onGames, onShare, onCustomize, onAchievements, disabled = false }) => {
   const buttons = [
     {
       id: 'feed',
@@ -60,6 +61,14 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, o
       onClick: onCustomize,
       color: '#e67e22',
       description: 'Customize your pet'
+    }] : []),
+    ...(onAchievements ? [{
+      id: 'achievements',
+      label: 'Achievements',
+      icon: '🏆',
+      onClick: onAchievements,
+      color: '#8e44ad',
+      description: 'View achievements and titles'
     }] : [])
   ];
 

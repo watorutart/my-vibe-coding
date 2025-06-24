@@ -8,10 +8,13 @@ import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
 import { SharePanel } from './components/SharePanel'
 import PWAProvider from './components/PWAProvider'
+import AchievementList from './components/achievements/AchievementList'
+import AchievementNotificationContainer from './components/achievements/AchievementNotificationContainer'
 import { useDataPersistence } from './hooks/useDataPersistence'
 import { usePetProgress } from './hooks/usePetProgress'
 import { useStatDecay } from './hooks/useStatDecay'
-import { useCustomization } from './hooks/useCustomization';
+import { useCustomization } from './hooks/useCustomization'
+import { useAchievements } from './hooks/useAchievements'
 import type { ConversationMessage } from './types/Conversation'
 import type { Pet } from './types/Pet'
 import type { StatsCardData } from './types/Share'
@@ -24,9 +27,18 @@ function App() {
   const [showGamePanel, setShowGamePanel] = useState(false)
   const [showSharePanel, setShowSharePanel] = useState(false)
   const [showCustomizationPanel, setShowCustomizationPanel] = useState(false)
+  const [showAchievementPanel, setShowAchievementPanel] = useState(false)
 
   const customizationApi = useCustomization();
   const initialLoadComplete = useRef(false); // Correct: Add this ref
+  
+  // Initialize achievements
+  const achievements = useAchievements(pet, {
+    autoSave: true,
+    saveInterval: 5000,
+    maxNotifications: 5,
+    enableSessionTracking: true
+  });
 
   const petDisplayRef = useRef<HTMLDivElement>(null)
 
@@ -114,13 +126,31 @@ function App() {
         energy: Math.min(100, baseStats.energy + levelUpBonus.energy)
       }
       
-      return {
+      const updatedPet = {
         ...prev,
         stats: finalStats,
         experience: newExperience,
         expression: 'happy',
         lastUpdate: Date.now()
       }
+      
+      // Record care action for achievements
+      achievements.recordCareAction({
+        type: 'feed',
+        timestamp: Date.now(),
+        statChanges: {
+          hunger: finalStats.hunger - prev.stats.hunger,
+          happiness: finalStats.happiness - prev.stats.happiness,
+          energy: finalStats.energy - prev.stats.energy
+        }
+      })
+      
+      // Record level up if it occurred
+      if (newLevel > prev.stats.level) {
+        achievements.recordLevelUp(updatedPet)
+      }
+      
+      return updatedPet
     })
     triggerSave()
   }
@@ -143,13 +173,31 @@ function App() {
         energy: Math.min(100, baseStats.energy + levelUpBonus.energy)
       }
       
-      return {
+      const updatedPet = {
         ...prev,
         stats: finalStats,
         experience: newExperience,
         expression: 'excited',
         lastUpdate: Date.now()
       }
+      
+      // Record care action for achievements
+      achievements.recordCareAction({
+        type: 'play',
+        timestamp: Date.now(),
+        statChanges: {
+          hunger: 0,
+          happiness: finalStats.happiness - prev.stats.happiness,
+          energy: finalStats.energy - prev.stats.energy
+        }
+      })
+      
+      // Record level up if it occurred
+      if (newLevel > prev.stats.level) {
+        achievements.recordLevelUp(updatedPet)
+      }
+      
+      return updatedPet
     })
     triggerSave()
   }
@@ -172,13 +220,31 @@ function App() {
         energy: Math.min(100, baseStats.energy + levelUpBonus.energy)
       }
       
-      return {
+      const updatedPet = {
         ...prev,
         stats: finalStats,
         experience: newExperience,
         expression: 'neutral',
         lastUpdate: Date.now()
       }
+      
+      // Record care action for achievements
+      achievements.recordCareAction({
+        type: 'rest',
+        timestamp: Date.now(),
+        statChanges: {
+          hunger: 0,
+          happiness: finalStats.happiness - prev.stats.happiness,
+          energy: finalStats.energy - prev.stats.energy
+        }
+      })
+      
+      // Record level up if it occurred
+      if (newLevel > prev.stats.level) {
+        achievements.recordLevelUp(updatedPet)
+      }
+      
+      return updatedPet
     })
     triggerSave()
   }
@@ -201,13 +267,29 @@ function App() {
         energy: Math.min(100, baseStats.energy + levelUpBonus.energy)
       }
       
-      return {
+      const updatedPet = {
         ...prev,
         stats: finalStats,
         experience: newExperience,
         expression: 'excited',
         lastUpdate: Date.now()
       }
+      
+      // Record game result for achievements
+      achievements.recordGameResult({
+        type: 'mini-game',
+        result: reward.experience > 0 ? 'win' : 'loss',
+        timestamp: Date.now(),
+        experienceGained: reward.experience,
+        duration: 30 // Default duration
+      })
+      
+      // Record level up if it occurred
+      if (newLevel > prev.stats.level) {
+        achievements.recordLevelUp(updatedPet)
+      }
+      
+      return updatedPet
     })
     triggerSave()
   }
@@ -290,6 +372,25 @@ function App() {
                 onClose={() => setShowGamePanel(false)}
               />
             </div>
+          ) : showAchievementPanel ? (
+            <div className="achievement-panel-container">
+              <div className="achievement-panel-header">
+                <button 
+                  className="close-button"
+                  onClick={() => setShowAchievementPanel(false)}
+                  aria-label="Close achievements"
+                >
+                  ← Back to Pet
+                </button>
+              </div>
+              <AchievementList
+                achievementState={achievements.achievementState}
+                onTitleActivate={achievements.setActiveTitle}
+                onAchievementClick={(achievement, type) => {
+                  console.log(`Clicked ${type}:`, achievement);
+                }}
+              />
+            </div>
           ) : (
             <>
               <div ref={petDisplayRef} className="pet-display-area">
@@ -303,6 +404,7 @@ function App() {
                 onGames={() => setShowGamePanel(true)}
                 onShare={() => setShowSharePanel(true)}
                 onCustomize={() => setShowCustomizationPanel(true)}
+                onAchievements={() => setShowAchievementPanel(true)}
               />
               <ConversationPanel 
                 pet={pet}
@@ -329,6 +431,14 @@ function App() {
           onClose={() => setShowSharePanel(false)}
           captureTargetRef={petDisplayRef}
           statsData={generateStatsData()}
+        />
+        
+        {/* Achievement Notifications */}
+        <AchievementNotificationContainer
+          notifications={achievements.notifications}
+          onDismiss={achievements.dismissNotification}
+          maxVisible={3}
+          position="top-right"
         />
       </div>
     </PWAProvider>
