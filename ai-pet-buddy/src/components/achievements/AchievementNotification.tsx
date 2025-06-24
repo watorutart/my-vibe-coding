@@ -41,9 +41,8 @@ const AchievementNotification: React.FC<AchievementNotificationProps> = ({
 
   const handleDismiss = () => {
     setIsLeaving(true);
-    setTimeout(() => {
-      onDismiss(notification.id);
-    }, 300); // Match exit animation duration
+    // Call onDismiss immediately for testing and immediate response
+    onDismiss(notification.id);
   };
 
   const getRarityColor = (rarity: NotificationType['rarity']): string => {

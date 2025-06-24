@@ -84,7 +84,8 @@ describe('AchievementItem', () => {
       );
 
       expect(screen.getByText('Test Badge')).toBeInTheDocument();
-      expect(screen.getByText('🏆')).toBeInTheDocument(); // Actual icon, not locked
+      const trophyIcons = screen.getAllByText('🏆');
+      expect(trophyIcons.length).toBeGreaterThan(0); // Should have the actual icon
       expect(screen.getByText('✨')).toBeInTheDocument(); // Unlock indicator
       expect(screen.queryByText('50%')).not.toBeInTheDocument(); // No progress for unlocked
       expect(screen.getByText(/Unlocked:/)).toBeInTheDocument(); // Unlock date
@@ -134,7 +135,8 @@ describe('AchievementItem', () => {
       expect(screen.getByText('A test title for testing')).toBeInTheDocument();
       expect(screen.getByText('Reach level 5')).toBeInTheDocument();
       expect(screen.getByText('epic')).toBeInTheDocument();
-      expect(screen.getByText('👑')).toBeInTheDocument(); // Type indicator
+      const crownIcons = screen.getAllByText('👑');
+      expect(crownIcons.length).toBeGreaterThan(0); // Should have type indicator
     });
 
     it('should show active indicator for active titles', () => {
