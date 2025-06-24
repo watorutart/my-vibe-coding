@@ -136,12 +136,17 @@ function App() {
       
       // Record care action for achievements
       achievements.recordCareAction({
-        type: 'feed',
+        action: 'feed',
         timestamp: Date.now(),
-        statChanges: {
-          hunger: finalStats.hunger - prev.stats.hunger,
-          happiness: finalStats.happiness - prev.stats.happiness,
-          energy: finalStats.energy - prev.stats.energy
+        statsBefore: {
+          happiness: prev.stats.happiness,
+          energy: prev.stats.energy,
+          hunger: prev.stats.hunger
+        },
+        statsAfter: {
+          happiness: finalStats.happiness,
+          energy: finalStats.energy,
+          hunger: finalStats.hunger
         }
       })
       
@@ -183,12 +188,17 @@ function App() {
       
       // Record care action for achievements
       achievements.recordCareAction({
-        type: 'play',
+        action: 'play',
         timestamp: Date.now(),
-        statChanges: {
-          hunger: 0,
-          happiness: finalStats.happiness - prev.stats.happiness,
-          energy: finalStats.energy - prev.stats.energy
+        statsBefore: {
+          happiness: prev.stats.happiness,
+          energy: prev.stats.energy,
+          hunger: prev.stats.hunger
+        },
+        statsAfter: {
+          happiness: finalStats.happiness,
+          energy: finalStats.energy,
+          hunger: finalStats.hunger
         }
       })
       
@@ -230,12 +240,17 @@ function App() {
       
       // Record care action for achievements
       achievements.recordCareAction({
-        type: 'rest',
+        action: 'rest',
         timestamp: Date.now(),
-        statChanges: {
-          hunger: 0,
-          happiness: finalStats.happiness - prev.stats.happiness,
-          energy: finalStats.energy - prev.stats.energy
+        statsBefore: {
+          happiness: prev.stats.happiness,
+          energy: prev.stats.energy,
+          hunger: prev.stats.hunger
+        },
+        statsAfter: {
+          happiness: finalStats.happiness,
+          energy: finalStats.energy,
+          hunger: finalStats.hunger
         }
       })
       
@@ -278,9 +293,8 @@ function App() {
       // Record game result for achievements
       achievements.recordGameResult({
         type: 'mini-game',
-        result: reward.experience > 0 ? 'win' : 'loss',
+        result: reward.experience > 0 ? 'win' : 'lose',
         timestamp: Date.now(),
-        experienceGained: reward.experience,
         duration: 30 // Default duration
       })
       
