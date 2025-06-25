@@ -99,6 +99,40 @@
   transition: all 0.3s ease;
 }
 
+/* Achievement Panel Container */
+.achievement-panel-container {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  margin: 0 20px;
+  min-height: 60vh;
+}
+
+.achievement-panel-header {
+  margin-bottom: 20px;
+}
+
+.close-button {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.close-button:hover {
+  background: #4b5563;
+}
+
+.close-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.3);
+}
+
 /* Game Panel Container */
 .game-panel-container {
   width: 100%;

@@ -1,0 +1,236 @@
+/* AchievementNotification.css */
+
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  max-width: 350px;
+  min-width: 280px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 12px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 0 0 1px var(--rarity-color, #6b7280);
+  z-index: 1000;
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.achievement-notification--visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.achievement-notification--leaving {
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s ease-in;
+}
+
+.achievement-notification__content {
+  padding: 16px;
+  position: relative;
+}
+
+.achievement-notification__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.achievement-notification__icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--rarity-color, #6b7280);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.achievement-notification__type-icon {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.achievement-notification__main-icon {
+  font-size: 1.5rem;
+}
+
+.achievement-notification__text {
+  flex: 1;
+}
+
+.achievement-notification__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--rarity-color, #6b7280);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.achievement-notification__name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.achievement-notification__description {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.achievement-notification__rarity {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--rarity-color, #6b7280);
+  text-transform: capitalize;
+  text-align: right;
+}
+
+.achievement-notification__dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.achievement-notification__dismiss:hover {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Sparkle effects for epic and legendary */
+.achievement-notification__sparkles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  font-size: 1rem;
+  animation: sparkle 2s infinite;
+  opacity: 0;
+}
+
+.sparkle--1 {
+  top: 10px;
+  left: 20px;
+  animation-delay: 0s;
+}
+
+.sparkle--2 {
+  top: 40px;
+  right: 30px;
+  animation-delay: 0.7s;
+}
+
+.sparkle--3 {
+  bottom: 20px;
+  left: 50px;
+  animation-delay: 1.4s;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+/* Rarity-specific styles */
+.achievement-notification--common {
+  --glow-color: rgba(16, 185, 129, 0.2);
+}
+
+.achievement-notification--rare {
+  --glow-color: rgba(59, 130, 246, 0.2);
+}
+
+.achievement-notification--epic {
+  --glow-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 0 0 1px var(--rarity-color),
+    0 0 20px var(--glow-color);
+}
+
+.achievement-notification--legendary {
+  --glow-color: rgba(245, 158, 11, 0.2);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 0 0 1px var(--rarity-color),
+    0 0 30px var(--glow-color);
+  animation: legendaryGlow 2s infinite alternate;
+}
+
+@keyframes legendaryGlow {
+  0% {
+    box-shadow: 
+      0 10px 25px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--rarity-color),
+      0 0 20px var(--glow-color);
+  }
+  100% {
+    box-shadow: 
+      0 10px 25px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--rarity-color),
+      0 0 40px var(--glow-color);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .achievement-notification {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    min-width: auto;
+    transform: translateY(-100px);
+  }
+  
+  .achievement-notification--visible {
+    transform: translateY(0);
+  }
+  
+  .achievement-notification--leaving {
+    transform: translateY(-100px);
+  }
+}
