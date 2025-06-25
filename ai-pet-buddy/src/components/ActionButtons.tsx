@@ -84,9 +84,14 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, o
             disabled={disabled}
             style={{ '--btn-color': button.color } as React.CSSProperties}
             title={button.description}
+            aria-label={`${button.label}: ${button.description}`}
+            aria-describedby={`${button.id}-description`}
           >
-            <div className="btn-icon">{button.icon}</div>
+            <div className="btn-icon" aria-hidden="true">{button.icon}</div>
             <div className="btn-label">{button.label}</div>
+            <div id={`${button.id}-description`} className="sr-only">
+              {button.description}
+            </div>
           </button>
         ))}
       </div>

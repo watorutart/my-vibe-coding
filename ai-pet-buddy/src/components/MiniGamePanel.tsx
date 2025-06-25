@@ -2,16 +2,26 @@
  * ミニゲームパネル - ゲーム選択とプレイ画面
  */
 
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { useGame } from '../hooks/useGame';
 import type { GameConfig, GameDifficulty, GameType } from '../types/Game';
 import GameResults from './GameResults';
-import MemoryGame from './games/MemoryGame';
-import QuizGame from './games/QuizGame';
-import ReflexGame from './games/ReflexGame';
-import RockPaperScissorsGame from './games/RockPaperScissorsGame';
-import NumberGuessingGame from './games/NumberGuessingGame';
 import './MiniGamePanel.css';
+
+// Lazy load game components for better performance
+const MemoryGame = lazy(() => import('./games/MemoryGame'));
+const QuizGame = lazy(() => import('./games/QuizGame'));
+const ReflexGame = lazy(() => import('./games/ReflexGame'));
+const RockPaperScissorsGame = lazy(() => import('./games/RockPaperScissorsGame'));
+const NumberGuessingGame = lazy(() => import('./games/NumberGuessingGame'));
+
+// Game loading fallback component
+const GameLoadingFallback: React.FC = () => (
+  <div className="game-loading">
+    <div className="loading-spinner"></div>
+    <p>ゲームを読み込み中...</p>
+  </div>
+);
 
 export interface MiniGamePanelProps {
   onRewardEarned?: (reward: { experience: number; happiness: number; energy: number; coins: number }) => void;
@@ -96,20 +106,26 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
       timeElapsed,
     };
 
-    switch (gameType) {
-      case 'memory':
-        return <MemoryGame {...commonProps} />;
-      case 'reflex':
-        return <ReflexGame {...commonProps} />;
-      case 'quiz':
-        return <QuizGame {...commonProps} />;
-      case 'rock-paper-scissors':
-        return <RockPaperScissorsGame {...commonProps} />;
-      case 'number-guessing':
-        return <NumberGuessingGame {...commonProps} />;
-      default:
-        return <div className="error">未対応のゲームタイプです</div>;
-    }
+    return (
+      <Suspense fallback={<GameLoadingFallback />}>
+        {(() => {
+          switch (gameType) {
+            case 'memory':
+              return <MemoryGame {...commonProps} />;
+            case 'reflex':
+              return <ReflexGame {...commonProps} />;
+            case 'quiz':
+              return <QuizGame {...commonProps} />;
+            case 'rock-paper-scissors':
+              return <RockPaperScissorsGame {...commonProps} />;
+            case 'number-guessing':
+              return <NumberGuessingGame {...commonProps} />;
+            default:
+              return <div className="error">未対応のゲームタイプです</div>;
+          }
+        })()}
+      </Suspense>
+    );
   };
 
   const renderGameSelection = () => {

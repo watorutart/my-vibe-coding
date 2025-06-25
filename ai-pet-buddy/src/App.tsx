@@ -1,14 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, Suspense, lazy } from 'react'
 import './App.css'
 import ActionButtons from './components/ActionButtons'
 import ConversationPanel from './components/ConversationPanel'
-import CustomizationPanel from './components/CustomizationPanel'
-import MiniGamePanel from './components/MiniGamePanel'
 import PetDisplay from './components/PetDisplay'
 import StatsPanel from './components/StatsPanel'
-import { SharePanel } from './components/SharePanel'
 import PWAProvider from './components/PWAProvider'
-import AchievementList from './components/achievements/AchievementList'
 import AchievementNotificationContainer from './components/achievements/AchievementNotificationContainer'
 import { useDataPersistence } from './hooks/useDataPersistence'
 import { usePetProgress } from './hooks/usePetProgress'
@@ -20,6 +16,20 @@ import type { Pet } from './types/Pet'
 import type { StatsCardData } from './types/Share'
 import { DEFAULT_PET } from './types/Pet'
 import { createUserMessage, generatePetResponse } from './utils/conversationEngine'
+
+// Lazy load heavy components
+const CustomizationPanel = lazy(() => import('./components/CustomizationPanel'))
+const MiniGamePanel = lazy(() => import('./components/MiniGamePanel'))
+const SharePanel = lazy(() => import('./components/SharePanel').then(module => ({ default: module.SharePanel })))
+const AchievementList = lazy(() => import('./components/achievements/AchievementList'))
+
+// Loading fallback component
+const PanelLoadingFallback: React.FC = () => (
+  <div className="panel-loading">
+    <div className="loading-spinner"></div>
+    <p>読み込み中...</p>
+  </div>
+)
 
 function App() {
   const [pet, setPet] = useState<Pet>(DEFAULT_PET)
@@ -368,84 +378,98 @@ function App() {
 
   return (
     <PWAProvider pet={pet}>
-      <div className="app">
-        <header className="app-header">
+      <div className="app" role="application" aria-label="AI Pet Buddy Game">
+        <header className="app-header" role="banner">
           <h1>🐾 AI Pet Buddy</h1>
           <p>Take care of your virtual pet!</p>
-          <div className="progress-info">
+          <div className="progress-info" role="status" aria-live="polite">
             <p>レベル {getProgressInfo().currentLevel} | 経験値: {Math.round(getProgressInfo().currentExperience * 10) / 10}</p>
             <p>次のレベルまで: {Math.round(getProgressInfo().experienceToNextLevel * 10) / 10}経験値</p>
           </div>
         </header>
         
-        <main className="app-main">
+        <main className="app-main" role="main" aria-label="Main game area">
           {showGamePanel ? (
-            <div className="game-panel-container">
-              <MiniGamePanel
-                onRewardEarned={handleGameReward}
-                onClose={() => setShowGamePanel(false)}
-              />
-            </div>
+            <section className="game-panel-container" aria-label="Mini Games">
+              <Suspense fallback={<PanelLoadingFallback />}>
+                <MiniGamePanel
+                  onRewardEarned={handleGameReward}
+                  onClose={() => setShowGamePanel(false)}
+                />
+              </Suspense>
+            </section>
           ) : showAchievementPanel ? (
-            <div className="achievement-panel-container">
+            <section className="achievement-panel-container" aria-label="Achievements">
               <div className="achievement-panel-header">
                 <button 
                   className="close-button"
                   onClick={() => setShowAchievementPanel(false)}
-                  aria-label="Close achievements"
+                  aria-label="Close achievements panel and return to main game"
                 >
                   ← Back to Pet
                 </button>
               </div>
-              <AchievementList
-                achievementState={achievements.achievementState}
-                onTitleActivate={achievements.setActiveTitle}
-                onAchievementClick={(achievement, type) => {
-                  console.log(`Clicked ${type}:`, achievement);
-                }}
-              />
-            </div>
+              <Suspense fallback={<PanelLoadingFallback />}>
+                <AchievementList
+                  achievementState={achievements.achievementState}
+                  onTitleActivate={achievements.setActiveTitle}
+                  onAchievementClick={(achievement, type) => {
+                    console.log(`Clicked ${type}:`, achievement);
+                  }}
+                />
+              </Suspense>
+            </section>
           ) : (
             <>
-              <div ref={petDisplayRef} className="pet-display-area">
+              <section ref={petDisplayRef} className="pet-display-area" aria-label="Pet display and stats">
                 <PetDisplay pet={pet} />
                 <StatsPanel stats={pet.stats} />
-              </div>
-              <ActionButtons
-                onFeed={handleFeed}
-                onPlay={handlePlay}
-                onRest={handleRest}
-                onGames={() => setShowGamePanel(true)}
-                onShare={() => setShowSharePanel(true)}
-                onCustomize={() => setShowCustomizationPanel(true)}
-                onAchievements={() => setShowAchievementPanel(true)}
-              />
-              <ConversationPanel 
-                pet={pet}
-                conversationHistory={conversationHistory}
-                onSendMessage={handleSendMessage}
-              />
+              </section>
+              <section aria-label="Pet actions">
+                <ActionButtons
+                  onFeed={handleFeed}
+                  onPlay={handlePlay}
+                  onRest={handleRest}
+                  onGames={() => setShowGamePanel(true)}
+                  onShare={() => setShowSharePanel(true)}
+                  onCustomize={() => setShowCustomizationPanel(true)}
+                  onAchievements={() => setShowAchievementPanel(true)}
+                />
+              </section>
+              <section aria-label="Conversation with your pet">
+                <ConversationPanel 
+                  pet={pet}
+                  conversationHistory={conversationHistory}
+                  onSendMessage={handleSendMessage}
+                />
+              </section>
             </>
           )}
           
           {showCustomizationPanel && (
-            <CustomizationPanel
-              customizationApi={customizationApi}
-              onClose={() => {
-                customizationApi.cancelPreview(); // プレビューをキャンセルする処理を追加
-                setShowCustomizationPanel(false);
-              }}
-              onApply={handleApplyCustomization}
-            />
+            <section aria-label="Pet customization">
+              <Suspense fallback={<PanelLoadingFallback />}>
+                <CustomizationPanel
+                  customizationApi={customizationApi}
+                  onClose={() => {
+                    customizationApi.cancelPreview(); // プレビューをキャンセルする処理を追加
+                    setShowCustomizationPanel(false);
+                  }}
+                  onApply={handleApplyCustomization}
+                />
+              </Suspense>
+            </section>
           )}
         </main>
         
-        <SharePanel
-          isOpen={showSharePanel}
-          onClose={() => setShowSharePanel(false)}
-          captureTargetRef={petDisplayRef}
-          statsData={generateStatsData()}
-        />
+        <Suspense fallback={<PanelLoadingFallback />}>
+          <SharePanel
+            isOpen={showSharePanel}
+            onClose={() => setShowSharePanel(false)}
+            captureTargetRef={petDisplayRef}
+            statsData={generateStatsData()}
+          />
+        </Suspense>
         
         {/* Achievement Notifications */}
         <AchievementNotificationContainer
