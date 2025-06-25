@@ -379,6 +379,11 @@ function App() {
   return (
     <PWAProvider pet={pet}>
       <div className="app" role="application" aria-label="AI Pet Buddy Game">
+        {/* Skip Navigation Link for Accessibility */}
+        <a href="#main-content" className="skip-nav-link">
+          Skip to main content
+        </a>
+        
         <header className="app-header" role="banner">
           <h1>🐾 AI Pet Buddy</h1>
           <p>Take care of your virtual pet!</p>
@@ -388,7 +393,7 @@ function App() {
           </div>
         </header>
         
-        <main className="app-main" role="main" aria-label="Main game area">
+        <main id="main-content" className="app-main" role="main" aria-label="Main game area">
           {showGamePanel ? (
             <section className="game-panel-container" aria-label="Mini Games">
               <Suspense fallback={<PanelLoadingFallback />}>

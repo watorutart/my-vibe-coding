@@ -1,12 +1,46 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react({
-    // Enable React Fast Refresh optimizations
-    fastRefresh: true,
-  })],
+  plugins: [
+    react({
+      // Enable React Fast Refresh optimizations
+      fastRefresh: true,
+    }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
+      },
+      includeAssets: ['icons/*.png', 'robots.txt', 'sitemap.xml'],
+      manifest: {
+        name: 'AI Pet Buddy',
+        short_name: 'Pet Buddy',
+        description: '可愛いペットと一緒に遊ぼう！AI Pet Buddyは、バーチャルペットを育成・カスタマイズして楽しむWebアプリケーションです。',
+        theme_color: '#FF6B6B',
+        background_color: '#FFFFFF',
+        display: 'standalone',
+        scope: '/my-vibe-coding/',
+        start_url: '/my-vibe-coding/',
+        icons: [
+          {
+            src: 'icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
+  ],
   base: '/my-vibe-coding/',
   build: {
     outDir: 'dist',
@@ -16,15 +50,31 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks: (id) => {
           // Core React libraries
-          vendor: ['react', 'react-dom'],
+          if (id.includes('react') || id.includes('react-dom')) {
+            return 'vendor';
+          }
           // Chart.js library (heavy)
-          charts: ['chart.js', 'react-chartjs-2'],
-          // Date utilities (if used heavily)
-          utils: ['date-fns'],
-          // HTML canvas utilities
-          canvas: ['html2canvas'],
+          if (id.includes('chart.js') || id.includes('react-chartjs-2')) {
+            return 'charts';
+          }
+          // HTML canvas utilities (used only for sharing)
+          if (id.includes('html2canvas')) {
+            return 'canvas';
+          }
+          // Date utilities
+          if (id.includes('date-fns')) {
+            return 'utils';
+          }
+          // Group game components together
+          if (id.includes('/games/')) {
+            return 'games';
+          }
+          // Achievement related components
+          if (id.includes('/achievements/')) {
+            return 'achievements';
+          }
         },
         // Optimize asset file names for better caching
         assetFileNames: (assetInfo) => {

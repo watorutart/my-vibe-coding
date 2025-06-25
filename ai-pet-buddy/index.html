@@ -2,6 +2,9 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <!-- Reduce render blocking -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
     <!-- PWA Manifest - Updated 2025-06-16 -->
     <link rel="manifest" href="/my-vibe-coding/manifest.json" />
     
@@ -11,9 +14,6 @@
     
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/my-vibe-coding/icons/icon-180x180.png" />
-    
-    <!-- Viewport with PWA optimization -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="可愛いペットと一緒に遊ぼう！AI Pet Buddyは、バーチャルペットを育成・カスタマイズして楽しむWebアプリケーションです。" />
@@ -114,6 +114,13 @@
     <title>AI Pet Buddy - バーチャルペット育成ゲーム</title>
   </head>
   <body>
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+        <h2>JavaScript Required</h2>
+        <p>このアプリケーションを使用するにはJavaScriptを有効にしてください。</p>
+        <p>This application requires JavaScript to be enabled.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

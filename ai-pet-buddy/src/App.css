@@ -150,6 +150,23 @@ body {
   background: #f0f2f5;
 }
 
+/* Skip navigation link for accessibility */
+.skip-nav-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 100000;
+}
+
+.skip-nav-link:focus {
+  top: 0;
+}
+
 /* Panel loading fallback */
 .panel-loading {
   display: flex;
