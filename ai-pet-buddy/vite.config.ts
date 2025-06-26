@@ -75,6 +75,8 @@ export default defineConfig({
           if (id.includes('/achievements/')) {
             return 'achievements';
           }
+          // Default: Let Vite handle automatic chunking for other modules
+          return undefined;
         },
         // Optimize asset file names for better caching
         assetFileNames: (assetInfo) => {

@@ -165,6 +165,8 @@ body {
 
 .skip-nav-link:focus {
   top: 0;
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
 }
 
 /* Panel loading fallback */
