@@ -95,6 +95,23 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
     setSelectedGame(null);
   };
 
+  const renderGameComponent = (gameType: GameType, commonProps: any) => {
+    switch (gameType) {
+      case 'memory':
+        return <MemoryGame {...commonProps} />;
+      case 'reflex':
+        return <ReflexGame {...commonProps} />;
+      case 'quiz':
+        return <QuizGame {...commonProps} />;
+      case 'rock-paper-scissors':
+        return <RockPaperScissorsGame {...commonProps} />;
+      case 'number-guessing':
+        return <NumberGuessingGame {...commonProps} />;
+      default:
+        return <div className="error">未対応のゲームタイプです</div>;
+    }
+  };
+
   const renderGameInterface = () => {
     if (!currentSession) return null;
 
@@ -108,22 +125,7 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
 
     return (
       <Suspense fallback={<GameLoadingFallback />}>
-        {(() => {
-          switch (gameType) {
-            case 'memory':
-              return <MemoryGame {...commonProps} />;
-            case 'reflex':
-              return <ReflexGame {...commonProps} />;
-            case 'quiz':
-              return <QuizGame {...commonProps} />;
-            case 'rock-paper-scissors':
-              return <RockPaperScissorsGame {...commonProps} />;
-            case 'number-guessing':
-              return <NumberGuessingGame {...commonProps} />;
-            default:
-              return <div className="error">未対応のゲームタイプです</div>;
-          }
-        })()}
+        {renderGameComponent(gameType, commonProps)}
       </Suspense>
     );
   };
