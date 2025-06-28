@@ -4,7 +4,8 @@
 
 import React, { useState, Suspense, lazy } from 'react';
 import { useGame } from '../hooks/useGame';
-import type { GameConfig, GameDifficulty, GameType } from '../types/Game';
+import type { GameConfig, GameDifficulty, GameType, GameSession } from '../types/Game';
+import type { Choice } from '../utils/rockPaperScissorsLogic';
 import GameResults from './GameResults';
 import './MiniGamePanel.css';
 
@@ -22,6 +23,14 @@ const GameLoadingFallback: React.FC = () => (
     <p>ゲームを読み込み中...</p>
   </div>
 );
+
+// Interface for common props passed to all game components
+interface CommonGameProps {
+  session: GameSession;
+  onSubmitAnswer: (answer: string[] | number | Choice) => boolean;
+  onEndGame: () => void;
+  timeElapsed: number;
+}
 
 export interface MiniGamePanelProps {
   onRewardEarned?: (reward: { experience: number; happiness: number; energy: number; coins: number }) => void;
@@ -95,7 +104,7 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
     setSelectedGame(null);
   };
 
-  const renderGameComponent = (gameType: GameType, commonProps: any) => {
+  const renderGameComponent = (gameType: GameType, commonProps: CommonGameProps) => {
     switch (gameType) {
       case 'memory':
         return <MemoryGame {...commonProps} />;
