@@ -8,6 +8,7 @@ import type { GameConfig, GameDifficulty, GameType, GameSession } from '../types
 import type { Choice } from '../utils/rockPaperScissorsLogic';
 import GameResults from './GameResults';
 import './MiniGamePanel.css';
+import '../styles/loading.css';
 
 // Lazy load game components for better performance
 const MemoryGame = lazy(() => import('./games/MemoryGame'));
@@ -18,9 +19,9 @@ const NumberGuessingGame = lazy(() => import('./games/NumberGuessingGame'));
 
 // Game loading fallback component
 const GameLoadingFallback: React.FC = () => (
-  <div className="game-loading">
-    <div className="loading-spinner"></div>
-    <p>ゲームを読み込み中...</p>
+  <div className="loading-container loading-container--game">
+    <div className="loading-spinner loading-spinner--game"></div>
+    <p className="loading-text">ゲームを読み込み中...</p>
   </div>
 );
 

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, Suspense, lazy } from 'react'
 import './App.css'
+import './styles/loading.css'
 import ActionButtons from './components/ActionButtons'
 import ConversationPanel from './components/ConversationPanel'
 import PetDisplay from './components/PetDisplay'
@@ -25,9 +26,9 @@ const AchievementList = lazy(() => import('./components/achievements/Achievement
 
 // Loading fallback component
 const PanelLoadingFallback: React.FC = () => (
-  <div className="panel-loading">
-    <div className="loading-spinner"></div>
-    <p>読み込み中...</p>
+  <div className="loading-container loading-container--panel">
+    <div className="loading-spinner loading-spinner--panel"></div>
+    <p className="loading-text loading-text--panel">読み込み中...</p>
   </div>
 )
 
