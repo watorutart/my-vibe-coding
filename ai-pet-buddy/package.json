@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b --noEmitOnError false && vite build",
+    "build": "tsc -b && vite build",
     "build:github": "vite build",
     "build:analyze": "vite build --mode analyze",
     "lint": "eslint .",
@@ -25,7 +25,9 @@
     "notify": "./notify.sh",
     "test:complete": "npm run test && npm run notify",
     "build:complete": "npm run build && npm run notify",
-    "deploy:preview": "npm run build:github && npm run preview:dist"
+    "deploy:preview": "npm run build:github && npm run preview:dist",
+    "lighthouse:audit": "lighthouse http://localhost:4173/my-vibe-coding/ --output=html --output-path=lighthouse-report.html --chrome-flags=\"--headless\" --preset=desktop",
+    "lighthouse:mobile": "lighthouse http://localhost:4173/my-vibe-coding/ --output=html --output-path=lighthouse-mobile-report.html --chrome-flags=\"--headless\" --preset=mobile"
   },
   "dependencies": {
     "chart.js": "^4.4.9",
@@ -51,9 +53,12 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "jsdom": "^26.1.0",
+    "lighthouse": "^12.6.1",
+    "terser": "^5.43.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.0.0",
     "vitest": "^3.2.1"
   }
 }

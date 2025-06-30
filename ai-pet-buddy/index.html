@@ -2,6 +2,9 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <!-- Reduce render blocking -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
     <!-- PWA Manifest - Updated 2025-06-16 -->
     <link rel="manifest" href="/my-vibe-coding/manifest.json" />
     
@@ -11,9 +14,6 @@
     
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/my-vibe-coding/icons/icon-180x180.png" />
-    
-    <!-- Viewport with PWA optimization -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="可愛いペットと一緒に遊ぼう！AI Pet Buddyは、バーチャルペットを育成・カスタマイズして楽しむWebアプリケーションです。" />
@@ -51,13 +51,76 @@
     <meta name="msapplication-TileColor" content="#FF6B6B" />
     <meta name="msapplication-TileImage" content="/my-vibe-coding/icons/icon-192x192.png" />
     
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AI Pet Buddy",
+      "alternateName": "バーチャルペット育成ゲーム",
+      "description": "可愛いペットと一緒に遊ぼう！AI Pet Buddyは、バーチャルペットを育成・カスタマイズして楽しむWebアプリケーションです。",
+      "url": "https://watorutart.github.io/my-vibe-coding/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web",
+      "browserRequirements": "Requires modern web browser with JavaScript enabled",
+      "author": {
+        "@type": "Organization",
+        "name": "AI Pet Buddy Development Team"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "inLanguage": "ja",
+      "screenshot": "https://watorutart.github.io/my-vibe-coding/icons/icon-512x512.png"
+    }
+    </script>
+    
     <!-- Performance Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    
+    <!-- Optimize LCP and reduce CLS -->
+    <style>
+      /* Critical CSS inlined for faster rendering */
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Loading state optimization */
+      .app-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: white;
+        font-size: 18px;
+      }
+    </style>
+    
     <title>AI Pet Buddy - バーチャルペット育成ゲーム</title>
   </head>
   <body>
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+        <h2>JavaScript Required</h2>
+        <p>このアプリケーションを使用するにはJavaScriptを有効にしてください。</p>
+        <p>This application requires JavaScript to be enabled.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

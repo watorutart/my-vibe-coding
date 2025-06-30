@@ -2,16 +2,36 @@
  * ミニゲームパネル - ゲーム選択とプレイ画面
  */
 
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { useGame } from '../hooks/useGame';
-import type { GameConfig, GameDifficulty, GameType } from '../types/Game';
+import type { GameConfig, GameDifficulty, GameType, GameSession } from '../types/Game';
+import type { Choice } from '../utils/rockPaperScissorsLogic';
 import GameResults from './GameResults';
-import MemoryGame from './games/MemoryGame';
-import QuizGame from './games/QuizGame';
-import ReflexGame from './games/ReflexGame';
-import RockPaperScissorsGame from './games/RockPaperScissorsGame';
-import NumberGuessingGame from './games/NumberGuessingGame';
 import './MiniGamePanel.css';
+import '../styles/loading.css';
+
+// Lazy load game components for better performance
+const MemoryGame = lazy(() => import('./games/MemoryGame'));
+const QuizGame = lazy(() => import('./games/QuizGame'));
+const ReflexGame = lazy(() => import('./games/ReflexGame'));
+const RockPaperScissorsGame = lazy(() => import('./games/RockPaperScissorsGame'));
+const NumberGuessingGame = lazy(() => import('./games/NumberGuessingGame'));
+
+// Game loading fallback component
+const GameLoadingFallback: React.FC = () => (
+  <div className="loading-container loading-container--game">
+    <div className="loading-spinner loading-spinner--game"></div>
+    <p className="loading-text">ゲームを読み込み中...</p>
+  </div>
+);
+
+// Interface for common props passed to all game components
+interface CommonGameProps {
+  session: GameSession;
+  onSubmitAnswer: (answer: string[] | number | Choice) => boolean;
+  onEndGame: () => void;
+  timeElapsed: number;
+}
 
 export interface MiniGamePanelProps {
   onRewardEarned?: (reward: { experience: number; happiness: number; energy: number; coins: number }) => void;
@@ -85,17 +105,7 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
     setSelectedGame(null);
   };
 
-  const renderGameInterface = () => {
-    if (!currentSession) return null;
-
-    const gameType = currentSession.config.type;
-    const commonProps = {
-      session: currentSession,
-      onSubmitAnswer: submitAnswer,
-      onEndGame: handleGameEnd,
-      timeElapsed,
-    };
-
+  const renderGameComponent = (gameType: GameType, commonProps: CommonGameProps) => {
     switch (gameType) {
       case 'memory':
         return <MemoryGame {...commonProps} />;
@@ -110,6 +120,24 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
       default:
         return <div className="error">未対応のゲームタイプです</div>;
     }
+  };
+
+  const renderGameInterface = () => {
+    if (!currentSession) return null;
+
+    const gameType = currentSession.config.type;
+    const commonProps = {
+      session: currentSession,
+      onSubmitAnswer: submitAnswer,
+      onEndGame: handleGameEnd,
+      timeElapsed,
+    };
+
+    return (
+      <Suspense fallback={<GameLoadingFallback />}>
+        {renderGameComponent(gameType, commonProps)}
+      </Suspense>
+    );
   };
 
   const renderGameSelection = () => {

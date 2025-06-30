@@ -31,3 +31,7 @@ temp-*.js
 debug-*.js
 *.debug
 *.temp
+
+# Lighthouse reports
+lighthouse-*.html
+lighthouse-*.json
