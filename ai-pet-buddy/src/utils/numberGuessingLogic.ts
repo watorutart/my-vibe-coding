@@ -12,24 +12,34 @@ export interface DifficultySettings {
 /**
  * 難易度設定
  */
-export const DIFFICULTY_SETTINGS: Record<'easy' | 'medium' | 'hard', DifficultySettings> = {
+export const DIFFICULTY_SETTINGS: Record<
+  'easy' | 'medium' | 'hard',
+  DifficultySettings
+> = {
   easy: { min: 1, max: 50, maxAttempts: 8, baseReward: 75 },
   medium: { min: 1, max: 100, maxAttempts: 10, baseReward: 100 },
-  hard: { min: 1, max: 200, maxAttempts: 12, baseReward: 150 }
+  hard: { min: 1, max: 200, maxAttempts: 12, baseReward: 150 },
 };
 
 /**
  * ランダムな目標数字を生成
  */
-export function generateTargetNumber(difficulty: 'easy' | 'medium' | 'hard'): number {
+export function generateTargetNumber(
+  difficulty: 'easy' | 'medium' | 'hard'
+): number {
   const settings = DIFFICULTY_SETTINGS[difficulty];
-  return Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min;
+  return (
+    Math.floor(Math.random() * (settings.max - settings.min + 1)) + settings.min
+  );
 }
 
 /**
  * 推測の結果を判定
  */
-export function evaluateGuess(guess: number, target: number): 'correct' | 'too-high' | 'too-low' {
+export function evaluateGuess(
+  guess: number,
+  target: number
+): 'correct' | 'too-high' | 'too-low' {
   if (guess === target) {
     return 'correct';
   }
@@ -41,7 +51,7 @@ export function evaluateGuess(guess: number, target: number): 'correct' | 'too-h
  */
 export function generateHint(guess: number, target: number): string {
   const evaluation = evaluateGuess(guess, target);
-  
+
   switch (evaluation) {
     case 'correct':
       return '🎉 正解です！';
@@ -79,37 +89,44 @@ export function calculateReward(
   isCorrect: boolean
 ) {
   const settings = DIFFICULTY_SETTINGS[difficulty];
-  const score = calculateScore(attempts, maxAttempts, settings.baseReward, isCorrect);
-  
+  const score = calculateScore(
+    attempts,
+    maxAttempts,
+    settings.baseReward,
+    isCorrect
+  );
+
   const baseRewards = {
     easy: { experience: 50, happiness: 8, energy: -3 },
     medium: { experience: 75, happiness: 10, energy: -4 },
-    hard: { experience: 100, happiness: 12, energy: -5 }
+    hard: { experience: 100, happiness: 12, energy: -5 },
   };
 
   const base = baseRewards[difficulty];
-  
+
   if (!isCorrect) {
     return {
       experience: Math.floor(base.experience * 0.2),
       happiness: Math.floor(base.happiness * 0.2),
       energy: Math.floor(base.energy * 0.5),
-      coins: 0
+      coins: 0,
     };
   }
 
   // 効率ボーナス
   const efficiency = (maxAttempts - attempts + 1) / maxAttempts;
-  const efficiencyMultiplier = 0.5 + (efficiency * 1.5); // 0.5 - 2.0の範囲
+  const efficiencyMultiplier = 0.5 + efficiency * 1.5; // 0.5 - 2.0の範囲
 
   // パーフェクトゲーム（1回で正解）の特別報酬
   const perfectBonus = attempts === 1 ? 1.5 : 1.0;
 
   return {
-    experience: Math.floor(base.experience * efficiencyMultiplier * perfectBonus),
+    experience: Math.floor(
+      base.experience * efficiencyMultiplier * perfectBonus
+    ),
     happiness: Math.floor(base.happiness * efficiencyMultiplier),
     energy: base.energy,
-    coins: Math.floor(score / 50) + (attempts === 1 ? 3 : 0) // パーフェクトゲームで特別コイン
+    coins: Math.floor(score / 50) + (attempts === 1 ? 3 : 0), // パーフェクトゲームで特別コイン
   };
 }
 
@@ -159,21 +176,21 @@ export function validateGuess(
   difficulty: 'easy' | 'medium' | 'hard'
 ): { isValid: boolean; errorMessage?: string } {
   const settings = DIFFICULTY_SETTINGS[difficulty];
-  
+
   if (isNaN(guess)) {
     return { isValid: false, errorMessage: '数字を入力してください' };
   }
-  
+
   if (guess < settings.min || guess > settings.max) {
-    return { 
-      isValid: false, 
-      errorMessage: `${settings.min}〜${settings.max}の範囲で入力してください` 
+    return {
+      isValid: false,
+      errorMessage: `${settings.min}〜${settings.max}の範囲で入力してください`,
     };
   }
-  
+
   if (!Number.isInteger(guess)) {
     return { isValid: false, errorMessage: '整数を入力してください' };
   }
-  
+
   return { isValid: true };
 }

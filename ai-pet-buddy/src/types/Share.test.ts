@@ -13,14 +13,15 @@ import type {
   StatsCardData,
   ShareHistoryEntry,
   ShareSettings,
-  SocialPlatform
+  SocialPlatform,
 } from './Share';
 
 describe('Share Types', () => {
   describe('ShareData', () => {
     it('should have correct structure', () => {
       const shareData: ShareData = {
-        imageDataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+        imageDataUrl:
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
         title: 'My AI Pet Buddy',
         description: 'Check out my adorable pet!',
         hashtags: ['#AIPetBuddy', '#VirtualPet', '#Gaming'],
@@ -29,8 +30,8 @@ describe('Share Types', () => {
           happiness: 85,
           energy: 70,
           experience: 1250,
-          evolutionStage: 'child'
-        }
+          evolutionStage: 'child',
+        },
       };
 
       expect(shareData.imageDataUrl).toContain('data:image/png;base64');
@@ -45,7 +46,7 @@ describe('Share Types', () => {
         imageDataUrl: 'data:image/png;base64,test',
         title: 'Test',
         description: 'Test description',
-        hashtags: ['#test']
+        hashtags: ['#test'],
       };
 
       expect(shareData.stats).toBeUndefined();
@@ -60,7 +61,7 @@ describe('Share Types', () => {
         quality: 0.9,
         showWatermark: true,
         backgroundColor: '#ffffff',
-        scale: 2
+        scale: 2,
       };
 
       expect(options.width).toBe(1080);
@@ -79,7 +80,7 @@ describe('Share Types', () => {
 
     it('should support null background color', () => {
       const options: ScreenshotOptions = {
-        backgroundColor: null
+        backgroundColor: null,
       };
 
       expect(options.backgroundColor).toBeNull();
@@ -88,7 +89,12 @@ describe('Share Types', () => {
 
   describe('SocialPlatform', () => {
     it('should accept valid platform values', () => {
-      const platforms: SocialPlatform[] = ['twitter', 'facebook', 'instagram', 'line'];
+      const platforms: SocialPlatform[] = [
+        'twitter',
+        'facebook',
+        'instagram',
+        'line',
+      ];
 
       platforms.forEach(platform => {
         const shareOptions: SocialShareOptions = {
@@ -97,8 +103,8 @@ describe('Share Types', () => {
             imageDataUrl: 'test',
             title: 'test',
             description: 'test',
-            hashtags: []
-          }
+            hashtags: [],
+          },
         };
 
         expect(shareOptions.platform).toBe(platform);
@@ -114,9 +120,9 @@ describe('Share Types', () => {
           imageDataUrl: 'data:image/png;base64,test',
           title: 'Share Title',
           description: 'Share Description',
-          hashtags: ['#test', '#share']
+          hashtags: ['#test', '#share'],
         },
-        url: 'https://example.com'
+        url: 'https://example.com',
       };
 
       expect(options.platform).toBe('twitter');
@@ -131,8 +137,8 @@ describe('Share Types', () => {
           imageDataUrl: 'test',
           title: 'test',
           description: 'test',
-          hashtags: []
-        }
+          hashtags: [],
+        },
       };
 
       expect(options.url).toBeUndefined();
@@ -143,18 +149,20 @@ describe('Share Types', () => {
     it('should represent successful result', () => {
       const result: ShareResult = {
         success: true,
-        shareUrl: 'https://twitter.com/intent/tweet?text=test'
+        shareUrl: 'https://twitter.com/intent/tweet?text=test',
       };
 
       expect(result.success).toBe(true);
-      expect(result.shareUrl).toBe('https://twitter.com/intent/tweet?text=test');
+      expect(result.shareUrl).toBe(
+        'https://twitter.com/intent/tweet?text=test'
+      );
       expect(result.error).toBeUndefined();
     });
 
     it('should represent failed result', () => {
       const result: ShareResult = {
         success: false,
-        error: 'Network error occurred'
+        error: 'Network error occurred',
       };
 
       expect(result.success).toBe(false);
@@ -170,7 +178,7 @@ describe('Share Types', () => {
         position: 'bottom-right',
         opacity: 0.7,
         fontSize: '16px',
-        color: '#ffffff'
+        color: '#ffffff',
       };
 
       expect(config.text).toBe('AI Pet Buddy');
@@ -182,7 +190,7 @@ describe('Share Types', () => {
 
     it('should work with minimal config', () => {
       const config: WatermarkConfig = {
-        text: 'Test'
+        text: 'Test',
       };
 
       expect(config.text).toBe('Test');
@@ -201,7 +209,7 @@ describe('Share Types', () => {
         gameWinRate: 0.75,
         achievementCount: 8,
         specialTitle: 'Champion',
-        birthDate: new Date('2024-01-01')
+        birthDate: new Date('2024-01-01'),
       };
 
       expect(statsData.petName).toBe('Fluffy');
@@ -222,7 +230,7 @@ describe('Share Types', () => {
         totalPlayTime: 60,
         gameWinRate: 0.5,
         achievementCount: 0,
-        birthDate: new Date()
+        birthDate: new Date(),
       };
 
       expect(statsData.specialTitle).toBeUndefined();
@@ -236,7 +244,7 @@ describe('Share Types', () => {
         platform: 'twitter',
         content: 'Check out my pet!',
         imageUrl: 'https://example.com/image.png',
-        success: true
+        success: true,
       };
 
       expect(typeof entry.timestamp).toBe('number');
@@ -251,7 +259,7 @@ describe('Share Types', () => {
         timestamp: Date.now(),
         platform: 'line',
         content: 'Text only share',
-        success: true
+        success: true,
       };
 
       expect(entry.imageUrl).toBeUndefined();
@@ -265,7 +273,7 @@ describe('Share Types', () => {
         enableWatermark: true,
         autoSave: false,
         imageQuality: 0.9,
-        includeStats: true
+        includeStats: true,
       };
 
       expect(settings.defaultHashtags).toHaveLength(2);

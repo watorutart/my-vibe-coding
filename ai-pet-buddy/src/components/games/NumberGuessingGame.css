@@ -107,8 +107,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 .input-container {
@@ -226,8 +231,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px) scale(1); }
-  to { opacity: 1; transform: translateY(0) scale(1.02); }
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+  }
 }
 
 /* ゲーム結果 */
@@ -241,13 +252,13 @@
 }
 
 @keyframes slideUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px); 
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -326,33 +337,33 @@
   .number-guessing-game {
     padding: 15px;
   }
-  
+
   .game-info {
     gap: 5px;
     font-size: 0.8em;
   }
-  
+
   .game-info span {
     padding: 4px 8px;
   }
-  
+
   .input-group {
     flex-direction: column;
   }
-  
+
   .submit-button {
     min-width: auto;
   }
-  
+
   .result-stats {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .stat-item {
     min-width: auto;
   }
-  
+
   .game-score {
     flex-direction: column;
     gap: 10px;
@@ -363,21 +374,21 @@
   .game-header h2 {
     font-size: 1.5em;
   }
-  
+
   .game-description p {
     font-size: 1em;
   }
-  
+
   .guess-input {
     padding: 12px 15px;
     font-size: 1.1em;
   }
-  
+
   .submit-button {
     padding: 12px 20px;
     font-size: 1em;
   }
-  
+
   .result-message {
     font-size: 1.3em;
   }

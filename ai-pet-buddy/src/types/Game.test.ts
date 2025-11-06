@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import type {
-    GameConfig,
-    GameResult,
-    GameReward,
-    GameScore,
-    GameSession,
-    GameState,
-    MemoryGameData,
-    QuizGameData,
-    ReflexGameData,
+  GameConfig,
+  GameResult,
+  GameReward,
+  GameScore,
+  GameSession,
+  GameState,
+  MemoryGameData,
+  QuizGameData,
+  ReflexGameData,
 } from './Game';
 
 describe('Game Types', () => {
@@ -54,9 +54,21 @@ describe('Game Types', () => {
     });
 
     it('should allow all game types', () => {
-      const memoryGame: GameConfig = { type: 'memory', difficulty: 'easy', duration: 30 };
-      const reflexGame: GameConfig = { type: 'reflex', difficulty: 'hard', duration: 45 };
-      const quizGame: GameConfig = { type: 'quiz', difficulty: 'medium', duration: 120 };
+      const memoryGame: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 30,
+      };
+      const reflexGame: GameConfig = {
+        type: 'reflex',
+        difficulty: 'hard',
+        duration: 45,
+      };
+      const quizGame: GameConfig = {
+        type: 'quiz',
+        difficulty: 'medium',
+        duration: 120,
+      };
 
       expect(memoryGame.type).toBe('memory');
       expect(reflexGame.type).toBe('reflex');

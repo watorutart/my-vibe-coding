@@ -20,10 +20,10 @@ const mockBadge: Badge = {
   requirements: {
     type: 'total_games',
     value: 10,
-    description: 'Play 10 games'
+    description: 'Play 10 games',
   },
   unlocked: false,
-  progress: 0.5
+  progress: 0.5,
 };
 
 const mockUnlockedBadge: Badge = {
@@ -31,7 +31,7 @@ const mockUnlockedBadge: Badge = {
   id: 'unlocked-badge',
   unlocked: true,
   progress: 1,
-  unlockedAt: Date.now() - 86400000 // 1 day ago
+  unlockedAt: Date.now() - 86400000, // 1 day ago
 };
 
 const mockTitle: Title = {
@@ -44,28 +44,23 @@ const mockTitle: Title = {
   requirements: {
     type: 'level_reached',
     value: 5,
-    description: 'Reach level 5'
+    description: 'Reach level 5',
   },
   unlocked: true,
   unlockedAt: Date.now() - 3600000, // 1 hour ago
-  active: false
+  active: false,
 };
 
 const mockActiveTitle: Title = {
   ...mockTitle,
   id: 'active-title',
-  active: true
+  active: true,
 };
 
 describe('AchievementItem', () => {
   describe('Badge Rendering', () => {
     it('should render locked badge correctly', () => {
-      render(
-        <AchievementItem
-          achievement={mockBadge}
-          type="badge"
-        />
-      );
+      render(<AchievementItem achievement={mockBadge} type="badge" />);
 
       expect(screen.getByText('Test Badge')).toBeInTheDocument();
       expect(screen.getByText('A test badge for testing')).toBeInTheDocument();
@@ -76,12 +71,7 @@ describe('AchievementItem', () => {
     });
 
     it('should render unlocked badge correctly', () => {
-      render(
-        <AchievementItem
-          achievement={mockUnlockedBadge}
-          type="badge"
-        />
-      );
+      render(<AchievementItem achievement={mockUnlockedBadge} type="badge" />);
 
       expect(screen.getByText('Test Badge')).toBeInTheDocument();
       const trophyIcons = screen.getAllByText('🏆');
@@ -100,9 +90,13 @@ describe('AchievementItem', () => {
         />
       );
 
-      const progressBar = container.querySelector('.achievement-item__progress-bar');
-      const progressFill = container.querySelector('.achievement-item__progress-fill');
-      
+      const progressBar = container.querySelector(
+        '.achievement-item__progress-bar'
+      );
+      const progressFill = container.querySelector(
+        '.achievement-item__progress-fill'
+      );
+
       expect(progressBar).toBeInTheDocument();
       expect(progressFill).toBeInTheDocument();
       expect(progressFill).toHaveStyle({ width: '50%' });
@@ -117,19 +111,16 @@ describe('AchievementItem', () => {
         />
       );
 
-      const progressBar = container.querySelector('.achievement-item__progress-bar');
+      const progressBar = container.querySelector(
+        '.achievement-item__progress-bar'
+      );
       expect(progressBar).not.toBeInTheDocument();
     });
   });
 
   describe('Title Rendering', () => {
     it('should render title correctly', () => {
-      render(
-        <AchievementItem
-          achievement={mockTitle}
-          type="title"
-        />
-      );
+      render(<AchievementItem achievement={mockTitle} type="title" />);
 
       expect(screen.getByText('Test Title')).toBeInTheDocument();
       expect(screen.getByText('A test title for testing')).toBeInTheDocument();
@@ -162,7 +153,9 @@ describe('AchievementItem', () => {
         />
       );
 
-      const progressBar = container.querySelector('.achievement-item__progress-bar');
+      const progressBar = container.querySelector(
+        '.achievement-item__progress-bar'
+      );
       expect(progressBar).not.toBeInTheDocument();
     });
   });
@@ -225,12 +218,7 @@ describe('AchievementItem', () => {
     });
 
     it('should not be interactive when onClick is not provided', () => {
-      render(
-        <AchievementItem
-          achievement={mockBadge}
-          type="badge"
-        />
-      );
+      render(<AchievementItem achievement={mockBadge} type="badge" />);
 
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
@@ -239,11 +227,7 @@ describe('AchievementItem', () => {
   describe('CSS Classes', () => {
     it('should apply correct size class', () => {
       const { container } = render(
-        <AchievementItem
-          achievement={mockBadge}
-          type="badge"
-          size="small"
-        />
+        <AchievementItem achievement={mockBadge} type="badge" size="small" />
       );
 
       const item = container.querySelector('.achievement-item');
@@ -252,10 +236,7 @@ describe('AchievementItem', () => {
 
     it('should apply correct rarity class', () => {
       const { container } = render(
-        <AchievementItem
-          achievement={mockBadge}
-          type="badge"
-        />
+        <AchievementItem achievement={mockBadge} type="badge" />
       );
 
       const item = container.querySelector('.achievement-item');
@@ -264,10 +245,7 @@ describe('AchievementItem', () => {
 
     it('should apply unlocked class for unlocked items', () => {
       const { container } = render(
-        <AchievementItem
-          achievement={mockUnlockedBadge}
-          type="badge"
-        />
+        <AchievementItem achievement={mockUnlockedBadge} type="badge" />
       );
 
       const item = container.querySelector('.achievement-item');
@@ -276,10 +254,7 @@ describe('AchievementItem', () => {
 
     it('should apply locked class for locked items', () => {
       const { container } = render(
-        <AchievementItem
-          achievement={mockBadge}
-          type="badge"
-        />
+        <AchievementItem achievement={mockBadge} type="badge" />
       );
 
       const item = container.querySelector('.achievement-item');
@@ -328,12 +303,7 @@ describe('AchievementItem', () => {
     });
 
     it('should not have button role when not clickable', () => {
-      render(
-        <AchievementItem
-          achievement={mockBadge}
-          type="badge"
-        />
-      );
+      render(<AchievementItem achievement={mockBadge} type="badge" />);
 
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });

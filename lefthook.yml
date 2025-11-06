@@ -1,0 +1,16 @@
+# Lefthook configuration for AI Pet Buddy project
+# Refer to: https://lefthook.dev/configuration/
+
+pre-commit:
+  parallel: true
+  commands:
+    typecheck:
+      name: TypeScript Type Check
+      root: "ai-pet-buddy/"
+      run: npx tsc --noEmit
+      
+    format-check:
+      name: Prettier Format Check
+      root: "ai-pet-buddy/"
+      glob: "*.{js,jsx,ts,tsx,json,css,md}"
+      run: npx prettier --check .

@@ -12,30 +12,43 @@ import type {
   AchievementState,
   AchievementNotification,
   AchievementCategory,
-  AchievementRarity
+  AchievementRarity,
 } from './Achievement';
 import {
   DEFAULT_ACHIEVEMENT_PROGRESS,
   PREDEFINED_BADGES,
-  PREDEFINED_TITLES
+  PREDEFINED_TITLES,
 } from './Achievement';
 
 describe('Achievement Types', () => {
   describe('AchievementCategory', () => {
     it('should have valid category types', () => {
-      const validCategories: AchievementCategory[] = ['evolution', 'game', 'care', 'time', 'level'];
-      
+      const validCategories: AchievementCategory[] = [
+        'evolution',
+        'game',
+        'care',
+        'time',
+        'level',
+      ];
+
       validCategories.forEach(category => {
         expect(typeof category).toBe('string');
-        expect(['evolution', 'game', 'care', 'time', 'level']).toContain(category);
+        expect(['evolution', 'game', 'care', 'time', 'level']).toContain(
+          category
+        );
       });
     });
   });
 
   describe('AchievementRarity', () => {
     it('should have valid rarity types', () => {
-      const validRarities: AchievementRarity[] = ['common', 'rare', 'epic', 'legendary'];
-      
+      const validRarities: AchievementRarity[] = [
+        'common',
+        'rare',
+        'epic',
+        'legendary',
+      ];
+
       validRarities.forEach(rarity => {
         expect(typeof rarity).toBe('string');
         expect(['common', 'rare', 'epic', 'legendary']).toContain(rarity);
@@ -48,7 +61,7 @@ describe('Achievement Types', () => {
       const requirement: AchievementRequirement = {
         type: 'level_reached',
         value: 10,
-        description: 'Reach level 10'
+        description: 'Reach level 10',
       };
 
       expect(requirement.type).toBe('level_reached');
@@ -60,18 +73,18 @@ describe('Achievement Types', () => {
     it('should validate requirement types', () => {
       const validTypes = [
         'evolution_count',
-        'game_win_streak', 
+        'game_win_streak',
         'consecutive_days',
         'level_reached',
         'stat_max',
         'total_games',
-        'total_playtime'
+        'total_playtime',
       ];
 
       const requirement: AchievementRequirement = {
         type: 'evolution_count',
         value: 1,
-        description: 'Test requirement'
+        description: 'Test requirement',
       };
 
       expect(validTypes).toContain(requirement.type);
@@ -90,10 +103,10 @@ describe('Achievement Types', () => {
         requirements: {
           type: 'game_win_streak',
           value: 5,
-          description: 'Win 5 games in a row'
+          description: 'Win 5 games in a row',
         },
         unlocked: false,
-        progress: 0.5
+        progress: 0.5,
       };
 
       expect(badge.id).toBe('test-badge');
@@ -116,11 +129,11 @@ describe('Achievement Types', () => {
         requirements: {
           type: 'evolution_count',
           value: 1,
-          description: 'Evolve once'
+          description: 'Evolve once',
         },
         unlocked: true,
         unlockedAt,
-        progress: 1
+        progress: 1,
       };
 
       expect(badge.unlocked).toBe(true);
@@ -141,11 +154,11 @@ describe('Achievement Types', () => {
         requirements: {
           type: 'level_reached',
           value: 10,
-          description: 'Reach level 10'
+          description: 'Reach level 10',
         },
         unlocked: true,
         unlockedAt: Date.now(),
-        active: true
+        active: true,
       };
 
       expect(title.id).toBe('test-title');
@@ -166,11 +179,11 @@ describe('Achievement Types', () => {
         requirements: {
           type: 'total_games',
           value: 100,
-          description: 'Play 100 games'
+          description: 'Play 100 games',
         },
         unlocked: true,
         unlockedAt: Date.now(),
-        active: false
+        active: false,
       };
 
       expect(title.unlocked).toBe(true);
@@ -192,7 +205,7 @@ describe('Achievement Types', () => {
         totalWins: 35,
         totalPlaytime: 1200,
         lastPlayDate: Date.now(),
-        firstPlayDate: Date.now() - 86400000 * 30 // 30 days ago
+        firstPlayDate: Date.now() - 86400000 * 30, // 30 days ago
       };
 
       expect(progress.evolutionCount).toBe(3);
@@ -215,7 +228,7 @@ describe('Achievement Types', () => {
         totalWins: 12,
         totalPlaytime: 300,
         lastPlayDate: Date.now(),
-        firstPlayDate: Date.now() - 86400000
+        firstPlayDate: Date.now() - 86400000,
       };
 
       expect(progress.totalWins).toBeLessThanOrEqual(progress.totalGames);
@@ -229,7 +242,7 @@ describe('Achievement Types', () => {
         badges: [],
         titles: [],
         progress: DEFAULT_ACHIEVEMENT_PROGRESS,
-        newlyUnlocked: []
+        newlyUnlocked: [],
       };
 
       expect(Array.isArray(state.badges)).toBe(true);
@@ -243,7 +256,7 @@ describe('Achievement Types', () => {
         badges: [],
         titles: [],
         progress: DEFAULT_ACHIEVEMENT_PROGRESS,
-        newlyUnlocked: ['first-evolution', 'week-streak']
+        newlyUnlocked: ['first-evolution', 'week-streak'],
       };
 
       expect(state.newlyUnlocked).toHaveLength(2);
@@ -261,7 +274,7 @@ describe('Achievement Types', () => {
         description: 'You unlocked something!',
         icon: '🎉',
         rarity: 'rare',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       expect(notification.type).toBe('badge');
@@ -286,8 +299,12 @@ describe('Achievement Types', () => {
     });
 
     it('should have logical consistency', () => {
-      expect(DEFAULT_ACHIEVEMENT_PROGRESS.totalWins).toBeLessThanOrEqual(DEFAULT_ACHIEVEMENT_PROGRESS.totalGames);
-      expect(DEFAULT_ACHIEVEMENT_PROGRESS.currentWinStreak).toBeLessThanOrEqual(DEFAULT_ACHIEVEMENT_PROGRESS.maxWinStreak);
+      expect(DEFAULT_ACHIEVEMENT_PROGRESS.totalWins).toBeLessThanOrEqual(
+        DEFAULT_ACHIEVEMENT_PROGRESS.totalGames
+      );
+      expect(DEFAULT_ACHIEVEMENT_PROGRESS.currentWinStreak).toBeLessThanOrEqual(
+        DEFAULT_ACHIEVEMENT_PROGRESS.maxWinStreak
+      );
       expect(DEFAULT_ACHIEVEMENT_PROGRESS.maxLevel).toBeGreaterThanOrEqual(1);
     });
   });
@@ -295,13 +312,15 @@ describe('Achievement Types', () => {
   describe('PREDEFINED_BADGES', () => {
     it('should have valid badge definitions', () => {
       expect(PREDEFINED_BADGES.length).toBeGreaterThan(0);
-      
+
       PREDEFINED_BADGES.forEach(badge => {
         expect(badge.id).toBeTruthy();
         expect(badge.name).toBeTruthy();
         expect(badge.description).toBeTruthy();
         expect(badge.icon).toBeTruthy();
-        expect(['evolution', 'game', 'care', 'time', 'level']).toContain(badge.category);
+        expect(['evolution', 'game', 'care', 'time', 'level']).toContain(
+          badge.category
+        );
         expect(['common', 'rare', 'epic', 'legendary']).toContain(badge.rarity);
         expect(badge.requirements).toBeTruthy();
         expect(badge.requirements.value).toBeGreaterThan(0);
@@ -311,13 +330,13 @@ describe('Achievement Types', () => {
     it('should have unique badge IDs', () => {
       const ids = PREDEFINED_BADGES.map(badge => badge.id);
       const uniqueIds = [...new Set(ids)];
-      
+
       expect(ids.length).toBe(uniqueIds.length);
     });
 
     it('should include specific required badges', () => {
       const badgeIds = PREDEFINED_BADGES.map(badge => badge.id);
-      
+
       expect(badgeIds).toContain('first-evolution');
       expect(badgeIds).toContain('game-master');
       expect(badgeIds).toContain('week-streak');
@@ -329,13 +348,15 @@ describe('Achievement Types', () => {
   describe('PREDEFINED_TITLES', () => {
     it('should have valid title definitions', () => {
       expect(PREDEFINED_TITLES.length).toBeGreaterThan(0);
-      
+
       PREDEFINED_TITLES.forEach(title => {
         expect(title.id).toBeTruthy();
         expect(title.name).toBeTruthy();
         expect(title.description).toBeTruthy();
         expect(title.icon).toBeTruthy();
-        expect(['evolution', 'game', 'care', 'time', 'level']).toContain(title.category);
+        expect(['evolution', 'game', 'care', 'time', 'level']).toContain(
+          title.category
+        );
         expect(['common', 'rare', 'epic', 'legendary']).toContain(title.rarity);
         expect(title.requirements).toBeTruthy();
         expect(title.requirements.value).toBeGreaterThan(0);
@@ -345,13 +366,13 @@ describe('Achievement Types', () => {
     it('should have unique title IDs', () => {
       const ids = PREDEFINED_TITLES.map(title => title.id);
       const uniqueIds = [...new Set(ids)];
-      
+
       expect(ids.length).toBe(uniqueIds.length);
     });
 
     it('should include specific required titles', () => {
       const titleIds = PREDEFINED_TITLES.map(title => title.id);
-      
+
       expect(titleIds).toContain('beginner-trainer');
       expect(titleIds).toContain('veteran-trainer');
       expect(titleIds).toContain('master-trainer');

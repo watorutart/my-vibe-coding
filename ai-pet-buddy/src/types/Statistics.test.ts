@@ -18,7 +18,7 @@ import type {
   ChartConfig,
   StatisticsSummary,
   TimePeriod,
-  EvolutionRecord
+  EvolutionRecord,
 } from './Statistics';
 import {
   DEFAULT_GAME_STATISTICS,
@@ -32,14 +32,14 @@ import {
   formatDate,
   formatDateTime,
   CHART_COLORS,
-  CHART_COLOR_PALETTE
+  CHART_COLOR_PALETTE,
 } from './Statistics';
 
 describe('Statistics Types', () => {
   describe('TimePeriod', () => {
     it('should have valid time period types', () => {
       const validPeriods: TimePeriod[] = ['daily', 'weekly', 'monthly', 'all'];
-      
+
       validPeriods.forEach(period => {
         expect(typeof period).toBe('string');
         expect(['daily', 'weekly', 'monthly', 'all']).toContain(period);
@@ -64,22 +64,24 @@ describe('Statistics Types', () => {
             won: 40,
             lost: 20,
             winRate: 0.67,
-            bestStreak: 8
+            bestStreak: 8,
           },
           'number-guess': {
             played: 40,
             won: 25,
             lost: 15,
             winRate: 0.625,
-            bestStreak: 12
-          }
-        }
+            bestStreak: 12,
+          },
+        },
       };
 
       expect(gameStats.totalGames).toBe(100);
       expect(gameStats.wins + gameStats.losses).toBe(gameStats.totalGames);
       expect(gameStats.winRate).toBeCloseTo(0.65);
-      expect(gameStats.maxWinStreak).toBeGreaterThanOrEqual(gameStats.currentWinStreak);
+      expect(gameStats.maxWinStreak).toBeGreaterThanOrEqual(
+        gameStats.currentWinStreak
+      );
       expect(Object.keys(gameStats.gameBreakdown)).toHaveLength(2);
     });
 
@@ -99,21 +101,23 @@ describe('Statistics Types', () => {
             won: 20,
             lost: 10,
             winRate: 0.67,
-            bestStreak: 5
+            bestStreak: 5,
           },
           'number-guess': {
             played: 20,
             won: 10,
             lost: 10,
             winRate: 0.5,
-            bestStreak: 3
-          }
-        }
+            bestStreak: 3,
+          },
+        },
       };
 
-      const totalBreakdownGames = Object.values(gameStats.gameBreakdown)
-        .reduce((sum, game) => sum + game.played, 0);
-      
+      const totalBreakdownGames = Object.values(gameStats.gameBreakdown).reduce(
+        (sum, game) => sum + game.played,
+        0
+      );
+
       expect(totalBreakdownGames).toBe(gameStats.totalGames);
     });
   });
@@ -134,14 +138,14 @@ describe('Statistics Types', () => {
           feed: {
             count: 150,
             totalTime: 300,
-            averageImprovement: 25.5
+            averageImprovement: 25.5,
           },
           play: {
             count: 200,
             totalTime: 800,
-            averageImprovement: 15.2
-          }
-        }
+            averageImprovement: 15.2,
+          },
+        },
       };
 
       expect(careStats.totalFeedings).toBe(150);
@@ -168,14 +172,16 @@ describe('Statistics Types', () => {
             toLevel: 2,
             timestamp: Date.now() - 86400000 * 10,
             experienceGained: 100,
-            timeTaken: 24
-          }
+            timeTaken: 24,
+          },
         ],
-        timeToMaxLevel: 50
+        timeToMaxLevel: 50,
       };
 
       expect(evolutionStats.totalEvolutions).toBe(5);
-      expect(evolutionStats.currentLevel).toBeLessThanOrEqual(evolutionStats.maxLevel);
+      expect(evolutionStats.currentLevel).toBeLessThanOrEqual(
+        evolutionStats.maxLevel
+      );
       expect(evolutionStats.evolutionHistory).toHaveLength(1);
       expect(evolutionStats.totalExperience).toBeGreaterThan(0);
     });
@@ -187,7 +193,7 @@ describe('Statistics Types', () => {
         toLevel: 4,
         timestamp: Date.now(),
         experienceGained: 150,
-        timeTaken: 48
+        timeTaken: 48,
       };
 
       expect(record.toLevel).toBeGreaterThan(record.fromLevel);
@@ -212,14 +218,21 @@ describe('Statistics Types', () => {
         monthlyAverage: 1800,
         firstPlayDate: Date.now() - 86400000 * 30,
         lastPlayDate: Date.now(),
-        activeDays: 25
+        activeDays: 25,
       };
 
-      expect(sessionStats.totalPlaytime / sessionStats.totalSessions)
-        .toBeCloseTo(sessionStats.averageSessionLength);
-      expect(sessionStats.longestSession).toBeGreaterThan(sessionStats.shortestSession);
-      expect(sessionStats.longestStreak).toBeGreaterThanOrEqual(sessionStats.currentStreak);
-      expect(sessionStats.lastPlayDate).toBeGreaterThan(sessionStats.firstPlayDate);
+      expect(
+        sessionStats.totalPlaytime / sessionStats.totalSessions
+      ).toBeCloseTo(sessionStats.averageSessionLength);
+      expect(sessionStats.longestSession).toBeGreaterThan(
+        sessionStats.shortestSession
+      );
+      expect(sessionStats.longestStreak).toBeGreaterThanOrEqual(
+        sessionStats.currentStreak
+      );
+      expect(sessionStats.lastPlayDate).toBeGreaterThan(
+        sessionStats.firstPlayDate
+      );
     });
   });
 
@@ -231,28 +244,32 @@ describe('Statistics Types', () => {
         games: {
           played: 10,
           won: 7,
-          lost: 3
+          lost: 3,
         },
         care: {
           feedings: 3,
           playTime: 30,
-          restTime: 15
+          restTime: 15,
         },
         pet: {
           startLevel: 5,
           endLevel: 5,
           experienceGained: 25,
-          evolutions: 0
+          evolutions: 0,
         },
         achievements: {
           badgesUnlocked: 1,
-          titlesUnlocked: 0
-        }
+          titlesUnlocked: 0,
+        },
       };
 
       expect(dailyStats.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(dailyStats.games.won + dailyStats.games.lost).toBe(dailyStats.games.played);
-      expect(dailyStats.pet.endLevel).toBeGreaterThanOrEqual(dailyStats.pet.startLevel);
+      expect(dailyStats.games.won + dailyStats.games.lost).toBe(
+        dailyStats.games.played
+      );
+      expect(dailyStats.pet.endLevel).toBeGreaterThanOrEqual(
+        dailyStats.pet.startLevel
+      );
     });
   });
 
@@ -268,17 +285,19 @@ describe('Statistics Types', () => {
         petGrowth: {
           levelsGained: 2,
           experienceGained: 350,
-          evolutions: 1
+          evolutions: 1,
         },
         achievements: {
           badgesUnlocked: 3,
-          titlesUnlocked: 1
-        }
+          titlesUnlocked: 1,
+        },
       };
 
       expect(weeklyStats.weekStart).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(weeklyStats.weekEnd).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(weeklyStats.totalPlaytime / 7).toBeCloseTo(weeklyStats.dailyAverage);
+      expect(weeklyStats.totalPlaytime / 7).toBeCloseTo(
+        weeklyStats.dailyAverage
+      );
       expect(weeklyStats.winRate).toBeGreaterThanOrEqual(0);
       expect(weeklyStats.winRate).toBeLessThanOrEqual(1);
     });
@@ -295,13 +314,13 @@ describe('Statistics Types', () => {
         petGrowth: {
           levelsGained: 5,
           experienceGained: 1500,
-          evolutions: 3
+          evolutions: 3,
         },
         achievements: {
           badgesUnlocked: 8,
-          titlesUnlocked: 2
+          titlesUnlocked: 2,
         },
-        milestones: ['Reached Level 10', 'First Evolution']
+        milestones: ['Reached Level 10', 'First Evolution'],
       };
 
       expect(monthlyStats.month).toMatch(/^\d{4}-\d{2}$/);
@@ -321,9 +340,9 @@ describe('Statistics Types', () => {
             data: [30, 45, 60, 35, 50],
             backgroundColor: '#4f46e5',
             borderColor: '#3730a3',
-            borderWidth: 2
-          }
-        ]
+            borderWidth: 2,
+          },
+        ],
       };
 
       expect(chartData.labels).toHaveLength(5);
@@ -339,10 +358,12 @@ describe('Statistics Types', () => {
         type: 'line',
         data: {
           labels: ['Week 1', 'Week 2', 'Week 3'],
-          datasets: [{
-            label: 'Games Won',
-            data: [10, 15, 12]
-          }]
+          datasets: [
+            {
+              label: 'Games Won',
+              data: [10, 15, 12],
+            },
+          ],
         },
         options: {
           responsive: true,
@@ -350,13 +371,15 @@ describe('Statistics Types', () => {
           plugins: {
             legend: {
               display: true,
-              position: 'top'
-            }
-          }
-        }
+              position: 'top',
+            },
+          },
+        },
       };
 
-      expect(['line', 'bar', 'pie', 'doughnut', 'radar']).toContain(chartConfig.type);
+      expect(['line', 'bar', 'pie', 'doughnut', 'radar']).toContain(
+        chartConfig.type
+      );
       expect(chartConfig.data.labels).toHaveLength(3);
       expect(chartConfig.options?.responsive).toBe(true);
     });
@@ -374,7 +397,7 @@ describe('Statistics Types', () => {
         badgesUnlocked: 12,
         titlesUnlocked: 3,
         favoriteGame: 'rock-paper-scissors',
-        petHappiness: 95
+        petHappiness: 95,
       };
 
       expect(summary.winRate).toBeGreaterThanOrEqual(0);
@@ -413,7 +436,9 @@ describe('Default Statistics', () => {
       expect(DEFAULT_EVOLUTION_STATISTICS.totalEvolutions).toBe(0);
       expect(DEFAULT_EVOLUTION_STATISTICS.currentLevel).toBe(1);
       expect(DEFAULT_EVOLUTION_STATISTICS.maxLevel).toBe(1);
-      expect(Array.isArray(DEFAULT_EVOLUTION_STATISTICS.evolutionHistory)).toBe(true);
+      expect(Array.isArray(DEFAULT_EVOLUTION_STATISTICS.evolutionHistory)).toBe(
+        true
+      );
       expect(DEFAULT_EVOLUTION_STATISTICS.timeToMaxLevel).toBe(-1);
     });
   });
@@ -465,7 +490,7 @@ describe('Utility Functions', () => {
     it('should format date correctly', () => {
       const timestamp = new Date('2024-01-15T10:30:00').getTime();
       const formatted = formatDate(timestamp);
-      
+
       expect(formatted).toContain('2024');
       expect(formatted).toContain('1');
       expect(formatted).toContain('15');
@@ -476,7 +501,7 @@ describe('Utility Functions', () => {
     it('should format datetime correctly', () => {
       const timestamp = new Date('2024-01-15T10:30:00').getTime();
       const formatted = formatDateTime(timestamp);
-      
+
       expect(formatted).toContain('2024');
       expect(formatted).toContain('10');
       expect(formatted).toContain('30');
@@ -498,7 +523,7 @@ describe('Chart Constants', () => {
   describe('CHART_COLOR_PALETTE', () => {
     it('should have multiple colors available', () => {
       expect(CHART_COLOR_PALETTE.length).toBeGreaterThan(5);
-      
+
       CHART_COLOR_PALETTE.forEach(color => {
         expect(color).toMatch(/^#[0-9a-f]{6}$/i);
       });

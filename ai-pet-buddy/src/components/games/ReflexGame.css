@@ -179,7 +179,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
   }
   50% {
@@ -340,31 +341,31 @@
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .reaction-area {
     padding: 20px;
     min-height: 250px;
   }
-  
+
   .start-reaction-button {
     padding: 15px 30px;
     font-size: 16px;
   }
-  
+
   .reaction-button {
     padding: 20px 30px;
     font-size: 20px;
   }
-  
+
   .stimulus-display {
     font-size: 36px;
   }
-  
+
   .game-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .retry-button,
   .end-game-button {
     width: 200px;

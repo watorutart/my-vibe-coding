@@ -17,14 +17,14 @@ vi.mock('../hooks/useShare', () => ({
       imageDataUrl: 'mock-image-url',
       title: 'Test',
       description: 'Test description',
-      hashtags: ['#test']
+      hashtags: ['#test'],
     }),
     generateStatsCard: vi.fn().mockResolvedValue('mock-stats-url'),
     isSharing: false,
     error: null,
     lastShareImageUrl: null,
-    clearError: vi.fn()
-  })
+    clearError: vi.fn(),
+  }),
 }));
 
 const mockStatsData: StatsCardData = {
@@ -34,7 +34,7 @@ const mockStatsData: StatsCardData = {
   totalPlayTime: 1440,
   gameWinRate: 0.75,
   achievementCount: 5,
-  birthDate: new Date('2024-01-01')
+  birthDate: new Date('2024-01-01'),
 };
 
 describe('SharePanel', () => {

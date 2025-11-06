@@ -55,11 +55,13 @@
   margin: 20px 0;
 }
 
-.player-side, .ai-side {
+.player-side,
+.ai-side {
   text-align: center;
 }
 
-.player-side h3, .ai-side h3 {
+.player-side h3,
+.ai-side h3 {
   margin: 0 0 15px 0;
   color: #2c3e50;
   font-size: 1.2em;
@@ -85,8 +87,12 @@
 }
 
 @keyframes bounce {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.1); }
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
 }
 
 .vs-indicator {
@@ -112,8 +118,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
 }
 
 /* 選択ボタン */
@@ -186,8 +199,14 @@
 }
 
 @keyframes flash {
-  0% { opacity: 0.7; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.2); }
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 /* 結果表示 */
@@ -201,8 +220,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .result-display.win {
@@ -249,8 +274,12 @@
 }
 
 @keyframes glow {
-  0% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
-  100% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.8); }
+  0% {
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
+  }
 }
 
 .result-choices {
@@ -319,22 +348,22 @@
   .game-animation {
     gap: 20px;
   }
-  
+
   .choice-display {
     width: 80px;
     height: 80px;
     font-size: 2.5em;
   }
-  
+
   .choice-buttons {
     gap: 15px;
   }
-  
+
   .choice-button {
     min-width: 100px;
     padding: 15px;
   }
-  
+
   .result-choices {
     flex-direction: column;
     gap: 10px;

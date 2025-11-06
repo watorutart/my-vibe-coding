@@ -6,7 +6,10 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useCustomization } from './useCustomization';
 import type { PetCustomization, Accessory } from '../types/Customization';
-import { DEFAULT_CUSTOMIZATION, DEFAULT_ACCESSORIES } from '../types/Customization';
+import {
+  DEFAULT_CUSTOMIZATION,
+  DEFAULT_ACCESSORIES,
+} from '../types/Customization';
 import * as customizationUtils from '../utils/customizationUtils';
 
 // ユーティリティ関数のモック
@@ -20,7 +23,7 @@ vi.mock('../utils/customizationUtils', () => ({
   removeAccessoryFromCustomization: vi.fn(),
   createPreset: vi.fn(),
   resetCustomization: vi.fn(),
-  unlockAccessory: vi.fn()
+  unlockAccessory: vi.fn(),
 }));
 
 describe('useCustomization', () => {
@@ -29,14 +32,14 @@ describe('useCustomization', () => {
     color: '#FF0000',
     accessories: [],
     unlocked: true,
-    lastModified: new Date('2024-01-01')
+    lastModified: new Date('2024-01-01'),
   };
 
   const mockAccessory: Accessory = {
     id: 'test-hat',
     type: 'hat',
     name: 'テスト帽子',
-    unlocked: true
+    unlocked: true,
   };
 
   const mockAvailableAccessories = [...DEFAULT_ACCESSORIES, mockAccessory];
@@ -44,17 +47,23 @@ describe('useCustomization', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
-    
+
     // デフォルトのモック実装を設定
     vi.mocked(customizationUtils.loadCustomizationData).mockReturnValue({
       current: DEFAULT_CUSTOMIZATION,
       available: mockAvailableAccessories,
-      presets: []
+      presets: [],
     });
     vi.mocked(customizationUtils.saveCustomizationData).mockReturnValue(true);
-    vi.mocked(customizationUtils.validatePetName).mockReturnValue({ isValid: true });
-    vi.mocked(customizationUtils.validateColor).mockReturnValue({ isValid: true });
-    vi.mocked(customizationUtils.validateAccessoryId).mockReturnValue({ isValid: true });
+    vi.mocked(customizationUtils.validatePetName).mockReturnValue({
+      isValid: true,
+    });
+    vi.mocked(customizationUtils.validateColor).mockReturnValue({
+      isValid: true,
+    });
+    vi.mocked(customizationUtils.validateAccessoryId).mockReturnValue({
+      isValid: true,
+    });
   });
 
   afterEach(() => {
@@ -66,8 +75,12 @@ describe('useCustomization', () => {
     it('should initialize with default customization state', () => {
       const { result } = renderHook(() => useCustomization());
 
-      expect(result.current.customizationState.current).toEqual(DEFAULT_CUSTOMIZATION);
-      expect(result.current.customizationState.available).toEqual(mockAvailableAccessories);
+      expect(result.current.customizationState.current).toEqual(
+        DEFAULT_CUSTOMIZATION
+      );
+      expect(result.current.customizationState.available).toEqual(
+        mockAvailableAccessories
+      );
       expect(result.current.customizationState.presets).toEqual([]);
       expect(result.current.isPreviewMode).toBe(false);
       expect(result.current.isLoading).toBe(false);
@@ -81,13 +94,17 @@ describe('useCustomization', () => {
     });
 
     it('should handle loading errors gracefully', () => {
-      vi.mocked(customizationUtils.loadCustomizationData).mockImplementation(() => {
-        throw new Error('Load error');
-      });
+      vi.mocked(customizationUtils.loadCustomizationData).mockImplementation(
+        () => {
+          throw new Error('Load error');
+        }
+      );
 
       const { result } = renderHook(() => useCustomization());
 
-      expect(result.current.error).toBe('カスタマイズデータの読み込みに失敗しました');
+      expect(result.current.error).toBe(
+        'カスタマイズデータの読み込みに失敗しました'
+      );
     });
   });
 
@@ -121,7 +138,9 @@ describe('useCustomization', () => {
     });
 
     it('should use custom save interval', () => {
-      const { result } = renderHook(() => useCustomization({ saveInterval: 3000 }));
+      const { result } = renderHook(() =>
+        useCustomization({ saveInterval: 3000 })
+      );
 
       act(() => {
         result.current.updateName('新しい名前');
@@ -150,14 +169,18 @@ describe('useCustomization', () => {
         expect(validationResult.isValid).toBe(true);
       });
 
-      expect(result.current.customizationState.current.name).toBe('新しいペット名');
-      expect(customizationUtils.validatePetName).toHaveBeenCalledWith('新しいペット名');
+      expect(result.current.customizationState.current.name).toBe(
+        '新しいペット名'
+      );
+      expect(customizationUtils.validatePetName).toHaveBeenCalledWith(
+        '新しいペット名'
+      );
     });
 
     it('should reject invalid pet name', () => {
       vi.mocked(customizationUtils.validatePetName).mockReturnValue({
         isValid: false,
-        error: '名前が無効です'
+        error: '名前が無効です',
       });
 
       const { result } = renderHook(() => useCustomization());
@@ -168,7 +191,9 @@ describe('useCustomization', () => {
       });
 
       expect(result.current.error).toBe('名前が無効です');
-      expect(result.current.customizationState.current.name).toBe(DEFAULT_CUSTOMIZATION.name);
+      expect(result.current.customizationState.current.name).toBe(
+        DEFAULT_CUSTOMIZATION.name
+      );
     });
 
     it('should update preview when in preview mode - simple test', () => {
@@ -179,20 +204,24 @@ describe('useCustomization', () => {
       });
 
       expect(result.current.isPreviewMode).toBe(true);
-      
+
       act(() => {
         const validationResult = result.current.updateName('プレビュー名');
         expect(validationResult.isValid).toBe(true);
       });
 
       // Check if the validation was called correctly
-      expect(customizationUtils.validatePetName).toHaveBeenCalledWith('プレビュー名');
-      
+      expect(customizationUtils.validatePetName).toHaveBeenCalledWith(
+        'プレビュー名'
+      );
+
       // Check if preview name was updated
       expect(result.current.previewCustomization.name).toBe('プレビュー名');
-      
+
       // Check if current state name is still the same
-      expect(result.current.customizationState.current.name).toBe(DEFAULT_CUSTOMIZATION.name);
+      expect(result.current.customizationState.current.name).toBe(
+        DEFAULT_CUSTOMIZATION.name
+      );
     });
   });
 
@@ -212,7 +241,7 @@ describe('useCustomization', () => {
     it('should reject invalid color code', () => {
       vi.mocked(customizationUtils.validateColor).mockReturnValue({
         isValid: false,
-        error: '無効な色コードです'
+        error: '無効な色コードです',
       });
 
       const { result } = renderHook(() => useCustomization());
@@ -228,21 +257,23 @@ describe('useCustomization', () => {
 
   describe('アクセサリー管理', () => {
     beforeEach(() => {
-      vi.mocked(customizationUtils.addAccessoryToCustomization).mockImplementation(
-        (customization, accessory) => ({
-          ...customization,
-          accessories: [...customization.accessories, accessory],
-          lastModified: new Date()
-        })
-      );
+      vi.mocked(
+        customizationUtils.addAccessoryToCustomization
+      ).mockImplementation((customization, accessory) => ({
+        ...customization,
+        accessories: [...customization.accessories, accessory],
+        lastModified: new Date(),
+      }));
 
-      vi.mocked(customizationUtils.removeAccessoryFromCustomization).mockImplementation(
-        (customization, accessoryId) => ({
-          ...customization,
-          accessories: customization.accessories.filter(acc => acc.id !== accessoryId),
-          lastModified: new Date()
-        })
-      );
+      vi.mocked(
+        customizationUtils.removeAccessoryFromCustomization
+      ).mockImplementation((customization, accessoryId) => ({
+        ...customization,
+        accessories: customization.accessories.filter(
+          acc => acc.id !== accessoryId
+        ),
+        lastModified: new Date(),
+      }));
     });
 
     it('should add accessory when valid', () => {
@@ -250,7 +281,7 @@ describe('useCustomization', () => {
       vi.mocked(customizationUtils.loadCustomizationData).mockReturnValue({
         current: DEFAULT_CUSTOMIZATION,
         available: mockAvailableAccessories,
-        presets: []
+        presets: [],
       });
 
       const { result } = renderHook(() => useCustomization());
@@ -260,14 +291,17 @@ describe('useCustomization', () => {
         expect(addResult.success).toBe(true);
       });
 
-      expect(customizationUtils.validateAccessoryId).toHaveBeenCalledWith('test-hat', mockAvailableAccessories);
+      expect(customizationUtils.validateAccessoryId).toHaveBeenCalledWith(
+        'test-hat',
+        mockAvailableAccessories
+      );
       expect(customizationUtils.addAccessoryToCustomization).toHaveBeenCalled();
     });
 
     it('should reject invalid accessory', () => {
       vi.mocked(customizationUtils.validateAccessoryId).mockReturnValue({
         isValid: false,
-        error: 'アクセサリーが無効です'
+        error: 'アクセサリーが無効です',
       });
 
       const { result } = renderHook(() => useCustomization());
@@ -288,15 +322,14 @@ describe('useCustomization', () => {
         result.current.removeAccessory('test-hat');
       });
 
-      expect(customizationUtils.removeAccessoryFromCustomization).toHaveBeenCalledWith(
-        result.current.previewCustomization,
-        'test-hat'
-      );
+      expect(
+        customizationUtils.removeAccessoryFromCustomization
+      ).toHaveBeenCalledWith(result.current.previewCustomization, 'test-hat');
     });
 
     it('should unlock accessory', () => {
       vi.mocked(customizationUtils.unlockAccessory).mockReturnValue([
-        { ...mockAccessory, unlocked: true }
+        { ...mockAccessory, unlocked: true },
       ]);
 
       const { result } = renderHook(() => useCustomization());
@@ -305,7 +338,10 @@ describe('useCustomization', () => {
         result.current.unlockAccessoryById('test-hat');
       });
 
-      expect(customizationUtils.unlockAccessory).toHaveBeenCalledWith('test-hat', mockAvailableAccessories);
+      expect(customizationUtils.unlockAccessory).toHaveBeenCalledWith(
+        'test-hat',
+        mockAvailableAccessories
+      );
     });
   });
 
@@ -315,7 +351,7 @@ describe('useCustomization', () => {
         (customization, presetName) => ({
           ...customization,
           name: presetName,
-          lastModified: new Date()
+          lastModified: new Date(),
         })
       );
     });
@@ -328,14 +364,16 @@ describe('useCustomization', () => {
         expect(saveResult.success).toBe(true);
       });
 
-      expect(customizationUtils.validatePetName).toHaveBeenCalledWith('マイプリセット');
+      expect(customizationUtils.validatePetName).toHaveBeenCalledWith(
+        'マイプリセット'
+      );
       expect(customizationUtils.createPreset).toHaveBeenCalled();
     });
 
     it('should reject preset with invalid name', () => {
       vi.mocked(customizationUtils.validatePetName).mockReturnValue({
         isValid: false,
-        error: '無効なプリセット名です'
+        error: '無効なプリセット名です',
       });
 
       const { result } = renderHook(() => useCustomization());
@@ -354,7 +392,9 @@ describe('useCustomization', () => {
         result.current.loadPreset(mockCustomization);
       });
 
-      expect(result.current.customizationState.current).toEqual(mockCustomization);
+      expect(result.current.customizationState.current).toEqual(
+        mockCustomization
+      );
     });
   });
 
@@ -367,7 +407,9 @@ describe('useCustomization', () => {
       });
 
       expect(result.current.isPreviewMode).toBe(true);
-      expect(result.current.previewCustomization).toEqual(result.current.customizationState.current);
+      expect(result.current.previewCustomization).toEqual(
+        result.current.customizationState.current
+      );
     });
 
     it('should apply preview changes', () => {
@@ -380,7 +422,9 @@ describe('useCustomization', () => {
       });
 
       expect(result.current.isPreviewMode).toBe(false);
-      expect(result.current.customizationState.current.name).toBe('プレビュー名');
+      expect(result.current.customizationState.current.name).toBe(
+        'プレビュー名'
+      );
     });
 
     it('should cancel preview changes', () => {
@@ -403,7 +447,7 @@ describe('useCustomization', () => {
     it('should reset to default customization', () => {
       vi.mocked(customizationUtils.resetCustomization).mockReturnValue({
         ...DEFAULT_CUSTOMIZATION,
-        lastModified: new Date()
+        lastModified: new Date(),
       });
 
       const { result } = renderHook(() => useCustomization());
@@ -432,7 +476,9 @@ describe('useCustomization', () => {
     });
 
     it('should handle save errors', () => {
-      vi.mocked(customizationUtils.saveCustomizationData).mockReturnValue(false);
+      vi.mocked(customizationUtils.saveCustomizationData).mockReturnValue(
+        false
+      );
 
       const { result } = renderHook(() => useCustomization());
 
@@ -447,7 +493,7 @@ describe('useCustomization', () => {
     it('should clear error after timeout', async () => {
       vi.mocked(customizationUtils.validatePetName).mockReturnValue({
         isValid: false,
-        error: 'テストエラー'
+        error: 'テストエラー',
       });
 
       const { result } = renderHook(() => useCustomization());

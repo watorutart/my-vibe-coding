@@ -1,7 +1,7 @@
 /**
  * @file pwaUtils.ts
  * @description PWA関連のユーティリティ関数
- * 
+ *
  * PWA機能の検出、プラットフォーム判定、インストール管理などの
  * 汎用的なユーティリティ関数を提供します。
  */
@@ -12,7 +12,7 @@ import type { PWACapabilities, InstallPromptState } from '../types/PWA';
 const STORAGE_KEYS = {
   INSTALL_PROMPT_DISMISSED: 'ai-pet-buddy-install-prompt-dismissed',
   INSTALL_PROMPT_COUNT: 'ai-pet-buddy-install-prompt-count',
-  PWA_METRICS: 'ai-pet-buddy-pwa-metrics'
+  PWA_METRICS: 'ai-pet-buddy-pwa-metrics',
 } as const;
 
 /**
@@ -20,15 +20,15 @@ const STORAGE_KEYS = {
  */
 export const detectPlatform = (): 'ios' | 'android' | 'desktop' => {
   const ua = navigator.userAgent;
-  
+
   if (/iPad|iPhone|iPod/.test(ua)) {
     return 'ios';
   }
-  
+
   if (/Android/.test(ua)) {
     return 'android';
   }
-  
+
   return 'desktop';
 };
 
@@ -41,11 +41,12 @@ export const detectPWACapabilities = (): PWACapabilities => {
       serviceWorker: 'serviceWorker' in navigator,
       pushNotifications: 'Notification' in window && 'PushManager' in window,
       installPrompt: 'BeforeInstallPromptEvent' in window,
-      backgroundSync: 'serviceWorker' in navigator && 
-        typeof ServiceWorkerRegistration !== 'undefined' && 
-        ServiceWorkerRegistration.prototype && 
+      backgroundSync:
+        'serviceWorker' in navigator &&
+        typeof ServiceWorkerRegistration !== 'undefined' &&
+        ServiceWorkerRegistration.prototype &&
         'sync' in ServiceWorkerRegistration.prototype,
-      webShare: 'share' in navigator
+      webShare: 'share' in navigator,
     };
   } catch (error) {
     // Fallback for test environments or missing APIs
@@ -54,7 +55,7 @@ export const detectPWACapabilities = (): PWACapabilities => {
       pushNotifications: false,
       installPrompt: false,
       backgroundSync: false,
-      webShare: false
+      webShare: false,
     };
   }
 };
@@ -75,17 +76,20 @@ export const isPWAInstalled = (): boolean => {
   if (window.matchMedia('(display-mode: standalone)').matches) {
     return true;
   }
-  
+
   // iOS Safari でホーム画面に追加されている場合
-  if ('standalone' in window.navigator && (window.navigator as any).standalone) {
+  if (
+    'standalone' in window.navigator &&
+    (window.navigator as any).standalone
+  ) {
     return true;
   }
-  
+
   // Android でインストールされている場合の検出
   if (document.referrer.startsWith('android-app://')) {
     return true;
   }
-  
+
   return false;
 };
 
@@ -113,9 +117,9 @@ export const getNetworkState = (): {
   rtt?: number;
 } => {
   const baseState = {
-    isOnline: navigator.onLine
+    isOnline: navigator.onLine,
   };
-  
+
   // Network Information API が利用可能な場合
   if ('connection' in navigator) {
     const connection = (navigator as any).connection;
@@ -123,10 +127,10 @@ export const getNetworkState = (): {
       ...baseState,
       effectiveType: connection.effectiveType,
       downlink: connection.downlink,
-      rtt: connection.rtt
+      rtt: connection.rtt,
     };
   }
-  
+
   return baseState;
 };
 
@@ -145,10 +149,10 @@ export const getDeviceInfo = (): {
     userAgent: navigator.userAgent,
     viewport: {
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     },
     pixelRatio: window.devicePixelRatio || 1,
-    touchSupport: 'ontouchstart' in window
+    touchSupport: 'ontouchstart' in window,
   };
 };
 
@@ -162,12 +166,14 @@ export const getSafeAreaInsets = (): {
   left: number;
 } => {
   const style = getComputedStyle(document.documentElement);
-  
+
   return {
     top: parseFloat(style.getPropertyValue('env(safe-area-inset-top)')) || 0,
-    right: parseFloat(style.getPropertyValue('env(safe-area-inset-right)')) || 0,
-    bottom: parseFloat(style.getPropertyValue('env(safe-area-inset-bottom)')) || 0,
-    left: parseFloat(style.getPropertyValue('env(safe-area-inset-left)')) || 0
+    right:
+      parseFloat(style.getPropertyValue('env(safe-area-inset-right)')) || 0,
+    bottom:
+      parseFloat(style.getPropertyValue('env(safe-area-inset-bottom)')) || 0,
+    left: parseFloat(style.getPropertyValue('env(safe-area-inset-left)')) || 0,
   };
 };
 
@@ -177,7 +183,7 @@ export const getSafeAreaInsets = (): {
 export class InstallPromptManager {
   private static readonly MAX_PROMPTS_PER_DAY = 3;
   private static readonly PROMPT_COOLDOWN = 24 * 60 * 60 * 1000; // 24時間
-  
+
   /**
    * インストールプロンプトを表示すべきかチェック
    */
@@ -187,32 +193,34 @@ export class InstallPromptManager {
       if (isPWAInstalled()) {
         return false;
       }
-      
+
       // プロンプトが永続的に拒否されている場合はスキップ
       if (this.isPromptDismissed()) {
         return false;
       }
-      
+
       // 1日の表示制限をチェック
       const todayCount = this.getTodayPromptCount();
       if (todayCount >= this.MAX_PROMPTS_PER_DAY) {
         return false;
       }
-      
+
       // 最後の表示からのクールダウンをチェック
       const lastShown = this.getLastPromptTime();
-      if (lastShown && (Date.now() - lastShown.getTime()) < this.PROMPT_COOLDOWN) {
+      if (
+        lastShown &&
+        Date.now() - lastShown.getTime() < this.PROMPT_COOLDOWN
+      ) {
         return false;
       }
-      
+
       return true;
-      
     } catch (error) {
       console.error('[PWA] Error checking prompt eligibility:', error);
       return false;
     }
   }
-  
+
   /**
    * プロンプト表示回数を記録
    */
@@ -221,27 +229,29 @@ export class InstallPromptManager {
       const today = new Date().toDateString();
       const stored = localStorage.getItem(STORAGE_KEYS.INSTALL_PROMPT_COUNT);
       const data = stored ? JSON.parse(stored) : {};
-      
+
       data[today] = (data[today] || 0) + 1;
       data.lastShown = new Date().toISOString();
-      
+
       // 古いデータを削除（過去7日分のみ保持）
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - 7);
-      
+
       Object.keys(data).forEach(key => {
         if (key !== 'lastShown' && new Date(key) < cutoff) {
           delete data[key];
         }
       });
-      
-      localStorage.setItem(STORAGE_KEYS.INSTALL_PROMPT_COUNT, JSON.stringify(data));
-      
+
+      localStorage.setItem(
+        STORAGE_KEYS.INSTALL_PROMPT_COUNT,
+        JSON.stringify(data)
+      );
     } catch (error) {
       console.error('[PWA] Error recording prompt:', error);
     }
   }
-  
+
   /**
    * プロンプトが拒否されたことを記録
    */
@@ -250,16 +260,18 @@ export class InstallPromptManager {
       const data = {
         dismissed: true,
         permanent,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-      
-      localStorage.setItem(STORAGE_KEYS.INSTALL_PROMPT_DISMISSED, JSON.stringify(data));
-      
+
+      localStorage.setItem(
+        STORAGE_KEYS.INSTALL_PROMPT_DISMISSED,
+        JSON.stringify(data)
+      );
     } catch (error) {
       console.error('[PWA] Error recording dismissal:', error);
     }
   }
-  
+
   /**
    * プロンプト拒否状態をリセット
    */
@@ -270,7 +282,7 @@ export class InstallPromptManager {
       console.error('[PWA] Error resetting dismissal:', error);
     }
   }
-  
+
   /**
    * 今日のプロンプト表示回数を取得
    */
@@ -279,15 +291,14 @@ export class InstallPromptManager {
       const today = new Date().toDateString();
       const stored = localStorage.getItem(STORAGE_KEYS.INSTALL_PROMPT_COUNT);
       const data = stored ? JSON.parse(stored) : {};
-      
+
       return data[today] || 0;
-      
     } catch (error) {
       console.error('[PWA] Error getting prompt count:', error);
       return 0;
     }
   }
-  
+
   /**
    * 最後のプロンプト表示時刻を取得
    */
@@ -295,42 +306,42 @@ export class InstallPromptManager {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.INSTALL_PROMPT_COUNT);
       const data = stored ? JSON.parse(stored) : {};
-      
+
       return data.lastShown ? new Date(data.lastShown) : null;
-      
     } catch (error) {
       console.error('[PWA] Error getting last prompt time:', error);
       return null;
     }
   }
-  
+
   /**
    * プロンプトが拒否されているかチェック
    */
   private static isPromptDismissed(): boolean {
     try {
-      const stored = localStorage.getItem(STORAGE_KEYS.INSTALL_PROMPT_DISMISSED);
+      const stored = localStorage.getItem(
+        STORAGE_KEYS.INSTALL_PROMPT_DISMISSED
+      );
       if (!stored) return false;
-      
+
       const data = JSON.parse(stored);
-      
+
       // 永続的に拒否された場合
       if (data.permanent) {
         return true;
       }
-      
+
       // 一時的な拒否の場合、7日経過したらリセット
       const dismissedAt = new Date(data.timestamp);
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      
+
       if (dismissedAt < sevenDaysAgo) {
         this.resetPromptDismissal();
         return false;
       }
-      
+
       return true;
-      
     } catch (error) {
       console.error('[PWA] Error checking dismissal status:', error);
       return false;
@@ -349,28 +360,27 @@ export class PWAMetrics {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.PWA_METRICS);
       const metrics = stored ? JSON.parse(stored) : { events: [] };
-      
+
       const eventData = {
         event,
         data,
         timestamp: new Date().toISOString(),
-        session: this.getSessionId()
+        session: this.getSessionId(),
       };
-      
+
       metrics.events.push(eventData);
-      
+
       // 最大1000件まで保持
       if (metrics.events.length > 1000) {
         metrics.events = metrics.events.slice(-1000);
       }
-      
+
       localStorage.setItem(STORAGE_KEYS.PWA_METRICS, JSON.stringify(metrics));
-      
     } catch (error) {
       console.error('[PWA] Error recording metrics:', error);
     }
   }
-  
+
   /**
    * メトリクスデータを取得
    */
@@ -383,26 +393,25 @@ export class PWAMetrics {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.PWA_METRICS);
       const metrics = stored ? JSON.parse(stored) : { events: [] };
-      
+
       return metrics.events;
-      
     } catch (error) {
       console.error('[PWA] Error getting metrics:', error);
       return [];
     }
   }
-  
+
   /**
    * セッションIDを生成/取得
    */
   private static getSessionId(): string {
     let sessionId = sessionStorage.getItem('pwa-session-id');
-    
+
     if (!sessionId) {
       sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       sessionStorage.setItem('pwa-session-id', sessionId);
     }
-    
+
     return sessionId;
   }
 }
@@ -416,34 +425,39 @@ export const startPWAMonitoring = (): void => {
     PWAMetrics.record('network-online');
     console.log('[PWA] Network online');
   });
-  
+
   window.addEventListener('offline', () => {
     PWAMetrics.record('network-offline');
     console.log('[PWA] Network offline');
   });
-  
+
   // 表示モード変更の監視
-  window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
-    PWAMetrics.record('display-mode-changed', { standalone: e.matches });
-    console.log('[PWA] Display mode changed:', e.matches ? 'standalone' : 'browser');
-  });
-  
+  window
+    .matchMedia('(display-mode: standalone)')
+    .addEventListener('change', e => {
+      PWAMetrics.record('display-mode-changed', { standalone: e.matches });
+      console.log(
+        '[PWA] Display mode changed:',
+        e.matches ? 'standalone' : 'browser'
+      );
+    });
+
   // ビューポート変更の監視
   window.addEventListener('resize', () => {
     const viewport = {
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     };
     PWAMetrics.record('viewport-changed', viewport);
   });
-  
+
   // ページの表示状態変更の監視
   document.addEventListener('visibilitychange', () => {
-    PWAMetrics.record('visibility-changed', { 
-      hidden: document.hidden 
+    PWAMetrics.record('visibility-changed', {
+      hidden: document.hidden,
     });
   });
-  
+
   console.log('[PWA] Monitoring started');
 };
 
@@ -458,28 +472,28 @@ export const checkPWAAvailability = (): {
   const capabilities = detectPWACapabilities();
   const missingFeatures: string[] = [];
   const recommendations: string[] = [];
-  
+
   if (!capabilities.serviceWorker) {
     missingFeatures.push('Service Worker');
     recommendations.push('ブラウザを最新版に更新してください');
   }
-  
+
   if (!capabilities.pushNotifications) {
     missingFeatures.push('Push Notifications');
     recommendations.push('通知機能はご利用いただけません');
   }
-  
+
   if (!capabilities.installPrompt) {
     missingFeatures.push('Install Prompt');
     recommendations.push('ホーム画面への追加は手動で行ってください');
   }
-  
+
   const isSupported = capabilities.serviceWorker; // 最低限の要件
-  
+
   return {
     isSupported,
     missingFeatures,
-    recommendations
+    recommendations,
   };
 };
 
@@ -491,7 +505,7 @@ export const getPWADebugInfo = (): Record<string, unknown> => {
   const deviceInfo = getDeviceInfo();
   const networkState = getNetworkState();
   const safeAreaInsets = getSafeAreaInsets();
-  
+
   return {
     timestamp: new Date().toISOString(),
     capabilities,
@@ -501,6 +515,6 @@ export const getPWADebugInfo = (): Record<string, unknown> => {
     isPWAInstalled: isPWAInstalled(),
     isPWAStandalone: isPWAStandalone(),
     canInstallPWA: canInstallPWA(),
-    installPromptEligible: InstallPromptManager.shouldShowPrompt()
+    installPromptEligible: InstallPromptManager.shouldShowPrompt(),
   };
 };

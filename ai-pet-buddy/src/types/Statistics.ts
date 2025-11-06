@@ -1,7 +1,7 @@
 /**
  * @file Statistics.ts
  * @description Statistics system type definitions for AI Pet Buddy
- * 
+ *
  * Defines types for statistical data collection, analysis, and reporting.
  */
 
@@ -247,7 +247,7 @@ export const DEFAULT_GAME_STATISTICS: GameStatistics = {
   currentWinStreak: 0,
   averageGameDuration: 0,
   favoriteGame: '',
-  gameBreakdown: {}
+  gameBreakdown: {},
 };
 
 export const DEFAULT_CARE_STATISTICS: CareStatistics = {
@@ -260,7 +260,7 @@ export const DEFAULT_CARE_STATISTICS: CareStatistics = {
   maxHappiness: 0,
   maxEnergy: 0,
   timeSpentCaring: 0,
-  careActions: {}
+  careActions: {},
 };
 
 export const DEFAULT_EVOLUTION_STATISTICS: EvolutionStatistics = {
@@ -270,7 +270,7 @@ export const DEFAULT_EVOLUTION_STATISTICS: EvolutionStatistics = {
   totalExperience: 0,
   averageExperiencePerDay: 0,
   evolutionHistory: [],
-  timeToMaxLevel: -1
+  timeToMaxLevel: -1,
 };
 
 export const DEFAULT_PLAY_SESSION_STATISTICS: PlaySessionStatistics = {
@@ -286,7 +286,7 @@ export const DEFAULT_PLAY_SESSION_STATISTICS: PlaySessionStatistics = {
   monthlyAverage: 0,
   firstPlayDate: Date.now(),
   lastPlayDate: Date.now(),
-  activeDays: 0
+  activeDays: 0,
 };
 
 export const DEFAULT_OVERALL_STATISTICS: OverallStatistics = {
@@ -295,14 +295,14 @@ export const DEFAULT_OVERALL_STATISTICS: OverallStatistics = {
   evolution: DEFAULT_EVOLUTION_STATISTICS,
   sessions: DEFAULT_PLAY_SESSION_STATISTICS,
   createdAt: Date.now(),
-  lastUpdated: Date.now()
+  lastUpdated: Date.now(),
 };
 
 export const DEFAULT_STATISTICS_DATA: StatisticsData = {
   overall: DEFAULT_OVERALL_STATISTICS,
   daily: [],
   weekly: [],
-  monthly: []
+  monthly: [],
 };
 
 // Utility functions for statistics
@@ -313,7 +313,9 @@ export function formatPlaytime(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
   if (hours < 24) {
-    return remainingMinutes > 0 ? `${hours}時間${remainingMinutes}分` : `${hours}時間`;
+    return remainingMinutes > 0
+      ? `${hours}時間${remainingMinutes}分`
+      : `${hours}時間`;
   }
   const days = Math.floor(hours / 24);
   const remainingHours = hours % 24;
@@ -342,7 +344,7 @@ export const CHART_COLORS = {
   error: '#ef4444',
   info: '#3b82f6',
   background: '#f8fafc',
-  text: '#1e293b'
+  text: '#1e293b',
 };
 
 export const CHART_COLOR_PALETTE = [
@@ -357,5 +359,5 @@ export const CHART_COLOR_PALETTE = [
   '#84cc16', // lime
   '#ec4899', // pink
   '#6b7280', // gray
-  '#14b8a6'  // teal
+  '#14b8a6', // teal
 ];

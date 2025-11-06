@@ -1,10 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
 
 // PWA Service Worker登録
-import { registerServiceWorker } from './utils/serviceWorker'
+import { registerServiceWorker } from './utils/serviceWorker';
 
 // Service Workerを登録
 if (import.meta.env.PROD) {
@@ -23,5 +23,5 @@ if (import.meta.env.PROD) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>,
-)
+  </StrictMode>
+);

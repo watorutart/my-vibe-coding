@@ -1,7 +1,7 @@
 /**
  * @file AchievementItem.tsx
  * @description Individual achievement item component for lists
- * 
+ *
  * Shows compact achievement information with progress, unlock status,
  * and interaction capabilities.
  */
@@ -25,7 +25,7 @@ const AchievementItem: React.FC<AchievementItemProps> = ({
   onClick,
   showProgress = true,
   size = 'medium',
-  isActive = false
+  isActive = false,
 }) => {
   const handleClick = () => {
     if (onClick) {
@@ -35,11 +35,16 @@ const AchievementItem: React.FC<AchievementItemProps> = ({
 
   const getRarityColor = (rarity: Badge['rarity']): string => {
     switch (rarity) {
-      case 'common': return '#10b981';
-      case 'rare': return '#3b82f6';
-      case 'epic': return '#8b5cf6';
-      case 'legendary': return '#f59e0b';
-      default: return '#6b7280';
+      case 'common':
+        return '#10b981';
+      case 'rare':
+        return '#3b82f6';
+      case 'epic':
+        return '#8b5cf6';
+      case 'legendary':
+        return '#f59e0b';
+      default:
+        return '#6b7280';
     }
   };
 
@@ -67,74 +72,72 @@ const AchievementItem: React.FC<AchievementItemProps> = ({
     `achievement-item--${size}`,
     `achievement-item--${type}`,
     `achievement-item--${achievement.rarity}`,
-    achievement.unlocked ? 'achievement-item--unlocked' : 'achievement-item--locked',
+    achievement.unlocked
+      ? 'achievement-item--unlocked'
+      : 'achievement-item--locked',
     isActive ? 'achievement-item--active' : '',
-    onClick ? 'achievement-item--clickable' : ''
-  ].filter(Boolean).join(' ');
+    onClick ? 'achievement-item--clickable' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <div 
+    <div
       className={itemClasses}
       onClick={handleClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (onClick && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           handleClick();
         }
       }}
-      style={{
-        '--rarity-color': getRarityColor(achievement.rarity)
-      } as React.CSSProperties}
+      style={
+        {
+          '--rarity-color': getRarityColor(achievement.rarity),
+        } as React.CSSProperties
+      }
     >
       {/* Icon Section */}
       <div className="achievement-item__icon-section">
         <div className="achievement-item__icon">
           {achievement.unlocked ? achievement.icon : '🔒'}
         </div>
-        
+
         {achievement.unlocked && (
-          <div className="achievement-item__unlock-indicator">
-            ✨
-          </div>
+          <div className="achievement-item__unlock-indicator">✨</div>
         )}
-        
+
         {type === 'title' && isActive && (
-          <div className="achievement-item__active-indicator">
-            👑
-          </div>
+          <div className="achievement-item__active-indicator">👑</div>
         )}
       </div>
 
       {/* Content Section */}
       <div className="achievement-item__content">
         <div className="achievement-item__header">
-          <h4 className="achievement-item__name">
-            {achievement.name}
-          </h4>
-          <span className="achievement-item__rarity">
-            {achievement.rarity}
-          </span>
+          <h4 className="achievement-item__name">{achievement.name}</h4>
+          <span className="achievement-item__rarity">{achievement.rarity}</span>
         </div>
-        
+
         <p className="achievement-item__description">
           {achievement.description}
         </p>
-        
+
         <div className="achievement-item__requirement">
           {achievement.requirements.description}
         </div>
-        
+
         {/* Progress Section (only for badges and locked items) */}
         {showProgress && isBadge(achievement) && !achievement.unlocked && (
           <div className="achievement-item__progress">
             <div className="achievement-item__progress-bar">
-              <div 
+              <div
                 className="achievement-item__progress-fill"
                 style={{
                   width: `${achievement.progress * 100}%`,
-                  backgroundColor: getProgressColor(achievement.progress)
+                  backgroundColor: getProgressColor(achievement.progress),
                 }}
               />
             </div>
@@ -143,7 +146,7 @@ const AchievementItem: React.FC<AchievementItemProps> = ({
             </span>
           </div>
         )}
-        
+
         {/* Unlock Date */}
         {achievement.unlocked && achievement.unlockedAt && (
           <div className="achievement-item__unlock-date">

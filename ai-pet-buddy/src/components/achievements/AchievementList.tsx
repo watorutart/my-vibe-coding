@@ -1,20 +1,28 @@
 /**
  * @file AchievementList.tsx
  * @description Main achievements display component with filtering and categorization
- * 
+ *
  * Shows all achievements organized by category with filtering options,
  * progress tracking, and statistics summary.
  */
 
 import React, { useState, useMemo } from 'react';
-import type { AchievementState, Badge, Title, AchievementCategory } from '../../types/Achievement';
+import type {
+  AchievementState,
+  Badge,
+  Title,
+  AchievementCategory,
+} from '../../types/Achievement';
 import AchievementItem from './AchievementItem';
 import './AchievementList.css';
 
 interface AchievementListProps {
   achievementState: AchievementState;
   onTitleActivate?: (titleId: string) => void;
-  onAchievementClick?: (achievement: Badge | Title, type: 'badge' | 'title') => void;
+  onAchievementClick?: (
+    achievement: Badge | Title,
+    type: 'badge' | 'title'
+  ) => void;
   className?: string;
 }
 
@@ -25,18 +33,24 @@ const AchievementList: React.FC<AchievementListProps> = ({
   achievementState,
   onTitleActivate,
   onAchievementClick,
-  className = ''
+  className = '',
 }) => {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [activeView, setActiveView] = useState<ViewType>('both');
-  const [selectedCategory, setSelectedCategory] = useState<AchievementCategory | 'all'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<
+    AchievementCategory | 'all'
+  >('all');
 
   // Calculate statistics
   const stats = useMemo(() => {
     const totalBadges = achievementState.badges.length;
-    const unlockedBadges = achievementState.badges.filter(b => b.unlocked).length;
+    const unlockedBadges = achievementState.badges.filter(
+      b => b.unlocked
+    ).length;
     const totalTitles = achievementState.titles.length;
-    const unlockedTitles = achievementState.titles.filter(t => t.unlocked).length;
+    const unlockedTitles = achievementState.titles.filter(
+      t => t.unlocked
+    ).length;
     const activeTitle = achievementState.titles.find(t => t.active);
 
     return {
@@ -46,7 +60,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
       unlockedTitles,
       activeTitle,
       badgeProgress: totalBadges > 0 ? (unlockedBadges / totalBadges) * 100 : 0,
-      titleProgress: totalTitles > 0 ? (unlockedTitles / totalTitles) * 100 : 0
+      titleProgress: totalTitles > 0 ? (unlockedTitles / totalTitles) * 100 : 0,
     };
   }, [achievementState]);
 
@@ -89,18 +103,18 @@ const AchievementList: React.FC<AchievementListProps> = ({
     const sortFn = (a: Badge | Title, b: Badge | Title) => {
       // Unlocked first, then by rarity
       if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
-      
+
       const rarityOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
       const aRarity = rarityOrder[a.rarity];
       const bRarity = rarityOrder[b.rarity];
-      
+
       if (aRarity !== bRarity) return aRarity - bRarity;
-      
+
       // For badges, sort by progress if locked
       if ('progress' in a && 'progress' in b && !a.unlocked && !b.unlocked) {
         return b.progress - a.progress;
       }
-      
+
       return a.name.localeCompare(b.name);
     };
 
@@ -127,30 +141,39 @@ const AchievementList: React.FC<AchievementListProps> = ({
 
   const getCategoryIcon = (category: AchievementCategory): string => {
     switch (category) {
-      case 'evolution': return '🦋';
-      case 'game': return '🎮';
-      case 'care': return '💝';
-      case 'time': return '⏰';
-      case 'level': return '⭐';
-      default: return '🏆';
+      case 'evolution':
+        return '🦋';
+      case 'game':
+        return '🎮';
+      case 'care':
+        return '💝';
+      case 'time':
+        return '⏰';
+      case 'level':
+        return '⭐';
+      default:
+        return '🏆';
     }
   };
 
   const getCategoryName = (category: AchievementCategory): string => {
     switch (category) {
-      case 'evolution': return 'Evolution';
-      case 'game': return 'Gaming';
-      case 'care': return 'Care';
-      case 'time': return 'Time';
-      case 'level': return 'Level';
-      default: return 'Other';
+      case 'evolution':
+        return 'Evolution';
+      case 'game':
+        return 'Gaming';
+      case 'care':
+        return 'Care';
+      case 'time':
+        return 'Time';
+      case 'level':
+        return 'Level';
+      default:
+        return 'Other';
     }
   };
 
-  const listClasses = [
-    'achievement-list',
-    className
-  ].filter(Boolean).join(' ');
+  const listClasses = ['achievement-list', className].filter(Boolean).join(' ');
 
   return (
     <div className={listClasses}>
@@ -167,7 +190,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className="achievement-list__stats">
           <div className="achievement-list__stat">
             <span className="achievement-list__stat-label">Badges</span>
@@ -175,20 +198,20 @@ const AchievementList: React.FC<AchievementListProps> = ({
               {stats.unlockedBadges}/{stats.totalBadges}
             </span>
             <div className="achievement-list__stat-bar">
-              <div 
+              <div
                 className="achievement-list__stat-fill"
                 style={{ width: `${stats.badgeProgress}%` }}
               />
             </div>
           </div>
-          
+
           <div className="achievement-list__stat">
             <span className="achievement-list__stat-label">Titles</span>
             <span className="achievement-list__stat-value">
               {stats.unlockedTitles}/{stats.totalTitles}
             </span>
             <div className="achievement-list__stat-bar">
-              <div 
+              <div
                 className="achievement-list__stat-fill"
                 style={{ width: `${stats.titleProgress}%` }}
               />
@@ -207,12 +230,17 @@ const AchievementList: React.FC<AchievementListProps> = ({
               <button
                 key={view}
                 className={`achievement-list__filter-button ${
-                  activeView === view ? 'achievement-list__filter-button--active' : ''
+                  activeView === view
+                    ? 'achievement-list__filter-button--active'
+                    : ''
                 }`}
                 onClick={() => setActiveView(view)}
               >
-                {view === 'both' ? '🏆👑 Both' : 
-                 view === 'badges' ? '🏆 Badges' : '👑 Titles'}
+                {view === 'both'
+                  ? '🏆👑 Both'
+                  : view === 'badges'
+                    ? '🏆 Badges'
+                    : '👑 Titles'}
               </button>
             ))}
           </div>
@@ -222,19 +250,27 @@ const AchievementList: React.FC<AchievementListProps> = ({
         <div className="achievement-list__filter-group">
           <label className="achievement-list__filter-label">Status:</label>
           <div className="achievement-list__filter-buttons">
-            {(['all', 'unlocked', 'locked', 'in-progress'] as FilterType[]).map(filter => (
-              <button
-                key={filter}
-                className={`achievement-list__filter-button ${
-                  activeFilter === filter ? 'achievement-list__filter-button--active' : ''
-                }`}
-                onClick={() => setActiveFilter(filter)}
-              >
-                {filter === 'all' ? 'All' :
-                 filter === 'unlocked' ? '✅ Unlocked' :
-                 filter === 'locked' ? '🔒 Locked' : '⏳ In Progress'}
-              </button>
-            ))}
+            {(['all', 'unlocked', 'locked', 'in-progress'] as FilterType[]).map(
+              filter => (
+                <button
+                  key={filter}
+                  className={`achievement-list__filter-button ${
+                    activeFilter === filter
+                      ? 'achievement-list__filter-button--active'
+                      : ''
+                  }`}
+                  onClick={() => setActiveFilter(filter)}
+                >
+                  {filter === 'all'
+                    ? 'All'
+                    : filter === 'unlocked'
+                      ? '✅ Unlocked'
+                      : filter === 'locked'
+                        ? '🔒 Locked'
+                        : '⏳ In Progress'}
+                </button>
+              )
+            )}
           </div>
         </div>
 
@@ -244,7 +280,9 @@ const AchievementList: React.FC<AchievementListProps> = ({
           <div className="achievement-list__filter-buttons">
             <button
               className={`achievement-list__filter-button ${
-                selectedCategory === 'all' ? 'achievement-list__filter-button--active' : ''
+                selectedCategory === 'all'
+                  ? 'achievement-list__filter-button--active'
+                  : ''
               }`}
               onClick={() => setSelectedCategory('all')}
             >
@@ -254,7 +292,9 @@ const AchievementList: React.FC<AchievementListProps> = ({
               <button
                 key={category}
                 className={`achievement-list__filter-button ${
-                  selectedCategory === category ? 'achievement-list__filter-button--active' : ''
+                  selectedCategory === category
+                    ? 'achievement-list__filter-button--active'
+                    : ''
                 }`}
                 onClick={() => setSelectedCategory(category)}
               >

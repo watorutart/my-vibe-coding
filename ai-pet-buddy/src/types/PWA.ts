@@ -1,7 +1,7 @@
 /**
  * @file PWA.ts
  * @description PWA関連の型定義
- * 
+ *
  * Progressive Web App機能に関連する型定義を提供します。
  * Service Worker、プッシュ通知、インストールプロンプトなどの型が含まれます。
  */
@@ -64,7 +64,7 @@ declare global {
   interface WindowEventMap {
     beforeinstallprompt: BeforeInstallPromptEvent;
   }
-  
+
   interface BeforeInstallPromptEvent extends Event {
     prompt(): Promise<void>;
     userChoice: Promise<{
@@ -218,7 +218,7 @@ export interface PWAState {
 // PWAイベント関連の型
 // =============================================================================
 
-export type PWAEventType = 
+export type PWAEventType =
   | 'sw-registered'
   | 'sw-updated'
   | 'sw-error'
@@ -337,8 +337,8 @@ export const DEFAULT_PWA_CONFIG: PWAConfig = {
     },
     quietHours: {
       enabled: false,
-      start: "22:00",
-      end: "08:00",
+      start: '22:00',
+      end: '08:00',
     },
   },
   install: {

@@ -22,7 +22,9 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
   const [gameData, setGameData] = useState<ReflexGameData | null>(null);
   const [isWaiting, setIsWaiting] = useState(false);
   const [isShowingStimulus, setIsShowingStimulus] = useState(false);
-  const [reactionStartTime, setReactionStartTime] = useState<number | null>(null);
+  const [reactionStartTime, setReactionStartTime] = useState<number | null>(
+    null
+  );
   const [lastReactionTime, setLastReactionTime] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<string>('');
   const [isReady, setIsReady] = useState(false);
@@ -49,7 +51,7 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
 
     // ランダムな待機時間（1-4秒）
     const waitTime = 1000 + Math.random() * 3000;
-    
+
     setTimeout(() => {
       setIsWaiting(false);
       setIsShowingStimulus(true);
@@ -68,11 +70,15 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
 
     // 回答を提出
     const isCorrect = onSubmitAnswer(reactionTime);
-    
+
     if (isCorrect) {
-      setFeedback(`🎉 素晴らしい！反応時間: ${reactionTime}ms (目標: ${gameData?.targetTime}ms以下)`);
+      setFeedback(
+        `🎉 素晴らしい！反応時間: ${reactionTime}ms (目標: ${gameData?.targetTime}ms以下)`
+      );
     } else {
-      setFeedback(`⏰ 少し遅いですね。反応時間: ${reactionTime}ms (目標: ${gameData?.targetTime}ms以下)`);
+      setFeedback(
+        `⏰ 少し遅いですね。反応時間: ${reactionTime}ms (目標: ${gameData?.targetTime}ms以下)`
+      );
     }
   }, [isShowingStimulus, reactionStartTime, onSubmitAnswer, gameData]);
 
@@ -112,7 +118,7 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
 
   const getTargetDescription = () => {
     if (!gameData) return '';
-    
+
     if (gameData.targetTime >= 1000) {
       return `${gameData.targetTime / 1000}秒`;
     }
@@ -134,9 +140,7 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
           <div className="target-time">
             🎯 目標時間: {getTargetDescription()}以下
           </div>
-          <div className="score">
-            📊 スコア: {session.score.points}pts
-          </div>
+          <div className="score">📊 スコア: {session.score.points}pts</div>
         </div>
       </div>
 
@@ -144,7 +148,7 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
         <div className="reaction-area">
           {!isReady ? (
             <div className="start-section">
-              <button 
+              <button
                 className="start-reaction-button"
                 onClick={startReaction}
                 disabled={isWaiting || isShowingStimulus}
@@ -156,19 +160,18 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
               </p>
             </div>
           ) : (
-            <div className={`stimulus-area ${isShowingStimulus ? getStimulusClass(gameData.stimulus) : ''}`}>
+            <div
+              className={`stimulus-area ${isShowingStimulus ? getStimulusClass(gameData.stimulus) : ''}`}
+            >
               {isWaiting && (
                 <div className="waiting-message">
                   <div className="waiting-spinner">⏳</div>
                   <p>刺激が現れるまで待ってください...</p>
                 </div>
               )}
-              
+
               {isShowingStimulus && (
-                <button 
-                  className="reaction-button"
-                  onClick={handleReaction}
-                >
+                <button className="reaction-button" onClick={handleReaction}>
                   <div className="stimulus-display">
                     {gameData.stimulus === 'green-light' && '🟢'}
                     {gameData.stimulus === 'red-light' && '🔴'}
@@ -187,12 +190,17 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
             <h3>前回の結果</h3>
             <div className="result-details">
               <div className="reaction-time">
-                反応時間: <span className="time-value">{lastReactionTime}ms</span>
+                反応時間:{' '}
+                <span className="time-value">{lastReactionTime}ms</span>
               </div>
               <div className="target-comparison">
                 目標: {gameData.targetTime}ms以下
-                <span className={`comparison ${lastReactionTime <= gameData.targetTime ? 'success' : 'miss'}`}>
-                  {lastReactionTime <= gameData.targetTime ? ' ✅ 達成' : ' ❌ 未達成'}
+                <span
+                  className={`comparison ${lastReactionTime <= gameData.targetTime ? 'success' : 'miss'}`}
+                >
+                  {lastReactionTime <= gameData.targetTime
+                    ? ' ✅ 達成'
+                    : ' ❌ 未達成'}
                 </span>
               </div>
             </div>
@@ -200,10 +208,15 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
         )}
 
         {feedback && (
-          <div className={`feedback ${
-            feedback.includes('素晴らしい') ? 'success' : 
-            feedback.includes('遅い') ? 'warning' : 'info'
-          }`}>
+          <div
+            className={`feedback ${
+              feedback.includes('素晴らしい')
+                ? 'success'
+                : feedback.includes('遅い')
+                  ? 'warning'
+                  : 'info'
+            }`}
+          >
             {feedback}
           </div>
         )}
@@ -211,11 +224,12 @@ export const ReflexGame: React.FC<ReflexGameProps> = ({
         <div className="difficulty-info">
           <h3>難易度情報</h3>
           <p>
-            <strong>{session.config.difficulty}</strong> - 
-            目標反応時間: {getTargetDescription()}以下
+            <strong>{session.config.difficulty}</strong> - 目標反応時間:{' '}
+            {getTargetDescription()}以下
           </p>
           <div className="tips">
-            💡 ヒント: フライングはペナルティです。刺激が現れてからクリックしてください。
+            💡 ヒント:
+            フライングはペナルティです。刺激が現れてからクリックしてください。
           </div>
         </div>
 

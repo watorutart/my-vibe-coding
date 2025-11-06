@@ -1,7 +1,7 @@
 /**
  * @file NotificationSettings.tsx
  * @description プッシュ通知設定コンポーネント
- * 
+ *
  * ユーザーがプッシュ通知の設定を管理できるUIを提供します。
  * 通知の有効/無効、閾値、間隔、静音時間などの設定が可能です。
  */
@@ -40,11 +40,13 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
   onRequestPermission,
   onSendTest,
   onClose,
-  className = ''
+  className = '',
 }) => {
   const [localConfig, setLocalConfig] = useState<PetNotificationConfig>(config);
   const [isTestSending, setIsTestSending] = useState(false);
-  const [testResult, setTestResult] = useState<'success' | 'failure' | null>(null);
+  const [testResult, setTestResult] = useState<'success' | 'failure' | null>(
+    null
+  );
 
   // 設定が外部から変更された場合に同期
   useEffect(() => {
@@ -68,7 +70,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
    */
   const updateNestedSetting = <
     K extends keyof PetNotificationConfig,
-    NK extends keyof PetNotificationConfig[K]
+    NK extends keyof PetNotificationConfig[K],
   >(
     key: K,
     nestedKey: NK,
@@ -98,14 +100,13 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
 
     setIsTestSending(true);
     setTestResult(null);
-    
+
     try {
       const success = await onSendTest();
       setTestResult(success ? 'success' : 'failure');
-      
+
       // 3秒後に結果をクリア
       setTimeout(() => setTestResult(null), 3000);
-      
     } catch (error) {
       console.error('[NotificationSettings] Test notification failed:', error);
       setTestResult('failure');
@@ -127,9 +128,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
     <div className={`notification-settings ${className}`}>
       {/* ヘッダー */}
       <div className="notification-settings__header">
-        <h3 className="notification-settings__title">
-          🔔 通知設定
-        </h3>
+        <h3 className="notification-settings__title">🔔 通知設定</h3>
         {onClose && (
           <button
             className="notification-settings__close"
@@ -147,7 +146,9 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           <div className="notification-settings__unsupported">
             <div className="notification-settings__icon">❌</div>
             <h4>通知機能がサポートされていません</h4>
-            <p>お使いのブラウザまたはデバイスでは、プッシュ通知機能がサポートされていません。</p>
+            <p>
+              お使いのブラウザまたはデバイスでは、プッシュ通知機能がサポートされていません。
+            </p>
           </div>
         ) : !permissionGranted ? (
           /* 許可要求 */
@@ -155,7 +156,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             <div className="notification-settings__icon">🔔</div>
             <h4>通知を有効にしますか？</h4>
             <p>ペットの状態やイベントをタイムリーにお知らせします。</p>
-            
+
             <div className="notification-settings__benefits">
               <div className="notification-settings__benefit">
                 <span className="notification-settings__benefit-icon">🍖</span>
@@ -170,7 +171,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                 <span>レベルアップや進化の時</span>
               </div>
             </div>
-            
+
             <button
               className="notification-settings__enable-button"
               onClick={handleRequestPermission}
@@ -188,7 +189,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   <input
                     type="checkbox"
                     checked={localConfig.enabled}
-                    onChange={(e) => updateSetting('enabled', e.target.checked)}
+                    onChange={e => updateSetting('enabled', e.target.checked)}
                     className="notification-settings__toggle-input"
                   />
                   <span className="notification-settings__toggle-slider" />
@@ -203,8 +204,10 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
               <>
                 {/* ペット状態通知設定 */}
                 <div className="notification-settings__section">
-                  <h4 className="notification-settings__section-title">ペット状態通知</h4>
-                  
+                  <h4 className="notification-settings__section-title">
+                    ペット状態通知
+                  </h4>
+
                   {/* 空腹度通知 */}
                   <div className="notification-settings__item">
                     <div className="notification-settings__item-header">
@@ -212,7 +215,13 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         <input
                           type="checkbox"
                           checked={localConfig.hunger.enabled}
-                          onChange={(e) => updateNestedSetting('hunger', 'enabled', e.target.checked)}
+                          onChange={e =>
+                            updateNestedSetting(
+                              'hunger',
+                              'enabled',
+                              e.target.checked
+                            )
+                          }
                           className="notification-settings__toggle-input"
                         />
                         <span className="notification-settings__toggle-slider notification-settings__toggle-slider--small" />
@@ -221,7 +230,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         </span>
                       </label>
                     </div>
-                    
+
                     {localConfig.hunger.enabled && (
                       <div className="notification-settings__item-controls">
                         <div className="notification-settings__control">
@@ -234,18 +243,30 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                             max="80"
                             step="5"
                             value={localConfig.hunger.threshold}
-                            onChange={(e) => updateNestedSetting('hunger', 'threshold', Number(e.target.value))}
+                            onChange={e =>
+                              updateNestedSetting(
+                                'hunger',
+                                'threshold',
+                                Number(e.target.value)
+                              )
+                            }
                             className="notification-settings__slider"
                           />
                         </div>
-                        
+
                         <div className="notification-settings__control">
                           <label className="notification-settings__label">
                             通知間隔: {localConfig.hunger.interval}分
                           </label>
                           <select
                             value={localConfig.hunger.interval}
-                            onChange={(e) => updateNestedSetting('hunger', 'interval', Number(e.target.value))}
+                            onChange={e =>
+                              updateNestedSetting(
+                                'hunger',
+                                'interval',
+                                Number(e.target.value)
+                              )
+                            }
                             className="notification-settings__select"
                           >
                             <option value={15}>15分</option>
@@ -265,7 +286,13 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         <input
                           type="checkbox"
                           checked={localConfig.energy.enabled}
-                          onChange={(e) => updateNestedSetting('energy', 'enabled', e.target.checked)}
+                          onChange={e =>
+                            updateNestedSetting(
+                              'energy',
+                              'enabled',
+                              e.target.checked
+                            )
+                          }
                           className="notification-settings__toggle-input"
                         />
                         <span className="notification-settings__toggle-slider notification-settings__toggle-slider--small" />
@@ -274,7 +301,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         </span>
                       </label>
                     </div>
-                    
+
                     {localConfig.energy.enabled && (
                       <div className="notification-settings__item-controls">
                         <div className="notification-settings__control">
@@ -287,18 +314,30 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                             max="50"
                             step="5"
                             value={localConfig.energy.threshold}
-                            onChange={(e) => updateNestedSetting('energy', 'threshold', Number(e.target.value))}
+                            onChange={e =>
+                              updateNestedSetting(
+                                'energy',
+                                'threshold',
+                                Number(e.target.value)
+                              )
+                            }
                             className="notification-settings__slider"
                           />
                         </div>
-                        
+
                         <div className="notification-settings__control">
                           <label className="notification-settings__label">
                             通知間隔: {localConfig.energy.interval}分
                           </label>
                           <select
                             value={localConfig.energy.interval}
-                            onChange={(e) => updateNestedSetting('energy', 'interval', Number(e.target.value))}
+                            onChange={e =>
+                              updateNestedSetting(
+                                'energy',
+                                'interval',
+                                Number(e.target.value)
+                              )
+                            }
                             className="notification-settings__select"
                           >
                             <option value={30}>30分</option>
@@ -318,7 +357,13 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         <input
                           type="checkbox"
                           checked={localConfig.happiness.enabled}
-                          onChange={(e) => updateNestedSetting('happiness', 'enabled', e.target.checked)}
+                          onChange={e =>
+                            updateNestedSetting(
+                              'happiness',
+                              'enabled',
+                              e.target.checked
+                            )
+                          }
                           className="notification-settings__toggle-input"
                         />
                         <span className="notification-settings__toggle-slider notification-settings__toggle-slider--small" />
@@ -327,7 +372,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         </span>
                       </label>
                     </div>
-                    
+
                     {localConfig.happiness.enabled && (
                       <div className="notification-settings__item-controls">
                         <div className="notification-settings__control">
@@ -340,18 +385,30 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                             max="70"
                             step="5"
                             value={localConfig.happiness.threshold}
-                            onChange={(e) => updateNestedSetting('happiness', 'threshold', Number(e.target.value))}
+                            onChange={e =>
+                              updateNestedSetting(
+                                'happiness',
+                                'threshold',
+                                Number(e.target.value)
+                              )
+                            }
                             className="notification-settings__slider"
                           />
                         </div>
-                        
+
                         <div className="notification-settings__control">
                           <label className="notification-settings__label">
                             通知間隔: {localConfig.happiness.interval}分
                           </label>
                           <select
                             value={localConfig.happiness.interval}
-                            onChange={(e) => updateNestedSetting('happiness', 'interval', Number(e.target.value))}
+                            onChange={e =>
+                              updateNestedSetting(
+                                'happiness',
+                                'interval',
+                                Number(e.target.value)
+                              )
+                            }
                             className="notification-settings__select"
                           >
                             <option value={30}>30分</option>
@@ -367,14 +424,22 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
 
                 {/* イベント通知設定 */}
                 <div className="notification-settings__section">
-                  <h4 className="notification-settings__section-title">イベント通知</h4>
-                  
+                  <h4 className="notification-settings__section-title">
+                    イベント通知
+                  </h4>
+
                   <div className="notification-settings__item">
                     <label className="notification-settings__toggle">
                       <input
                         type="checkbox"
                         checked={localConfig.levelUp.enabled}
-                        onChange={(e) => updateNestedSetting('levelUp', 'enabled', e.target.checked)}
+                        onChange={e =>
+                          updateNestedSetting(
+                            'levelUp',
+                            'enabled',
+                            e.target.checked
+                          )
+                        }
                         className="notification-settings__toggle-input"
                       />
                       <span className="notification-settings__toggle-slider notification-settings__toggle-slider--small" />
@@ -383,13 +448,19 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                       </span>
                     </label>
                   </div>
-                  
+
                   <div className="notification-settings__item">
                     <label className="notification-settings__toggle">
                       <input
                         type="checkbox"
                         checked={localConfig.evolution.enabled}
-                        onChange={(e) => updateNestedSetting('evolution', 'enabled', e.target.checked)}
+                        onChange={e =>
+                          updateNestedSetting(
+                            'evolution',
+                            'enabled',
+                            e.target.checked
+                          )
+                        }
                         className="notification-settings__toggle-input"
                       />
                       <span className="notification-settings__toggle-slider notification-settings__toggle-slider--small" />
@@ -402,15 +473,23 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
 
                 {/* 静音時間設定 */}
                 <div className="notification-settings__section">
-                  <h4 className="notification-settings__section-title">静音時間</h4>
-                  
+                  <h4 className="notification-settings__section-title">
+                    静音時間
+                  </h4>
+
                   <div className="notification-settings__item">
                     <div className="notification-settings__item-header">
                       <label className="notification-settings__toggle">
                         <input
                           type="checkbox"
                           checked={localConfig.quietHours.enabled}
-                          onChange={(e) => updateNestedSetting('quietHours', 'enabled', e.target.checked)}
+                          onChange={e =>
+                            updateNestedSetting(
+                              'quietHours',
+                              'enabled',
+                              e.target.checked
+                            )
+                          }
                           className="notification-settings__toggle-input"
                         />
                         <span className="notification-settings__toggle-slider notification-settings__toggle-slider--small" />
@@ -419,39 +498,51 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                         </span>
                       </label>
                     </div>
-                    
+
                     {localConfig.quietHours.enabled && (
                       <div className="notification-settings__item-controls">
                         <div className="notification-settings__time-range">
                           <div className="notification-settings__control">
-                            <label className="notification-settings__label">開始時刻</label>
+                            <label className="notification-settings__label">
+                              開始時刻
+                            </label>
                             <input
                               type="time"
                               value={localConfig.quietHours.start}
-                              onChange={(e) => {
+                              onChange={e => {
                                 if (isValidTime(e.target.value)) {
-                                  updateNestedSetting('quietHours', 'start', e.target.value);
+                                  updateNestedSetting(
+                                    'quietHours',
+                                    'start',
+                                    e.target.value
+                                  );
                                 }
                               }}
                               className="notification-settings__time-input"
                             />
                           </div>
-                          
+
                           <div className="notification-settings__control">
-                            <label className="notification-settings__label">終了時刻</label>
+                            <label className="notification-settings__label">
+                              終了時刻
+                            </label>
                             <input
                               type="time"
                               value={localConfig.quietHours.end}
-                              onChange={(e) => {
+                              onChange={e => {
                                 if (isValidTime(e.target.value)) {
-                                  updateNestedSetting('quietHours', 'end', e.target.value);
+                                  updateNestedSetting(
+                                    'quietHours',
+                                    'end',
+                                    e.target.value
+                                  );
                                 }
                               }}
                               className="notification-settings__time-input"
                             />
                           </div>
                         </div>
-                        
+
                         <p className="notification-settings__time-note">
                           この時間帯は通知が送信されません
                         </p>
@@ -463,8 +554,10 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                 {/* テスト通知 */}
                 {onSendTest && (
                   <div className="notification-settings__section">
-                    <h4 className="notification-settings__section-title">テスト</h4>
-                    
+                    <h4 className="notification-settings__section-title">
+                      テスト
+                    </h4>
+
                     <div className="notification-settings__test">
                       <button
                         className="notification-settings__test-button"
@@ -480,17 +573,23 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                           'テスト通知を送信'
                         )}
                       </button>
-                      
+
                       {testResult && (
-                        <div className={`notification-settings__test-result notification-settings__test-result--${testResult}`}>
+                        <div
+                          className={`notification-settings__test-result notification-settings__test-result--${testResult}`}
+                        >
                           {testResult === 'success' ? (
                             <>
-                              <span className="notification-settings__test-icon">✅</span>
+                              <span className="notification-settings__test-icon">
+                                ✅
+                              </span>
                               テスト通知を送信しました
                             </>
                           ) : (
                             <>
-                              <span className="notification-settings__test-icon">❌</span>
+                              <span className="notification-settings__test-icon">
+                                ❌
+                              </span>
                               送信に失敗しました
                             </>
                           )}

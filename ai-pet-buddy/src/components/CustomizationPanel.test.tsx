@@ -6,14 +6,17 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CustomizationPanel from './CustomizationPanel';
-import { DEFAULT_CUSTOMIZATION, DEFAULT_ACCESSORIES } from '../types/Customization';
+import {
+  DEFAULT_CUSTOMIZATION,
+  DEFAULT_ACCESSORIES,
+} from '../types/Customization';
 
 // useCustomization フックのモック
 let mockCustomizationHook = {
   customizationState: {
     current: DEFAULT_CUSTOMIZATION,
     available: DEFAULT_ACCESSORIES,
-    presets: []
+    presets: [],
   },
   previewCustomization: DEFAULT_CUSTOMIZATION,
   isPreviewMode: false,
@@ -26,11 +29,11 @@ let mockCustomizationHook = {
   startPreview: vi.fn(),
   applyPreview: vi.fn(),
   cancelPreview: vi.fn(),
-  resetToDefault: vi.fn()
+  resetToDefault: vi.fn(),
 };
 
 vi.mock('../hooks/useCustomization', () => ({
-  useCustomization: () => mockCustomizationHook
+  useCustomization: () => mockCustomizationHook,
 }));
 
 describe('CustomizationPanel', () => {
@@ -40,23 +43,23 @@ describe('CustomizationPanel', () => {
   // Helper function to render the panel with all required props
   const renderPanel = () => {
     return render(
-      <CustomizationPanel 
-        customizationApi={mockCustomizationHook} 
-        onClose={mockOnClose} 
-        onApply={mockOnApply} 
+      <CustomizationPanel
+        customizationApi={mockCustomizationHook}
+        onClose={mockOnClose}
+        onApply={mockOnApply}
       />
     );
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Reset mock state to prevent cross-test leakage
     mockCustomizationHook = {
       customizationState: {
         current: DEFAULT_CUSTOMIZATION,
         available: DEFAULT_ACCESSORIES,
-        presets: []
+        presets: [],
       },
       previewCustomization: DEFAULT_CUSTOMIZATION,
       isPreviewMode: false,
@@ -69,7 +72,7 @@ describe('CustomizationPanel', () => {
       startPreview: vi.fn(),
       applyPreview: vi.fn(),
       cancelPreview: vi.fn(),
-      resetToDefault: vi.fn()
+      resetToDefault: vi.fn(),
     };
   });
 
@@ -85,17 +88,17 @@ describe('CustomizationPanel', () => {
 
     it('should render loading state', () => {
       mockCustomizationHook.isLoading = true;
-      
+
       renderPanel();
-      
+
       expect(screen.getByText('読み込み中...')).toBeInTheDocument();
     });
 
     it('should render error message', () => {
       mockCustomizationHook.error = 'テストエラー';
-      
+
       renderPanel();
-      
+
       expect(screen.getByText('テストエラー')).toBeInTheDocument();
     });
   });
@@ -117,7 +120,9 @@ describe('CustomizationPanel', () => {
 
       await user.click(screen.getByRole('button', { name: 'アクセサリー' }));
 
-      expect(screen.getByText('アクセサリー', { selector: 'h3' })).toBeInTheDocument();
+      expect(
+        screen.getByText('アクセサリー', { selector: 'h3' })
+      ).toBeInTheDocument();
       // デフォルトアクセサリーが表示されることを確認
       expect(screen.getByText('麦わら帽子')).toBeInTheDocument();
     });
@@ -162,11 +167,13 @@ describe('CustomizationPanel', () => {
       renderPanel();
 
       const nameInput = screen.getByLabelText('ペット名:');
-      
+
       // Use fireEvent.change to simulate a change event with the exact value
       fireEvent.change(nameInput, { target: { value: 'プレビュー名' } });
 
-      expect(mockCustomizationHook.updateName).toHaveBeenCalledWith('プレビュー名');
+      expect(mockCustomizationHook.updateName).toHaveBeenCalledWith(
+        'プレビュー名'
+      );
     });
   });
 
@@ -178,17 +185,20 @@ describe('CustomizationPanel', () => {
     });
 
     it('should display color palette', () => {
-      const colorButtons = screen.getAllByRole('button').filter(button => 
-        button.getAttribute('aria-label')?.includes('色を') && 
-        button.getAttribute('aria-label')?.includes('に変更')
-      );
-      
+      const colorButtons = screen
+        .getAllByRole('button')
+        .filter(
+          button =>
+            button.getAttribute('aria-label')?.includes('色を') &&
+            button.getAttribute('aria-label')?.includes('に変更')
+        );
+
       expect(colorButtons.length).toBeGreaterThan(0);
     });
 
     it('should handle color selection from palette', async () => {
       const user = userEvent.setup();
-      
+
       const redColorButton = screen.getByLabelText('色を#FF6B6Bに変更');
       await user.click(redColorButton);
 
@@ -198,10 +208,12 @@ describe('CustomizationPanel', () => {
 
     it('should handle custom color input', async () => {
       const user = userEvent.setup();
-      
+
       const customColorInputs = screen.getAllByDisplayValue('#FF6B6B');
-      const textColorInput = customColorInputs.find(input => input.getAttribute('type') === 'text');
-      
+      const textColorInput = customColorInputs.find(
+        input => input.getAttribute('type') === 'text'
+      );
+
       if (textColorInput) {
         // Just verify that the input can be interacted with
         await user.click(textColorInput);
@@ -224,27 +236,34 @@ describe('CustomizationPanel', () => {
     });
 
     it('should show unlocked accessories as available', () => {
-      const hatAccessory = screen.getByText('麦わら帽子').closest('.accessory-item');
+      const hatAccessory = screen
+        .getByText('麦わら帽子')
+        .closest('.accessory-item');
       expect(hatAccessory).not.toHaveClass('locked');
-      
+
       const addButton = hatAccessory?.querySelector('.accessory-button');
       expect(addButton).not.toBeDisabled();
     });
 
     it('should show locked accessories as disabled', () => {
-      const sunglassesAccessory = screen.getByText('サングラス').closest('.accessory-item');
+      const sunglassesAccessory = screen
+        .getByText('サングラス')
+        .closest('.accessory-item');
       expect(sunglassesAccessory).toHaveClass('locked');
-      
-      const lockButton = sunglassesAccessory?.querySelector('.accessory-button');
+
+      const lockButton =
+        sunglassesAccessory?.querySelector('.accessory-button');
       expect(lockButton).toBeDisabled();
     });
 
     it('should handle accessory toggle', async () => {
       const user = userEvent.setup();
-      
-      const hatAccessory = screen.getByText('麦わら帽子').closest('.accessory-item');
+
+      const hatAccessory = screen
+        .getByText('麦わら帽子')
+        .closest('.accessory-item');
       const addButton = hatAccessory?.querySelector('.accessory-button');
-      
+
       if (addButton) {
         await user.click(addButton);
         expect(mockCustomizationHook.addAccessory).toHaveBeenCalled();
@@ -275,9 +294,9 @@ describe('CustomizationPanel', () => {
       mockCustomizationHook.previewCustomization = {
         ...DEFAULT_CUSTOMIZATION,
         name: 'プレビューペット',
-        color: '#00FF00'
+        color: '#00FF00',
       };
-      
+
       renderPanel();
 
       expect(screen.getByText('プレビューペット')).toBeInTheDocument();
@@ -332,7 +351,7 @@ describe('CustomizationPanel', () => {
       renderPanel();
 
       expect(screen.getByText('名前が無効です')).toBeInTheDocument();
-      
+
       const nameInput = screen.getByLabelText('ペット名:');
       expect(nameInput).toHaveClass('error');
     });
@@ -340,7 +359,7 @@ describe('CustomizationPanel', () => {
     it('should display color validation error', async () => {
       const user = userEvent.setup();
       mockCustomizationHook.error = '色コードが無効です';
-      
+
       renderPanel();
       await user.click(screen.getByText('色'));
 
@@ -350,7 +369,7 @@ describe('CustomizationPanel', () => {
     it('should display accessory error', async () => {
       const user = userEvent.setup();
       mockCustomizationHook.error = 'アクセサリーエラー';
-      
+
       renderPanel();
       await user.click(screen.getByText('アクセサリー'));
 
@@ -372,7 +391,7 @@ describe('CustomizationPanel', () => {
 
       const nameInput = screen.getByLabelText('ペット名:');
       await user.click(nameInput);
-      
+
       // 直接フォーカスした要素が正しいことを確認
       expect(document.activeElement).toBe(nameInput);
     });

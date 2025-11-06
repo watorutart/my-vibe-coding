@@ -3,12 +3,12 @@
  * SNSシェア、URL生成、ファイル名生成などの共通機能を提供
  */
 
-import type { 
-  SocialPlatform, 
-  ShareData, 
+import type {
+  SocialPlatform,
+  ShareData,
   SocialShareOptions,
   ShareResult,
-  ShareSettings 
+  ShareSettings,
 } from '../types/Share';
 
 /**
@@ -19,7 +19,7 @@ export const DEFAULT_SHARE_SETTINGS: ShareSettings = {
   enableWatermark: true,
   autoSave: false,
   imageQuality: 0.9,
-  includeStats: true
+  includeStats: true,
 };
 
 /**
@@ -29,23 +29,23 @@ export const PLATFORM_CONFIG = {
   twitter: {
     maxLength: 280,
     recommendedHashtags: ['#AIPetBuddy', '#VirtualPet', '#TwitterGaming'],
-    baseUrl: 'https://twitter.com/intent/tweet'
+    baseUrl: 'https://twitter.com/intent/tweet',
   },
   facebook: {
     maxLength: 63206,
     recommendedHashtags: ['#AIPetBuddy', '#VirtualPet', '#FacebookGaming'],
-    baseUrl: 'https://www.facebook.com/sharer/sharer.php'
+    baseUrl: 'https://www.facebook.com/sharer/sharer.php',
   },
   instagram: {
     maxLength: 2200,
     recommendedHashtags: ['#AIPetBuddy', '#VirtualPet', '#InstagramGaming'],
-    baseUrl: '' // Instagram doesn't support direct web sharing
+    baseUrl: '', // Instagram doesn't support direct web sharing
   },
   line: {
     maxLength: 1000,
     recommendedHashtags: ['#AIPetBuddy', '#VirtualPet'],
-    baseUrl: 'https://social-plugins.line.me/lineit/share'
-  }
+    baseUrl: 'https://social-plugins.line.me/lineit/share',
+  },
 } as const;
 
 /**
@@ -54,7 +54,10 @@ export const PLATFORM_CONFIG = {
  * @param extension ファイル拡張子
  * @returns 生成されたファイル名 (YYYYMMDD-HHMMSS形式、UTC基準)
  */
-export const generateFileName = (prefix: string = 'pet-buddy', extension: string = 'png'): string => {
+export const generateFileName = (
+  prefix: string = 'pet-buddy',
+  extension: string = 'png'
+): string => {
   const now = new Date();
   // Use UTC methods to ensure consistent filenames across different timezones
   const year = now.getUTCFullYear();
@@ -63,7 +66,7 @@ export const generateFileName = (prefix: string = 'pet-buddy', extension: string
   const hours = String(now.getUTCHours()).padStart(2, '0');
   const minutes = String(now.getUTCMinutes()).padStart(2, '0');
   const seconds = String(now.getUTCSeconds()).padStart(2, '0');
-  
+
   return `${prefix}-${year}${month}${day}-${hours}${minutes}${seconds}.${extension}`;
 };
 
@@ -73,32 +76,36 @@ export const generateFileName = (prefix: string = 'pet-buddy', extension: string
  * @param platform SNSプラットフォーム
  * @returns 生成されたシェアテキスト
  */
-export const generateShareText = (shareData: ShareData, platform: SocialPlatform): string => {
+export const generateShareText = (
+  shareData: ShareData,
+  platform: SocialPlatform
+): string => {
   const config = PLATFORM_CONFIG[platform];
   const maxLength = config.maxLength;
-  
+
   let text = `${shareData.title}\n\n${shareData.description}`;
-  
+
   // 統計情報を含める場合
   if (shareData.stats) {
     const statsText = `\n\nレベル: ${shareData.stats.level} | 進化段階: ${shareData.stats.evolutionStage}`;
     text += statsText;
   }
-  
+
   // ハッシュタグを追加
-  const hashtags = shareData.hashtags.length > 0 
-    ? shareData.hashtags 
-    : config.recommendedHashtags;
-  
+  const hashtags =
+    shareData.hashtags.length > 0
+      ? shareData.hashtags
+      : config.recommendedHashtags;
+
   const hashtagText = '\n\n' + hashtags.join(' ');
-  
+
   // 文字数制限を考慮
   const totalLength = text.length + hashtagText.length;
   if (totalLength > maxLength) {
     const availableLength = maxLength - hashtagText.length - 3; // "..." 分を考慮
     text = text.substring(0, availableLength) + '...';
   }
-  
+
   return text + hashtagText;
 };
 
@@ -110,25 +117,25 @@ export const generateShareText = (shareData: ShareData, platform: SocialPlatform
 export const generateShareUrl = (options: SocialShareOptions): string => {
   const { platform, shareData, url } = options;
   const config = PLATFORM_CONFIG[platform];
-  
+
   if (platform === 'instagram') {
     // Instagramは直接のWebシェアをサポートしていない
     return '';
   }
-  
+
   const shareText = generateShareText(shareData, platform);
   const encodedText = encodeURIComponent(shareText);
-  
+
   switch (platform) {
     case 'twitter':
       return `${config.baseUrl}?text=${encodedText}${url ? `&url=${encodeURIComponent(url)}` : ''}`;
-    
+
     case 'facebook':
       return url ? `${config.baseUrl}?u=${encodeURIComponent(url)}` : '';
-    
+
     case 'line':
       return `${config.baseUrl}?text=${encodedText}${url ? `&url=${encodeURIComponent(url)}` : ''}`;
-    
+
     default:
       return '';
   }
@@ -139,45 +146,48 @@ export const generateShareUrl = (options: SocialShareOptions): string => {
  * @param options シェアオプション
  * @returns シェア結果
  */
-export const shareToSocial = async (options: SocialShareOptions): Promise<ShareResult> => {
+export const shareToSocial = async (
+  options: SocialShareOptions
+): Promise<ShareResult> => {
   try {
     const shareUrl = generateShareUrl(options);
-    
+
     if (!shareUrl) {
       if (options.platform === 'instagram') {
         return {
           success: false,
-          error: 'Instagram does not support direct web sharing. Please save the image and share manually.'
+          error:
+            'Instagram does not support direct web sharing. Please save the image and share manually.',
         };
       }
       return {
         success: false,
-        error: 'Failed to generate share URL'
+        error: 'Failed to generate share URL',
       };
     }
-    
+
     // 新しいウィンドウでシェアページを開く
     const popup = window.open(
       shareUrl,
       'share',
       'width=600,height=400,scrollbars=yes,resizable=yes'
     );
-    
+
     if (!popup) {
       return {
         success: false,
-        error: 'Popup blocked. Please allow popups for this site.'
+        error: 'Popup blocked. Please allow popups for this site.',
       };
     }
-    
+
     return {
       success: true,
-      shareUrl
+      shareUrl,
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
     };
   }
 };
@@ -191,7 +201,7 @@ export const downloadImage = (dataUrl: string, filename?: string): void => {
   const link = document.createElement('a');
   link.download = filename || generateFileName();
   link.href = dataUrl;
-  
+
   // 一時的にDOMに追加してクリック
   document.body.appendChild(link);
   link.click();
@@ -203,13 +213,15 @@ export const downloadImage = (dataUrl: string, filename?: string): void => {
  * @param dataUrl 画像データURL
  * @returns Promise<{width: number, height: number}>
  */
-export const getImageDimensions = (dataUrl: string): Promise<{width: number, height: number}> => {
+export const getImageDimensions = (
+  dataUrl: string
+): Promise<{ width: number; height: number }> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       resolve({
         width: img.width,
-        height: img.height
+        height: img.height,
       });
     };
     img.onerror = () => {
@@ -227,7 +239,7 @@ export const getImageDimensions = (dataUrl: string): Promise<{width: number, hei
 export const getImageSize = (dataUrl: string): number => {
   const base64 = dataUrl.split(',')[1];
   if (!base64) return 0;
-  
+
   const byteCharacters = atob(base64);
   return byteCharacters.length;
 };
@@ -247,11 +259,14 @@ export const getImageFormat = (dataUrl: string): string => {
  * @param shareData シェアデータ
  * @param key 保存キー
  */
-export const saveShareData = (shareData: ShareData, key: string = 'lastShareData'): void => {
+export const saveShareData = (
+  shareData: ShareData,
+  key: string = 'lastShareData'
+): void => {
   try {
     const data = {
       ...shareData,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     localStorage.setItem(key, JSON.stringify(data));
   } catch (error) {
@@ -264,11 +279,13 @@ export const saveShareData = (shareData: ShareData, key: string = 'lastShareData
  * @param key 読み込みキー
  * @returns シェアデータまたはnull
  */
-export const loadShareData = (key: string = 'lastShareData'): ShareData | null => {
+export const loadShareData = (
+  key: string = 'lastShareData'
+): ShareData | null => {
   try {
     const stored = localStorage.getItem(key);
     if (!stored) return null;
-    
+
     const data = JSON.parse(stored);
     return data;
   } catch (error) {

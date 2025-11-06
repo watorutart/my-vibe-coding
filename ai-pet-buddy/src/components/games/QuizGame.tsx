@@ -38,7 +38,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (hasAnswered) return;
-    
+
     setSelectedAnswer(answerIndex);
   };
 
@@ -47,13 +47,15 @@ export const QuizGame: React.FC<QuizGameProps> = ({
 
     const isCorrect = onSubmitAnswer(selectedAnswer);
     setHasAnswered(true);
-    
+
     if (isCorrect) {
       setFeedback('🎉 正解です！');
     } else {
-      setFeedback(`❌ 不正解です。正解は「${gameData.options[gameData.correctAnswer]}」でした。`);
+      setFeedback(
+        `❌ 不正解です。正解は「${gameData.options[gameData.correctAnswer]}」でした。`
+      );
     }
-    
+
     if (gameData.explanation) {
       setShowExplanation(true);
     }
@@ -107,9 +109,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({
           <div className="time-remaining">
             ⏰ 残り時間: {Math.floor(getTimeRemaining())}秒
           </div>
-          <div className="score">
-            📊 スコア: {session.score.points}pts
-          </div>
+          <div className="score">📊 スコア: {session.score.points}pts</div>
           <div className="accuracy">
             🎯 正答率: {Math.round(session.score.accuracy * 100)}%
           </div>
@@ -120,13 +120,14 @@ export const QuizGame: React.FC<QuizGameProps> = ({
         <div className="question-section">
           <div className="question-header">
             <span className="category-badge">
-              {getCategoryIcon(gameData.category)} {getCategoryName(gameData.category)}
+              {getCategoryIcon(gameData.category)}{' '}
+              {getCategoryName(gameData.category)}
             </span>
             <span className="question-number">
               問題 {(session.score.combo || 0) + 1}
             </span>
           </div>
-          
+
           <div className="question-content">
             <h3 className="question-text">{gameData.question}</h3>
           </div>
@@ -136,17 +137,20 @@ export const QuizGame: React.FC<QuizGameProps> = ({
           <div className="answer-options">
             {gameData.options.map((option, index) => {
               let className = 'answer-option';
-              
+
               if (hasAnswered) {
                 if (index === gameData.correctAnswer) {
                   className += ' correct';
-                } else if (index === selectedAnswer && selectedAnswer !== gameData.correctAnswer) {
+                } else if (
+                  index === selectedAnswer &&
+                  selectedAnswer !== gameData.correctAnswer
+                ) {
                   className += ' incorrect';
                 }
               } else if (selectedAnswer === index) {
                 className += ' selected';
               }
-              
+
               return (
                 <button
                   key={index}
@@ -161,9 +165,11 @@ export const QuizGame: React.FC<QuizGameProps> = ({
                   {hasAnswered && index === gameData.correctAnswer && (
                     <span className="correct-icon">✅</span>
                   )}
-                  {hasAnswered && index === selectedAnswer && selectedAnswer !== gameData.correctAnswer && (
-                    <span className="incorrect-icon">❌</span>
-                  )}
+                  {hasAnswered &&
+                    index === selectedAnswer &&
+                    selectedAnswer !== gameData.correctAnswer && (
+                      <span className="incorrect-icon">❌</span>
+                    )}
                 </button>
               );
             })}
@@ -171,7 +177,9 @@ export const QuizGame: React.FC<QuizGameProps> = ({
         </div>
 
         {feedback && (
-          <div className={`feedback ${feedback.includes('正解') ? 'success' : 'error'}`}>
+          <div
+            className={`feedback ${feedback.includes('正解') ? 'success' : 'error'}`}
+          >
             {feedback}
           </div>
         )}
@@ -193,10 +201,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({
               回答する
             </button>
           ) : (
-            <button
-              className="next-button"
-              onClick={handleNextQuestion}
-            >
+            <button className="next-button" onClick={handleNextQuestion}>
               次の問題
             </button>
           )}
@@ -207,10 +212,10 @@ export const QuizGame: React.FC<QuizGameProps> = ({
 
         <div className="quiz-progress">
           <div className="progress-bar">
-            <div 
+            <div
               className="progress-fill"
-              style={{ 
-                width: `${Math.min(100, (timeElapsed / session.config.duration) * 100)}%` 
+              style={{
+                width: `${Math.min(100, (timeElapsed / session.config.duration) * 100)}%`,
               }}
             />
           </div>
@@ -223,7 +228,8 @@ export const QuizGame: React.FC<QuizGameProps> = ({
         <div className="difficulty-info">
           <h4>難易度: {session.config.difficulty}</h4>
           <div className="tips">
-            💡 ヒント: 時間内にできるだけ多くの問題に正解して高得点を目指しましょう！
+            💡 ヒント:
+            時間内にできるだけ多くの問題に正解して高得点を目指しましょう！
           </div>
         </div>
       </div>

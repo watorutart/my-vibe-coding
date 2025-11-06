@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import type { ConversationMessage, PetMood, ConversationPattern, ConversationHistory } from './Conversation';
+import type {
+  ConversationMessage,
+  PetMood,
+  ConversationPattern,
+  ConversationHistory,
+} from './Conversation';
 
 describe('Conversation型定義', () => {
   describe('ConversationMessage', () => {
@@ -8,7 +13,7 @@ describe('Conversation型定義', () => {
         id: 'msg-001',
         sender: 'pet',
         content: 'こんにちは！',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       expect(validMessage.id).toBe('msg-001');
@@ -22,14 +27,14 @@ describe('Conversation型定義', () => {
         id: 'msg-user',
         sender: 'user',
         content: 'ユーザーメッセージ',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       const petMessage: ConversationMessage = {
         id: 'msg-pet',
         sender: 'pet',
         content: 'ペットメッセージ',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       expect(userMessage.sender).toBe('user');
@@ -39,8 +44,15 @@ describe('Conversation型定義', () => {
 
   describe('PetMood', () => {
     it('should accept all valid mood values', () => {
-      const validMoods: PetMood[] = ['happy', 'neutral', 'sad', 'excited', 'tired', 'hungry'];
-      
+      const validMoods: PetMood[] = [
+        'happy',
+        'neutral',
+        'sad',
+        'excited',
+        'tired',
+        'hungry',
+      ];
+
       validMoods.forEach(mood => {
         const testMood: PetMood = mood;
         expect(validMoods).toContain(testMood);
@@ -54,7 +66,7 @@ describe('Conversation型定義', () => {
         category: 'greeting',
         mood: 'happy',
         level: 1,
-        messages: ['こんにちは！', '元気だよ！', 'いい天気だね！']
+        messages: ['こんにちは！', '元気だよ！', 'いい天気だね！'],
       };
 
       expect(pattern.category).toBe('greeting');
@@ -68,7 +80,7 @@ describe('Conversation型定義', () => {
       const pattern: ConversationPattern = {
         category: 'general',
         mood: 'neutral',
-        messages: ['そうですね', 'なるほど']
+        messages: ['そうですね', 'なるほど'],
       };
 
       expect(pattern.level).toBeUndefined();
@@ -80,7 +92,7 @@ describe('Conversation型定義', () => {
     it('should accept valid conversation history', () => {
       const history: ConversationHistory = {
         messages: [],
-        lastInteraction: Date.now()
+        lastInteraction: Date.now(),
       };
 
       expect(Array.isArray(history.messages)).toBe(true);
@@ -93,19 +105,19 @@ describe('Conversation型定義', () => {
           id: 'msg-1',
           sender: 'user',
           content: 'こんにちは',
-          timestamp: Date.now() - 1000
+          timestamp: Date.now() - 1000,
         },
         {
           id: 'msg-2',
           sender: 'pet',
           content: 'こんにちは！元気だよ！',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       ];
 
       const history: ConversationHistory = {
         messages,
-        lastInteraction: Date.now()
+        lastInteraction: Date.now(),
       };
 
       expect(history.messages).toHaveLength(2);

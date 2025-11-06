@@ -87,7 +87,12 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
   animation: shimmer 3s infinite;
 }
 
@@ -334,45 +339,45 @@
   .game-results {
     padding: 15px;
   }
-  
+
   .game-info {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .game-icon {
     font-size: 36px;
   }
-  
+
   .game-details h2 {
     font-size: 20px;
   }
-  
+
   .performance-icon {
     font-size: 24px;
   }
-  
+
   .performance-text {
     font-size: 20px;
   }
-  
+
   .score-value {
     font-size: 28px;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .rewards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .action-buttons {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .play-again-button,
   .back-to-menu-button {
     width: 200px;

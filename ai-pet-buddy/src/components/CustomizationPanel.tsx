@@ -1,7 +1,7 @@
 /**
  * @file CustomizationPanel.tsx
  * @description ペットカスタマイズパネルのメインコンポーネント
- * 
+ *
  * タブ形式のUIでペットの名前、色、アクセサリーをカスタマイズできる機能を提供します。
  */
 
@@ -17,7 +17,11 @@ interface CustomizationPanelProps {
 
 type TabType = 'name' | 'color' | 'accessories';
 
-export default function CustomizationPanel({ customizationApi, onClose, onApply }: CustomizationPanelProps) {
+export default function CustomizationPanel({
+  customizationApi,
+  onClose,
+  onApply,
+}: CustomizationPanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>('name');
   // tempName と tempColor は customizationApi.previewCustomization から取得するため、ローカルステートは不要になるか、初期化方法を変更
   const [tempName, setTempName] = useState('');
@@ -37,7 +41,7 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
     startPreview,
     // applyPreview, // App側で処理するため、ここでは直接使わない
     cancelPreview,
-    resetToDefault
+    resetToDefault,
   } = customizationApi;
 
   // パネルが開かれたときやプレビューモードが変更されたときに tempName と tempColor を更新
@@ -53,7 +57,6 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
       }
     }
   }, [isPreviewMode, previewCustomization, customizationState]);
-
 
   // タブ変更時の処理
   const handleTabChange = (tab: TabType) => {
@@ -81,8 +84,10 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
 
   // アクセサリー装着/解除
   const handleAccessoryToggle = (accessoryId: string) => {
-    const isWearing = previewCustomization.accessories.some(acc => acc.id === accessoryId);
-    
+    const isWearing = previewCustomization.accessories.some(
+      acc => acc.id === accessoryId
+    );
+
     if (isWearing) {
       removeAccessory(accessoryId);
     } else {
@@ -92,7 +97,7 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
 
   // 適用ボタンの処理 (props経由でApp.tsxの関数を呼び出す)
   const handleApply = () => {
-    onApply(); 
+    onApply();
   };
 
   // キャンセル
@@ -109,8 +114,14 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
 
   // カラーパレット
   const colorPalette = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-    '#FECA57', '#FF9FF3', '#A55EEA', '#FD79A8'
+    '#FF6B6B',
+    '#4ECDC4',
+    '#45B7D1',
+    '#96CEB4',
+    '#FECA57',
+    '#FF9FF3',
+    '#A55EEA',
+    '#FD79A8',
   ];
 
   const renderNameTab = () => (
@@ -127,9 +138,7 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
           placeholder="ペットの名前を入力..."
           className={error && error.includes('名前') ? 'error' : ''}
         />
-        <div className="character-count">
-          {tempName.length}/20文字
-        </div>
+        <div className="character-count">{tempName.length}/20文字</div>
         {error && error.includes('名前') && (
           <div className="error-message">{error}</div>
         )}
@@ -142,13 +151,17 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
       <h3>色の変更</h3>
       <div className="color-editor">
         <div className="color-preview">
-          <div 
-            className="color-circle" 
-            style={{ backgroundColor: isPreviewMode ? previewCustomization.color : tempColor }} // プレビュー中はフックの値を表示
+          <div
+            className="color-circle"
+            style={{
+              backgroundColor: isPreviewMode
+                ? previewCustomization.color
+                : tempColor,
+            }} // プレビュー中はフックの値を表示
           />
           <span>現在の色</span>
         </div>
-        
+
         <div className="color-palette">
           <h4>カラーパレット</h4>
           <div className="palette-grid">
@@ -170,18 +183,18 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
             id="custom-color"
             type="color"
             value={isPreviewMode ? previewCustomization.color : tempColor} // プレビュー中はフックの値を表示
-            onChange={(e) => handleColorChange(e.target.value)}
+            onChange={e => handleColorChange(e.target.value)}
           />
           <input
             type="text"
             value={isPreviewMode ? previewCustomization.color : tempColor} // プレビュー中はフックの値を表示
-            onChange={(e) => handleColorChange(e.target.value)}
+            onChange={e => handleColorChange(e.target.value)}
             placeholder="#FF6B6B"
             pattern="#[0-9A-Fa-f]{6}"
             className={error && error.includes('色') ? 'error' : ''}
           />
         </div>
-        
+
         {error && error.includes('色') && (
           <div className="error-message">{error}</div>
         )}
@@ -191,8 +204,8 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
 
   const renderAccessoriesTab = () => {
     // Determine which accessories list to use based on isPreviewMode
-    const currentPetAccessories = isPreviewMode 
-      ? previewCustomization.accessories 
+    const currentPetAccessories = isPreviewMode
+      ? previewCustomization.accessories
       : customizationState.current.accessories;
 
     return (
@@ -201,9 +214,11 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
         <div className="accessories-grid">
           {customizationState.available.map(accessory => {
             // Use currentPetAccessories to determine if an accessory is being worn
-            const isWearing = currentPetAccessories.some(acc => acc.id === accessory.id);
+            const isWearing = currentPetAccessories.some(
+              acc => acc.id === accessory.id
+            );
             const isUnlocked = accessory.unlocked;
-            
+
             return (
               <div
                 key={accessory.id}
@@ -214,13 +229,19 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
                 </div>
                 <div className="accessory-info">
                   <h4>{accessory.name}</h4>
-                  <p className="accessory-type">{getAccessoryTypeText(accessory.type)}</p>
+                  <p className="accessory-type">
+                    {getAccessoryTypeText(accessory.type)}
+                  </p>
                 </div>
                 <button
                   className={`accessory-button ${isWearing ? 'remove' : 'add'}`}
                   onClick={() => handleAccessoryToggle(accessory.id)}
                   disabled={!isUnlocked}
-                  aria-label={isWearing ? `${accessory.name}を外す` : `${accessory.name}を装着`}
+                  aria-label={
+                    isWearing
+                      ? `${accessory.name}を外す`
+                      : `${accessory.name}を装着`
+                  }
                 >
                   {!isUnlocked ? '🔒' : isWearing ? '外す' : '装着'}
                 </button>
@@ -228,7 +249,7 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
             );
           })}
         </div>
-        
+
         {error && error.includes('アクセサリー') && (
           <div className="error-message">{error}</div>
         )}
@@ -239,22 +260,32 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
   // アクセサリーアイコンを取得
   const getAccessoryIcon = (type: string) => {
     switch (type) {
-      case 'hat': return '🎩';
-      case 'ribbon': return '🎀';
-      case 'glasses': return '👓';
-      case 'necklace': return '📿';
-      default: return '✨';
+      case 'hat':
+        return '🎩';
+      case 'ribbon':
+        return '🎀';
+      case 'glasses':
+        return '👓';
+      case 'necklace':
+        return '📿';
+      default:
+        return '✨';
     }
   };
 
   // アクセサリータイプのテキストを取得
   const getAccessoryTypeText = (type: string) => {
     switch (type) {
-      case 'hat': return '帽子';
-      case 'ribbon': return 'リボン';
-      case 'glasses': return 'メガネ';
-      case 'necklace': return 'ネックレス';
-      default: return 'アクセサリー';
+      case 'hat':
+        return '帽子';
+      case 'ribbon':
+        return 'リボン';
+      case 'glasses':
+        return 'メガネ';
+      case 'necklace':
+        return 'ネックレス';
+      default:
+        return 'アクセサリー';
     }
   };
 
@@ -273,29 +304,41 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
       <div className="customization-panel">
         <div className="panel-header">
           <h2>🎨 ペットカスタマイズ</h2>
-          <button className="close-button" onClick={handleCancel} aria-label="閉じる">
+          <button
+            className="close-button"
+            onClick={handleCancel}
+            aria-label="閉じる"
+          >
             ✕
           </button>
         </div>
 
         <div className="preview-section">
           <div className="preview-pet">
-            <div 
-              className="pet-preview" 
-              style={{ backgroundColor: isPreviewMode ? previewCustomization.color : tempColor }} // プレビュー中はフックの値を表示
+            <div
+              className="pet-preview"
+              style={{
+                backgroundColor: isPreviewMode
+                  ? previewCustomization.color
+                  : tempColor,
+              }} // プレビュー中はフックの値を表示
             >
               🐾
-              {(isPreviewMode ? previewCustomization.accessories : customizationState.current.accessories).map(accessory => (
+              {(isPreviewMode
+                ? previewCustomization.accessories
+                : customizationState.current.accessories
+              ).map(accessory => (
                 <span key={accessory.id} className="accessory-on-pet">
                   {getAccessoryIcon(accessory.type)}
                 </span>
               ))}
             </div>
             <div className="preview-name">
-              {isPreviewMode ? previewCustomization.name : tempName} {/* プレビュー中はフックの値を表示 */}
+              {isPreviewMode ? previewCustomization.name : tempName}{' '}
+              {/* プレビュー中はフックの値を表示 */}
             </div>
           </div>
-          
+
           {!isPreviewMode && (
             <button className="preview-button" onClick={handleStartPreview}>
               プレビュー開始
@@ -344,9 +387,12 @@ export default function CustomizationPanel({ customizationApi, onClose, onApply 
           </div>
         </div>
 
-        {error && !error.includes('名前') && !error.includes('色') && !error.includes('アクセサリー') && (
-          <div className="global-error-message">{error}</div>
-        )}
+        {error &&
+          !error.includes('名前') &&
+          !error.includes('色') &&
+          !error.includes('アクセサリー') && (
+            <div className="global-error-message">{error}</div>
+          )}
       </div>
     </div>
   );

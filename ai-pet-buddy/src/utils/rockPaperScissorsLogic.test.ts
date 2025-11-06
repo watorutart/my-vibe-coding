@@ -11,7 +11,7 @@ import {
   getChoiceIcon,
   getChoiceName,
   getResultMessage,
-  type Choice
+  type Choice,
 } from './rockPaperScissorsLogic';
 
 describe('rockPaperScissorsLogic', () => {
@@ -45,7 +45,7 @@ describe('rockPaperScissorsLogic', () => {
     it('should generate different choices over multiple calls', () => {
       // Mock Math.random to test different outcomes
       const choices = new Set<Choice>();
-      
+
       vi.spyOn(Math, 'random')
         .mockReturnValueOnce(0.1) // rock
         .mockReturnValueOnce(0.4) // paper

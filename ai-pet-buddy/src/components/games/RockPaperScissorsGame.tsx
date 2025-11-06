@@ -11,7 +11,7 @@ import {
   getChoiceIcon,
   getChoiceName,
   getResultMessage,
-  type Choice
+  type Choice,
 } from '../../utils/rockPaperScissorsLogic';
 import './RockPaperScissorsGame.css';
 
@@ -26,17 +26,19 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
   session,
   onSubmitAnswer,
   onEndGame,
-  timeElapsed
+  timeElapsed,
 }) => {
   const [gameData, setGameData] = useState<RockPaperScissorsData>(() => {
-    return session.currentQuestion as RockPaperScissorsData || {
-      playerChoice: null,
-      aiChoice: null,
-      result: null,
-      consecutiveWins: 0,
-      totalRounds: 5,
-      currentRound: 1
-    };
+    return (
+      (session.currentQuestion as RockPaperScissorsData) || {
+        playerChoice: null,
+        aiChoice: null,
+        result: null,
+        consecutiveWins: 0,
+        totalRounds: 5,
+        currentRound: 1,
+      }
+    );
   });
 
   const [showResult, setShowResult] = useState(false);
@@ -66,7 +68,7 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
         result,
         consecutiveWins: result === 'win' ? gameData.consecutiveWins + 1 : 0,
         totalRounds: gameData.totalRounds,
-        currentRound: gameData.currentRound
+        currentRound: gameData.currentRound,
       };
 
       setGameData(newGameData);
@@ -89,14 +91,14 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
       playerChoice: null,
       aiChoice: null,
       result: null,
-      currentRound: prev.currentRound + 1
+      currentRound: prev.currentRound + 1,
     }));
     setShowResult(false);
   };
 
   const renderChoiceButtons = () => (
     <div className="choice-buttons">
-      {choices.map((choice) => (
+      {choices.map(choice => (
         <button
           key={choice}
           className={`choice-button ${isAnimating ? 'disabled' : ''}`}
@@ -118,13 +120,13 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
           {gameData.playerChoice ? getChoiceIcon(gameData.playerChoice) : '❓'}
         </div>
       </div>
-      
+
       <div className="vs-indicator">
         <span className={`vs-text ${isAnimating ? 'pulsing' : ''}`}>
           {isAnimating ? 'じゃん けん...' : 'VS'}
         </span>
       </div>
-      
+
       <div className="ai-side">
         <h3>AI</h3>
         <div className={`choice-display ${isAnimating ? 'animating' : ''}`}>
@@ -140,13 +142,13 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
     return (
       <div className={`result-display ${gameData.result}`}>
         <h2 className="result-message">{getResultMessage(gameData.result)}</h2>
-        
+
         {gameData.result === 'win' && gameData.consecutiveWins > 1 && (
           <div className="consecutive-bonus">
             🔥 {gameData.consecutiveWins}連勝！ボーナス獲得！
           </div>
         )}
-        
+
         <div className="result-choices">
           <div className="result-choice">
             <span>あなた: {getChoiceName(gameData.playerChoice!)}</span>
@@ -159,7 +161,9 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
         </div>
 
         <button className="next-button" onClick={handleNextRound}>
-          {gameData.currentRound >= gameData.totalRounds ? 'ゲーム終了' : '次のラウンド'}
+          {gameData.currentRound >= gameData.totalRounds
+            ? 'ゲーム終了'
+            : '次のラウンド'}
         </button>
       </div>
     );
@@ -184,7 +188,7 @@ export const RockPaperScissorsGame: React.FC<RockPaperScissorsGameProps> = ({
 
       <div className="game-content">
         {renderGameAnimation()}
-        
+
         {!showResult && !isAnimating && (
           <div className="choice-section">
             <p className="instruction">あなたの手を選んでください</p>

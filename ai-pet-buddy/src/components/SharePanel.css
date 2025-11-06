@@ -199,7 +199,14 @@
 }
 
 .share-button--instagram {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
   color: white;
 }
 
@@ -250,8 +257,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* レスポンシブ対応 */
@@ -261,23 +272,23 @@
     width: 95%;
     margin: 10px;
   }
-  
+
   .share-panel__header {
     padding: 16px 20px 12px;
   }
-  
+
   .share-panel__content {
     padding: 16px 20px 20px;
   }
-  
+
   .share-panel__capture {
     flex-direction: column;
   }
-  
+
   .share-buttons {
     grid-template-columns: 1fr;
   }
-  
+
   .share-button {
     font-size: 16px;
     padding: 14px 18px;
@@ -291,24 +302,24 @@
     background: #1f2937;
     color: white;
   }
-  
+
   .share-panel__header {
     border-bottom-color: #374151;
   }
-  
+
   .share-panel__title {
     color: white;
   }
-  
+
   .share-panel__close {
     color: #9ca3af;
   }
-  
+
   .share-panel__close:hover {
     background: #374151;
     color: #d1d5db;
   }
-  
+
   .share-preview__image {
     border-color: #374151;
   }
@@ -319,11 +330,11 @@
   .share-panel {
     animation: none;
   }
-  
+
   .share-button:hover:not(:disabled) {
     transform: none;
   }
-  
+
   .loading-spinner {
     animation: none;
   }

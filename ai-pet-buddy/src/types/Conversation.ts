@@ -17,13 +17,26 @@ export interface ConversationMessage {
  * ペットの気分状態
  * 会話パターン選択に使用
  */
-export type PetMood = 'happy' | 'neutral' | 'sad' | 'excited' | 'tired' | 'hungry';
+export type PetMood =
+  | 'happy'
+  | 'neutral'
+  | 'sad'
+  | 'excited'
+  | 'tired'
+  | 'hungry';
 
 /**
  * 会話カテゴリー
  * 会話パターンの分類用
  */
-export type ConversationCategory = 'greeting' | 'encouragement' | 'play' | 'mood' | 'need' | 'level_up' | 'general';
+export type ConversationCategory =
+  | 'greeting'
+  | 'encouragement'
+  | 'play'
+  | 'mood'
+  | 'need'
+  | 'level_up'
+  | 'general';
 
 /**
  * 会話パターンの定義

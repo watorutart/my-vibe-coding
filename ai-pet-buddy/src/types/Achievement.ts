@@ -1,12 +1,17 @@
 /**
  * @file Achievement.ts
  * @description Achievement system type definitions for AI Pet Buddy
- * 
+ *
  * Defines types for badges, titles, achievement tracking, and progress management.
  */
 
 // Achievement categories
-export type AchievementCategory = 'evolution' | 'game' | 'care' | 'time' | 'level';
+export type AchievementCategory =
+  | 'evolution'
+  | 'game'
+  | 'care'
+  | 'time'
+  | 'level';
 
 // Achievement rarity levels
 export type AchievementRarity = 'common' | 'rare' | 'epic' | 'legendary';
@@ -41,7 +46,14 @@ export interface Title {
 
 // Achievement requirement definition
 export interface AchievementRequirement {
-  type: 'evolution_count' | 'game_win_streak' | 'consecutive_days' | 'level_reached' | 'stat_max' | 'total_games' | 'total_playtime';
+  type:
+    | 'evolution_count'
+    | 'game_win_streak'
+    | 'consecutive_days'
+    | 'level_reached'
+    | 'stat_max'
+    | 'total_games'
+    | 'total_playtime';
   value: number;
   description: string;
 }
@@ -94,11 +106,14 @@ export const DEFAULT_ACHIEVEMENT_PROGRESS: AchievementProgress = {
   totalWins: 0,
   totalPlaytime: 0,
   lastPlayDate: Date.now(),
-  firstPlayDate: Date.now()
+  firstPlayDate: Date.now(),
 };
 
 // Predefined badges
-export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progress'>[] = [
+export const PREDEFINED_BADGES: Omit<
+  Badge,
+  'unlocked' | 'unlockedAt' | 'progress'
+>[] = [
   // Evolution badges
   {
     id: 'first-evolution',
@@ -110,8 +125,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'evolution_count',
       value: 1,
-      description: 'ペットを1回進化させる'
-    }
+      description: 'ペットを1回進化させる',
+    },
   },
   {
     id: 'evolution-master',
@@ -123,8 +138,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'evolution_count',
       value: 5,
-      description: 'ペットを5回進化させる'
-    }
+      description: 'ペットを5回進化させる',
+    },
   },
   // Game badges
   {
@@ -137,8 +152,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'game_win_streak',
       value: 5,
-      description: 'ゲームで5連勝する'
-    }
+      description: 'ゲームで5連勝する',
+    },
   },
   {
     id: 'game-master',
@@ -150,8 +165,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'game_win_streak',
       value: 10,
-      description: 'ゲームで10連勝する'
-    }
+      description: 'ゲームで10連勝する',
+    },
   },
   {
     id: 'game-legend',
@@ -163,8 +178,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'game_win_streak',
       value: 20,
-      description: 'ゲームで20連勝する'
-    }
+      description: 'ゲームで20連勝する',
+    },
   },
   // Care badges
   {
@@ -177,8 +192,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'consecutive_days',
       value: 7,
-      description: '7日連続でプレイする'
-    }
+      description: '7日連続でプレイする',
+    },
   },
   {
     id: 'month-streak',
@@ -190,8 +205,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'consecutive_days',
       value: 30,
-      description: '30日連続でプレイする'
-    }
+      description: '30日連続でプレイする',
+    },
   },
   // Level badges
   {
@@ -204,8 +219,8 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'level_reached',
       value: 10,
-      description: 'ペットをレベル10まで育てる'
-    }
+      description: 'ペットをレベル10まで育てる',
+    },
   },
   {
     id: 'happiness-max',
@@ -217,13 +232,16 @@ export const PREDEFINED_BADGES: Omit<Badge, 'unlocked' | 'unlockedAt' | 'progres
     requirements: {
       type: 'stat_max',
       value: 100,
-      description: '幸福度を100にする'
-    }
-  }
+      description: '幸福度を100にする',
+    },
+  },
 ];
 
 // Predefined titles
-export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'>[] = [
+export const PREDEFINED_TITLES: Omit<
+  Title,
+  'unlocked' | 'unlockedAt' | 'active'
+>[] = [
   {
     id: 'beginner-trainer',
     name: '初心者トレーナー',
@@ -234,8 +252,8 @@ export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'
     requirements: {
       type: 'level_reached',
       value: 1,
-      description: 'ゲームを開始する'
-    }
+      description: 'ゲームを開始する',
+    },
   },
   {
     id: 'veteran-trainer',
@@ -247,8 +265,8 @@ export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'
     requirements: {
       type: 'level_reached',
       value: 10,
-      description: 'ペットをレベル10まで育てる'
-    }
+      description: 'ペットをレベル10まで育てる',
+    },
   },
   {
     id: 'master-trainer',
@@ -260,8 +278,8 @@ export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'
     requirements: {
       type: 'total_games',
       value: 100,
-      description: '100回以上ゲームをプレイする'
-    }
+      description: '100回以上ゲームをプレイする',
+    },
   },
   {
     id: 'game-master-title',
@@ -273,8 +291,8 @@ export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'
     requirements: {
       type: 'game_win_streak',
       value: 10,
-      description: 'ゲームで10連勝する'
-    }
+      description: 'ゲームで10連勝する',
+    },
   },
   {
     id: 'care-master',
@@ -286,8 +304,8 @@ export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'
     requirements: {
       type: 'stat_max',
       value: 100,
-      description: '幸福度を100にする'
-    }
+      description: '幸福度を100にする',
+    },
   },
   {
     id: 'evolution-master-title',
@@ -299,7 +317,7 @@ export const PREDEFINED_TITLES: Omit<Title, 'unlocked' | 'unlockedAt' | 'active'
     requirements: {
       type: 'evolution_count',
       value: 5,
-      description: 'ペットを5回進化させる'
-    }
-  }
+      description: 'ペットを5回進化させる',
+    },
+  },
 ];

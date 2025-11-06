@@ -141,8 +141,15 @@
 }
 
 @keyframes sparkle {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 0.8;
+  }
 }
 
 /* Category Icon */
@@ -251,7 +258,11 @@
   height: 100%;
   border-radius: 3px;
   transition: all 0.3s ease;
-  background: linear-gradient(90deg, var(--progress-color) 0%, var(--progress-color) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--progress-color) 0%,
+    var(--progress-color) 100%
+  );
 }
 
 .badge-display__progress-text {
@@ -311,9 +322,15 @@
 }
 
 @keyframes shine {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-  100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  50% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
 }
 
 /* Legendary Special Effects */
@@ -322,8 +339,12 @@
 }
 
 @keyframes legendaryGlow {
-  0% { box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3); }
-  100% { box-shadow: 0 8px 16px rgba(245, 158, 11, 0.5); }
+  0% {
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+  }
+  100% {
+    box-shadow: 0 8px 16px rgba(245, 158, 11, 0.5);
+  }
 }
 
 /* Mobile Responsive */
@@ -332,20 +353,20 @@
     padding: 12px;
     gap: 10px;
   }
-  
+
   .badge-display__icon-container {
     width: 56px;
     height: 56px;
   }
-  
+
   .badge-display__icon {
     font-size: 28px;
   }
-  
+
   .badge-display__name {
     font-size: 15px;
   }
-  
+
   .badge-display__description {
     font-size: 13px;
   }
@@ -358,28 +379,28 @@
     border-color: #475569;
     color: #e2e8f0;
   }
-  
+
   .badge-display--unlocked {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   }
-  
+
   .badge-display--locked {
     background: linear-gradient(135deg, #334155 0%, #475569 100%);
     opacity: 0.6;
   }
-  
+
   .badge-display__name {
     color: #f1f5f9;
   }
-  
+
   .badge-display--locked .badge-display__name {
     color: #94a3b8;
   }
-  
+
   .badge-display__description {
     color: #cbd5e1;
   }
-  
+
   .badge-display--locked .badge-display__description {
     color: #64748b;
   }

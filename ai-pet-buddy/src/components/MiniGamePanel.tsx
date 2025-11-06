@@ -4,7 +4,12 @@
 
 import React, { useState, Suspense, lazy } from 'react';
 import { useGame } from '../hooks/useGame';
-import type { GameConfig, GameDifficulty, GameType, GameSession } from '../types/Game';
+import type {
+  GameConfig,
+  GameDifficulty,
+  GameType,
+  GameSession,
+} from '../types/Game';
 import type { Choice } from '../utils/rockPaperScissorsLogic';
 import GameResults from './GameResults';
 import './MiniGamePanel.css';
@@ -14,7 +19,9 @@ import '../styles/loading.css';
 const MemoryGame = lazy(() => import('./games/MemoryGame'));
 const QuizGame = lazy(() => import('./games/QuizGame'));
 const ReflexGame = lazy(() => import('./games/ReflexGame'));
-const RockPaperScissorsGame = lazy(() => import('./games/RockPaperScissorsGame'));
+const RockPaperScissorsGame = lazy(
+  () => import('./games/RockPaperScissorsGame')
+);
 const NumberGuessingGame = lazy(() => import('./games/NumberGuessingGame'));
 
 // Game loading fallback component
@@ -34,7 +41,12 @@ interface CommonGameProps {
 }
 
 export interface MiniGamePanelProps {
-  onRewardEarned?: (reward: { experience: number; happiness: number; energy: number; coins: number }) => void;
+  onRewardEarned?: (reward: {
+    experience: number;
+    happiness: number;
+    energy: number;
+    coins: number;
+  }) => void;
   onClose?: () => void;
 }
 
@@ -57,17 +69,17 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
     recentResults,
     bestScores,
   } = useGame({
-    onGameComplete: (result) => {
+    onGameComplete: result => {
       console.log('🏁 ゲーム完了:', result);
       setShowResults(true);
     },
-    onRewardGiven: (reward) => {
+    onRewardGiven: reward => {
       console.log('🎁 報酬獲得:', reward);
       onRewardEarned?.({
         experience: reward.experience,
         happiness: reward.happiness,
         energy: reward.energy,
-        coins: reward.coins || 0
+        coins: reward.coins || 0,
       });
     },
   });
@@ -79,7 +91,7 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
 
   const handleGameStart = () => {
     if (!selectedGame) return;
-    
+
     try {
       startGame(selectedGame);
       playGame();
@@ -105,7 +117,10 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
     setSelectedGame(null);
   };
 
-  const renderGameComponent = (gameType: GameType, commonProps: CommonGameProps) => {
+  const renderGameComponent = (
+    gameType: GameType,
+    commonProps: CommonGameProps
+  ) => {
     switch (gameType) {
       case 'memory':
         return <MemoryGame {...commonProps} />;
@@ -141,7 +156,12 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
   };
 
   const renderGameSelection = () => {
-    const gameTypes: { type: GameType; name: string; icon: string; description: string }[] = [
+    const gameTypes: {
+      type: GameType;
+      name: string;
+      icon: string;
+      description: string;
+    }[] = [
       {
         type: 'memory',
         name: 'メモリーゲーム',
@@ -174,7 +194,11 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
       },
     ];
 
-    const difficulties: { difficulty: GameDifficulty; name: string; color: string }[] = [
+    const difficulties: {
+      difficulty: GameDifficulty;
+      name: string;
+      color: string;
+    }[] = [
       { difficulty: 'easy', name: '簡単', color: 'green' },
       { difficulty: 'medium', name: '普通', color: 'orange' },
       { difficulty: 'hard', name: '難しい', color: 'red' },
@@ -183,9 +207,9 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
     return (
       <div className="game-selection">
         <h2 className="panel-title">🎮 ミニゲーム</h2>
-        
+
         <div className="game-types">
-          {gameTypes.map((game) => (
+          {gameTypes.map(game => (
             <div key={game.type} className="game-type-section">
               <div className="game-type-header">
                 <span className="game-icon">{game.icon}</span>
@@ -194,17 +218,19 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
                   <p>{game.description}</p>
                 </div>
               </div>
-              
+
               <div className="difficulty-buttons">
-                {difficulties.map((diff) => {
+                {difficulties.map(diff => {
                   const config = availableGames.find(
-                    (g) => g.type === game.type && g.difficulty === diff.difficulty
+                    g =>
+                      g.type === game.type && g.difficulty === diff.difficulty
                   );
-                  
+
                   if (!config) return null;
-                  
-                  const bestScore = bestScores[`${game.type}_${diff.difficulty}`] || 0;
-                  
+
+                  const bestScore =
+                    bestScores[`${game.type}_${diff.difficulty}`] || 0;
+
                   return (
                     <button
                       key={diff.difficulty}
@@ -212,7 +238,9 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
                       onClick={() => handleGameSelect(config)}
                     >
                       <span className="difficulty-name">{diff.name}</span>
-                      <span className="difficulty-time">{config.duration}秒</span>
+                      <span className="difficulty-time">
+                        {config.duration}秒
+                      </span>
                       {bestScore > 0 && (
                         <span className="best-score">最高: {bestScore}pt</span>
                       )}
@@ -228,7 +256,7 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
           <div className="recent-results">
             <h3>最近のゲーム結果</h3>
             <div className="results-list">
-              {recentResults.slice(0, 3).map((result) => (
+              {recentResults.slice(0, 3).map(result => (
                 <div key={result.gameId} className="result-item">
                   <span className="result-game">
                     {result.type === 'memory' && '🧠'}
@@ -239,7 +267,9 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
                     {result.difficulty}
                   </span>
                   <span className="result-score">{result.score.points}pt</span>
-                  <span className={`result-status ${result.success ? 'success' : 'failure'}`}>
+                  <span
+                    className={`result-status ${result.success ? 'success' : 'failure'}`}
+                  >
                     {result.success ? '成功' : '失敗'}
                   </span>
                 </div>
@@ -267,16 +297,15 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
             onBackToMenu={handleBackToMenu}
           />
         ) : currentSession && isGameActive ? (
-          <div className="game-interface">
-            {renderGameInterface()}
-          </div>
+          <div className="game-interface">{renderGameInterface()}</div>
         ) : selectedGame ? (
           <div className="game-ready">
             <h2>
               {selectedGame.type === 'memory' && '🧠 メモリーゲーム'}
               {selectedGame.type === 'reflex' && '⚡ 反射神経ゲーム'}
               {selectedGame.type === 'quiz' && '❓ クイズゲーム'}
-              {selectedGame.type === 'rock-paper-scissors' && '✊ じゃんけんゲーム'}
+              {selectedGame.type === 'rock-paper-scissors' &&
+                '✊ じゃんけんゲーム'}
               {selectedGame.type === 'number-guessing' && '🔢 数当てゲーム'}
             </h2>
             <div className="game-details">
@@ -287,7 +316,10 @@ export const MiniGamePanel: React.FC<MiniGamePanelProps> = ({
               <button className="start-button" onClick={handleGameStart}>
                 ゲーム開始
               </button>
-              <button className="back-button" onClick={() => setSelectedGame(null)}>
+              <button
+                className="back-button"
+                onClick={() => setSelectedGame(null)}
+              >
                 戻る
               </button>
             </div>

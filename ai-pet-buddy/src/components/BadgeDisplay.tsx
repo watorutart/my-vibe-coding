@@ -1,7 +1,7 @@
 /**
  * @file BadgeDisplay.tsx
  * @description Component for displaying individual achievement badges
- * 
+ *
  * Shows badge icon, name, description, progress, and unlock status
  * with visual effects for unlocked/locked states.
  */
@@ -25,7 +25,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
   showProgress = true,
   showDescription = true,
   onClick,
-  className = ''
+  className = '',
 }) => {
   const handleClick = () => {
     if (onClick) {
@@ -35,22 +35,33 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
 
   const getRarityColor = (rarity: Badge['rarity']): string => {
     switch (rarity) {
-      case 'common': return '#10b981'; // green
-      case 'rare': return '#3b82f6'; // blue
-      case 'epic': return '#8b5cf6'; // purple
-      case 'legendary': return '#f59e0b'; // gold
-      default: return '#6b7280'; // gray
+      case 'common':
+        return '#10b981'; // green
+      case 'rare':
+        return '#3b82f6'; // blue
+      case 'epic':
+        return '#8b5cf6'; // purple
+      case 'legendary':
+        return '#f59e0b'; // gold
+      default:
+        return '#6b7280'; // gray
     }
   };
 
   const getCategoryIcon = (category: Badge['category']): string => {
     switch (category) {
-      case 'evolution': return '🦋';
-      case 'game': return '🎮';
-      case 'care': return '💝';
-      case 'time': return '⏰';
-      case 'level': return '⭐';
-      default: return '🏆';
+      case 'evolution':
+        return '🦋';
+      case 'game':
+        return '🎮';
+      case 'care':
+        return '💝';
+      case 'time':
+        return '⏰';
+      case 'level':
+        return '⭐';
+      default:
+        return '🏆';
     }
   };
 
@@ -71,25 +82,29 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
     badge.unlocked ? 'badge-display--unlocked' : 'badge-display--locked',
     `badge-display--${badge.rarity}`,
     onClick ? 'badge-display--clickable' : '',
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <div 
+    <div
       className={badgeClasses}
       onClick={handleClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (onClick && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           handleClick();
         }
       }}
-      style={{
-        '--rarity-color': getRarityColor(badge.rarity),
-        '--progress-color': getProgressColor(badge.progress)
-      } as React.CSSProperties}
+      style={
+        {
+          '--rarity-color': getRarityColor(badge.rarity),
+          '--progress-color': getProgressColor(badge.progress),
+        } as React.CSSProperties
+      }
     >
       {/* Badge Icon */}
       <div className="badge-display__icon-container">
@@ -97,9 +112,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
           {badge.unlocked ? badge.icon : '🔒'}
         </div>
         {badge.unlocked && (
-          <div className="badge-display__unlock-indicator">
-            ✨
-          </div>
+          <div className="badge-display__unlock-indicator">✨</div>
         )}
         <div className="badge-display__category-icon">
           {getCategoryIcon(badge.category)}
@@ -109,18 +122,12 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
       {/* Badge Content */}
       <div className="badge-display__content">
         <div className="badge-display__header">
-          <h3 className="badge-display__name">
-            {badge.name}
-          </h3>
-          <div className="badge-display__rarity">
-            {badge.rarity}
-          </div>
+          <h3 className="badge-display__name">{badge.name}</h3>
+          <div className="badge-display__rarity">{badge.rarity}</div>
         </div>
 
         {showDescription && (
-          <p className="badge-display__description">
-            {badge.description}
-          </p>
+          <p className="badge-display__description">{badge.description}</p>
         )}
 
         <div className="badge-display__requirements">
@@ -130,11 +137,11 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
         {showProgress && !badge.unlocked && (
           <div className="badge-display__progress">
             <div className="badge-display__progress-bar">
-              <div 
+              <div
                 className="badge-display__progress-fill"
                 style={{
                   width: `${badge.progress * 100}%`,
-                  backgroundColor: getProgressColor(badge.progress)
+                  backgroundColor: getProgressColor(badge.progress),
                 }}
               />
             </div>
@@ -153,11 +160,9 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
 
       {/* Rarity Border Effect */}
       <div className="badge-display__rarity-border" />
-      
+
       {/* Shine Effect for Unlocked Badges */}
-      {badge.unlocked && (
-        <div className="badge-display__shine" />
-      )}
+      {badge.unlocked && <div className="badge-display__shine" />}
     </div>
   );
 };

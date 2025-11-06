@@ -13,7 +13,7 @@
   visibility: hidden;
   transform: translateY(100%);
   transition: all 0.4s ease;
-  
+
   /* iOS Safe Area対応 */
   bottom: max(20px, env(safe-area-inset-bottom));
   left: max(20px, env(safe-area-inset-left));
@@ -27,10 +27,10 @@
 }
 
 .update-notification__content {
-  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
   color: white;
   border-radius: 16px;
-  box-shadow: 
+  box-shadow:
     0 16px 48px rgba(78, 205, 196, 0.3),
     0 8px 24px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(8px);
@@ -53,7 +53,11 @@
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -106,7 +110,7 @@
 
 .update-notification__button--primary {
   background: white;
-  color: #4ECDC4;
+  color: #4ecdc4;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -199,8 +203,12 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* 詳細情報 */
@@ -331,8 +339,12 @@
 }
 
 @keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .update-notification__loading-text {
@@ -355,46 +367,46 @@
     right: 12px;
     bottom: 12px;
   }
-  
+
   .update-notification__main {
     padding: 16px;
     gap: 12px;
   }
-  
+
   .update-notification__icon {
     font-size: 28px;
   }
-  
+
   .update-notification__title {
     font-size: 15px;
   }
-  
+
   .update-notification__subtitle {
     font-size: 12px;
   }
-  
+
   .update-notification__button {
     padding: 8px 16px;
     font-size: 13px;
   }
-  
+
   .update-notification__details {
     padding: 0 16px 16px;
   }
-  
+
   .update-notification__detail-actions {
     gap: 6px;
   }
-  
+
   .update-notification__loading {
     padding: 16px;
   }
-  
+
   .update-notification__loading-icon {
     font-size: 40px;
     margin-bottom: 12px;
   }
-  
+
   .update-notification__loading-text {
     font-size: 15px;
   }
@@ -407,7 +419,7 @@
     left: auto;
     right: 20px;
   }
-  
+
   .update-notification__detail-actions {
     flex-direction: row;
     justify-content: space-between;
@@ -419,7 +431,7 @@
   .update-notification {
     max-width: 420px;
   }
-  
+
   .update-notification__main {
     padding: 18px 20px;
   }
@@ -428,9 +440,9 @@
 /* ダークモード対応 */
 @media (prefers-color-scheme: dark) {
   .update-notification__content {
-    background: linear-gradient(135deg, #2D3748, #4A5568);
+    background: linear-gradient(135deg, #2d3748, #4a5568);
   }
-  
+
   .update-notification__overlay {
     background: rgba(45, 55, 72, 0.95);
   }
@@ -441,11 +453,11 @@
   .update-notification__content {
     border: 2px solid white;
   }
-  
+
   .update-notification__button--primary {
-    border: 2px solid #4ECDC4;
+    border: 2px solid #4ecdc4;
   }
-  
+
   .update-notification__button--secondary {
     border-width: 3px;
   }
@@ -459,11 +471,11 @@
   .update-notification__progress-bar::after {
     animation: none;
   }
-  
+
   .update-notification--visible {
     transform: none;
   }
-  
+
   .update-notification__button,
   .update-notification__chevron,
   .update-notification__progress-bar {

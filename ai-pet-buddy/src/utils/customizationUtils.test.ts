@@ -14,14 +14,14 @@ import {
   createPreset,
   resetCustomization,
   getColorPalette,
-  unlockAccessory
+  unlockAccessory,
 } from './customizationUtils';
 import {
   DEFAULT_CUSTOMIZATION,
   DEFAULT_ACCESSORIES,
   type PetCustomization,
   type Accessory,
-  type CustomizationState
+  type CustomizationState,
 } from '../types/Customization';
 
 // localStorage のモック
@@ -29,7 +29,7 @@ const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
-  clear: vi.fn()
+  clear: vi.fn(),
 };
 
 // globalThis.localStorage = localStorageMock as any;
@@ -46,7 +46,7 @@ describe('customizationUtils', () => {
       const testState: CustomizationState = {
         current: DEFAULT_CUSTOMIZATION,
         available: DEFAULT_ACCESSORIES,
-        presets: []
+        presets: [],
       };
 
       const result = saveCustomizationData(testState);
@@ -67,7 +67,7 @@ describe('customizationUtils', () => {
       const testState: CustomizationState = {
         current: DEFAULT_CUSTOMIZATION,
         available: DEFAULT_ACCESSORIES,
-        presets: []
+        presets: [],
       };
 
       const result = saveCustomizationData(testState);
@@ -82,7 +82,7 @@ describe('customizationUtils', () => {
         ...DEFAULT_CUSTOMIZATION,
         name: 'テストペット',
         color: '#00FF00',
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toISOString(),
       };
 
       localStorageMock.getItem
@@ -126,7 +126,7 @@ describe('customizationUtils', () => {
         color: '#FF0000',
         accessories: [],
         unlocked: true,
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toISOString(),
       };
 
       localStorageMock.getItem
@@ -150,7 +150,9 @@ describe('customizationUtils', () => {
     it('should reject invalid pet names', () => {
       expect(validatePetName('').isValid).toBe(false);
       expect(validatePetName('   ').isValid).toBe(false);
-      expect(validatePetName('二十一文字を超える非常に長いペット名前です').isValid).toBe(false);
+      expect(
+        validatePetName('二十一文字を超える非常に長いペット名前です').isValid
+      ).toBe(false);
       expect(validatePetName('Pet<Name>').isValid).toBe(false);
     });
   });
@@ -176,14 +178,14 @@ describe('customizationUtils', () => {
         id: 'acc-1',
         type: 'hat',
         name: 'テスト帽子',
-        unlocked: true
+        unlocked: true,
       },
       {
         id: 'acc-2',
         type: 'ribbon',
         name: 'ロック済みリボン',
-        unlocked: false
-      }
+        unlocked: false,
+      },
     ];
 
     it('should validate unlocked accessory', () => {
@@ -214,14 +216,14 @@ describe('customizationUtils', () => {
     it('should add accessory to customization', () => {
       const customization: PetCustomization = {
         ...DEFAULT_CUSTOMIZATION,
-        accessories: []
+        accessories: [],
       };
 
       const accessory: Accessory = {
         id: 'hat-1',
         type: 'hat',
         name: 'テスト帽子',
-        unlocked: true
+        unlocked: true,
       };
 
       const result = addAccessoryToCustomization(customization, accessory);
@@ -236,19 +238,19 @@ describe('customizationUtils', () => {
         id: 'hat-old',
         type: 'hat',
         name: '古い帽子',
-        unlocked: true
+        unlocked: true,
       };
 
       const customization: PetCustomization = {
         ...DEFAULT_CUSTOMIZATION,
-        accessories: [existingHat]
+        accessories: [existingHat],
       };
 
       const newHat: Accessory = {
         id: 'hat-new',
         type: 'hat',
         name: '新しい帽子',
-        unlocked: true
+        unlocked: true,
       };
 
       const result = addAccessoryToCustomization(customization, newHat);
@@ -262,19 +264,19 @@ describe('customizationUtils', () => {
         id: 'ribbon-1',
         type: 'ribbon',
         name: 'リボン',
-        unlocked: true
+        unlocked: true,
       };
 
       const customization: PetCustomization = {
         ...DEFAULT_CUSTOMIZATION,
-        accessories: [existingRibbon]
+        accessories: [existingRibbon],
       };
 
       const hat: Accessory = {
         id: 'hat-1',
         type: 'hat',
         name: '帽子',
-        unlocked: true
+        unlocked: true,
       };
 
       const result = addAccessoryToCustomization(customization, hat);
@@ -292,19 +294,19 @@ describe('customizationUtils', () => {
           id: 'hat-1',
           type: 'hat',
           name: '帽子',
-          unlocked: true
+          unlocked: true,
         },
         {
           id: 'ribbon-1',
           type: 'ribbon',
           name: 'リボン',
-          unlocked: true
-        }
+          unlocked: true,
+        },
       ];
 
       const customization: PetCustomization = {
         ...DEFAULT_CUSTOMIZATION,
-        accessories
+        accessories,
       };
 
       const result = removeAccessoryFromCustomization(customization, 'hat-1');
@@ -317,10 +319,13 @@ describe('customizationUtils', () => {
     it('should handle non-existent accessory gracefully', () => {
       const customization: PetCustomization = {
         ...DEFAULT_CUSTOMIZATION,
-        accessories: []
+        accessories: [],
       };
 
-      const result = removeAccessoryFromCustomization(customization, 'non-existent');
+      const result = removeAccessoryFromCustomization(
+        customization,
+        'non-existent'
+      );
 
       expect(result.accessories).toHaveLength(0);
     });
@@ -331,7 +336,7 @@ describe('customizationUtils', () => {
       const customization: PetCustomization = {
         ...DEFAULT_CUSTOMIZATION,
         name: 'CurrentPet',
-        color: '#FF0000'
+        color: '#FF0000',
       };
 
       const result = createPreset(customization, 'MyPreset');
@@ -360,7 +365,7 @@ describe('customizationUtils', () => {
 
       expect(Array.isArray(palette)).toBe(true);
       expect(palette.length).toBeGreaterThan(0);
-      
+
       // すべてが有効なHEXカラーコードか確認
       palette.forEach(color => {
         expect(color).toMatch(/^#[A-Fa-f0-9]{6}$/);
@@ -383,14 +388,14 @@ describe('customizationUtils', () => {
           id: 'acc-1',
           type: 'hat',
           name: '帽子',
-          unlocked: false
+          unlocked: false,
         },
         {
           id: 'acc-2',
           type: 'ribbon',
           name: 'リボン',
-          unlocked: true
-        }
+          unlocked: true,
+        },
       ];
 
       const result = unlockAccessory('acc-1', accessories);
@@ -405,14 +410,14 @@ describe('customizationUtils', () => {
           id: 'acc-1',
           type: 'hat',
           name: '帽子',
-          unlocked: false
+          unlocked: false,
         },
         {
           id: 'acc-2',
           type: 'ribbon',
           name: 'リボン',
-          unlocked: false
-        }
+          unlocked: false,
+        },
       ];
 
       const result = unlockAccessory('acc-1', accessories);
@@ -427,8 +432,8 @@ describe('customizationUtils', () => {
           id: 'acc-1',
           type: 'hat',
           name: '帽子',
-          unlocked: false
-        }
+          unlocked: false,
+        },
       ];
 
       const result = unlockAccessory('non-existent', accessories);

@@ -1,7 +1,7 @@
 /**
  * @file Analytics.ts
  * @description Analytics system type definitions for AI Pet Buddy
- * 
+ *
  * Defines types for analytics dashboard, data visualization, and insights.
  */
 
@@ -9,10 +9,21 @@ import type { ChartConfig, TimePeriod } from './Statistics';
 import type { AchievementNotification } from './Achievement';
 
 // Analytics dashboard section types
-export type DashboardSection = 'overview' | 'games' | 'care' | 'evolution' | 'achievements' | 'export';
+export type DashboardSection =
+  | 'overview'
+  | 'games'
+  | 'care'
+  | 'evolution'
+  | 'achievements'
+  | 'export';
 
 // Analytics insight types
-export type InsightType = 'trend' | 'milestone' | 'recommendation' | 'warning' | 'celebration';
+export type InsightType =
+  | 'trend'
+  | 'milestone'
+  | 'recommendation'
+  | 'warning'
+  | 'celebration';
 
 // Analytics insight
 export interface AnalyticsInsight {
@@ -48,7 +59,12 @@ export interface DashboardWidget {
 }
 
 // Widget data union type
-export type WidgetData = StatWidgetData | ChartWidgetData | ListWidgetData | ProgressWidgetData | BadgeWidgetData;
+export type WidgetData =
+  | StatWidgetData
+  | ChartWidgetData
+  | ListWidgetData
+  | ProgressWidgetData
+  | BadgeWidgetData;
 
 // Stat widget data
 export interface StatWidgetData {
@@ -206,12 +222,24 @@ export interface ExportData {
 // Analytics event tracking
 export interface AnalyticsEvent {
   id: string;
-  type: 'game_start' | 'game_end' | 'achievement_unlock' | 'level_up' | 'care_action' | 'app_open' | 'app_close';
+  type:
+    | 'game_start'
+    | 'game_end'
+    | 'achievement_unlock'
+    | 'level_up'
+    | 'care_action'
+    | 'app_open'
+    | 'app_close';
   timestamp: number;
   data: EventData;
 }
 
-export type EventData = GameEventData | AchievementEventData | LevelUpEventData | CareEventData | AppEventData;
+export type EventData =
+  | GameEventData
+  | AchievementEventData
+  | LevelUpEventData
+  | CareEventData
+  | AppEventData;
 
 export interface GameEventData {
   gameType: string;
@@ -294,8 +322,8 @@ export const DEFAULT_ANALYTICS_CONFIG: AnalyticsConfig = {
     name: 'Default Layout',
     widgets: [],
     created: Date.now(),
-    lastModified: Date.now()
-  }
+    lastModified: Date.now(),
+  },
 };
 
 export const DEFAULT_EXPORT_CONFIG: ExportConfig = {
@@ -304,7 +332,7 @@ export const DEFAULT_EXPORT_CONFIG: ExportConfig = {
   timePeriod: 'all',
   includeCharts: false,
   includeAchievements: true,
-  includePersonalData: true
+  includePersonalData: true,
 };
 
 // Default dashboard widgets
@@ -320,9 +348,9 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
       value: '0分',
       label: 'Total Playtime',
       icon: '⏱️',
-      color: '#4f46e5'
+      color: '#4f46e5',
     },
-    visible: true
+    visible: true,
   },
   {
     id: 'win-rate',
@@ -335,9 +363,9 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
       value: '0%',
       label: 'Win Rate',
       icon: '🏆',
-      color: '#10b981'
+      color: '#10b981',
     },
-    visible: true
+    visible: true,
   },
   {
     id: 'current-level',
@@ -350,9 +378,9 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
       value: 1,
       label: 'Level',
       icon: '⭐',
-      color: '#f59e0b'
+      color: '#f59e0b',
     },
-    visible: true
+    visible: true,
   },
   {
     id: 'achievements',
@@ -365,9 +393,9 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
       value: 0,
       label: 'Unlocked',
       icon: '🏅',
-      color: '#8b5cf6'
+      color: '#8b5cf6',
     },
-    visible: true
+    visible: true,
   },
   {
     id: 'playtime-chart',
@@ -381,35 +409,37 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
         type: 'line',
         data: {
           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          datasets: [{
-            label: 'Playtime (minutes)',
-            data: [0, 0, 0, 0, 0, 0, 0],
-            borderColor: '#4f46e5',
-            backgroundColor: 'rgba(79, 70, 229, 0.1)',
-            tension: 0.4
-          }]
+          datasets: [
+            {
+              label: 'Playtime (minutes)',
+              data: [0, 0, 0, 0, 0, 0, 0],
+              borderColor: '#4f46e5',
+              backgroundColor: 'rgba(79, 70, 229, 0.1)',
+              tension: 0.4,
+            },
+          ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: false
-            }
+              display: false,
+            },
           },
           scales: {
             y: {
               beginAtZero: true,
               title: {
                 display: true,
-                text: 'Minutes'
-              }
-            }
-          }
-        }
-      }
+                text: 'Minutes',
+              },
+            },
+          },
+        },
+      },
     },
-    visible: true
+    visible: true,
   },
   {
     id: 'recent-achievements',
@@ -420,9 +450,9 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     data: {
       type: 'list',
       items: [],
-      maxItems: 5
+      maxItems: 5,
     },
-    visible: true
+    visible: true,
   },
   {
     id: 'pet-progress',
@@ -439,7 +469,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
           current: 0,
           max: 100,
           color: '#f59e0b',
-          icon: '😊'
+          icon: '😊',
         },
         {
           id: 'energy',
@@ -447,7 +477,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
           current: 0,
           max: 100,
           color: '#10b981',
-          icon: '⚡'
+          icon: '⚡',
         },
         {
           id: 'hunger',
@@ -455,23 +485,26 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
           current: 0,
           max: 100,
           color: '#ef4444',
-          icon: '🍽️'
-        }
-      ]
+          icon: '🍽️',
+        },
+      ],
     },
-    visible: true
-  }
+    visible: true,
+  },
 ];
 
 // Predefined insights templates
-export const INSIGHT_TEMPLATES: Record<string, Omit<AnalyticsInsight, 'id' | 'timestamp'>> = {
+export const INSIGHT_TEMPLATES: Record<
+  string,
+  Omit<AnalyticsInsight, 'id' | 'timestamp'>
+> = {
   firstAchievement: {
     type: 'celebration',
     title: '初めてのアチーブメント！',
     description: 'おめでとうございます！最初のバッジを獲得しました。',
     icon: '🎉',
     priority: 'high',
-    actionable: false
+    actionable: false,
   },
   winningStreak: {
     type: 'milestone',
@@ -479,7 +512,7 @@ export const INSIGHT_TEMPLATES: Record<string, Omit<AnalyticsInsight, 'id' | 'ti
     description: '素晴らしい成績です！この調子で頑張りましょう。',
     icon: '🔥',
     priority: 'medium',
-    actionable: false
+    actionable: false,
   },
   careReminder: {
     type: 'recommendation',
@@ -490,8 +523,8 @@ export const INSIGHT_TEMPLATES: Record<string, Omit<AnalyticsInsight, 'id' | 'ti
     actionable: true,
     action: {
       label: 'お世話する',
-      handler: 'showCarePanel'
-    }
+      handler: 'showCarePanel',
+    },
   },
   playReminder: {
     type: 'recommendation',
@@ -502,8 +535,8 @@ export const INSIGHT_TEMPLATES: Record<string, Omit<AnalyticsInsight, 'id' | 'ti
     actionable: true,
     action: {
       label: 'ゲームする',
-      handler: 'showGamePanel'
-    }
+      handler: 'showGamePanel',
+    },
   },
   levelUp: {
     type: 'celebration',
@@ -511,6 +544,6 @@ export const INSIGHT_TEMPLATES: Record<string, Omit<AnalyticsInsight, 'id' | 'ti
     description: 'ペットがレベルアップしました！おめでとうございます！',
     icon: '⭐',
     priority: 'high',
-    actionable: false
-  }
+    actionable: false,
+  },
 };

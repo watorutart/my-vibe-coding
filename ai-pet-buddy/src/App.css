@@ -68,19 +68,19 @@
 @media (min-width: 768px) {
   .app-main {
     grid-template-columns: 1fr 300px;
-    grid-template-areas: 
-      "pet stats"
-      "actions actions";
+    grid-template-areas:
+      'pet stats'
+      'actions actions';
   }
-  
+
   .pet-display {
     grid-area: pet;
   }
-  
+
   .stats-panel {
     grid-area: stats;
   }
-  
+
   .action-buttons {
     grid-area: actions;
   }
@@ -89,7 +89,7 @@
 @media (min-width: 1024px) {
   .app-main {
     grid-template-columns: 1fr 300px 300px;
-    grid-template-areas: "pet stats actions";
+    grid-template-areas: 'pet stats actions';
   }
 }
 

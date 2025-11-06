@@ -3,19 +3,19 @@
  */
 
 import type {
-    GameConfig,
-    GameDifficulty,
-    GameEngineCallbacks,
-    GameResult,
-    GameReward,
-    GameSession,
-    GameState,
-    GameType,
-    MemoryGameData,
-    NumberGuessingData,
-    QuizGameData,
-    ReflexGameData,
-    RockPaperScissorsData
+  GameConfig,
+  GameDifficulty,
+  GameEngineCallbacks,
+  GameResult,
+  GameReward,
+  GameSession,
+  GameState,
+  GameType,
+  MemoryGameData,
+  NumberGuessingData,
+  QuizGameData,
+  ReflexGameData,
+  RockPaperScissorsData,
 } from '../types/Game';
 
 export class GameEngine {
@@ -66,7 +66,7 @@ export class GameEngine {
     }
 
     const gameId = `game_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    
+
     const session: GameSession = {
       gameId,
       config,
@@ -82,7 +82,10 @@ export class GameEngine {
     };
 
     // ゲーム固有の初期化
-    session.currentQuestion = this.generateQuestion(config.type, config.difficulty);
+    session.currentQuestion = this.generateQuestion(
+      config.type,
+      config.difficulty
+    );
 
     this.gameState.currentSession = session;
     this.callbacks.onGameStart(session);
@@ -111,11 +114,15 @@ export class GameEngine {
       throw new Error('アクティブなゲームセッションがありません');
     }
 
-    const isCorrect = this.validateAnswer(session.config.type, session.currentQuestion, answer);
-    
+    const isCorrect = this.validateAnswer(
+      session.config.type,
+      session.currentQuestion,
+      answer
+    );
+
     // スコア更新
     this.updateScore(session, isCorrect);
-    
+
     // 履歴に追加
     session.questionHistory.push({
       question: session.currentQuestion,
@@ -126,7 +133,10 @@ export class GameEngine {
 
     // 次の問題を生成または ゲーム終了判定
     if (this.shouldContinueGame(session)) {
-      session.currentQuestion = this.generateQuestion(session.config.type, session.config.difficulty);
+      session.currentQuestion = this.generateQuestion(
+        session.config.type,
+        session.config.difficulty
+      );
       this.callbacks.onGameUpdate(session);
     } else {
       this.endGame(session);
@@ -142,8 +152,11 @@ export class GameEngine {
     const session = this.gameState.currentSession;
     if (!session || session.status !== 'playing') return;
 
-    session.score.timeRemaining = Math.max(0, session.config.duration - timeElapsed);
-    
+    session.score.timeRemaining = Math.max(
+      0,
+      session.config.duration - timeElapsed
+    );
+
     if (session.score.timeRemaining <= 0) {
       this.endGame(session);
     } else {
@@ -169,16 +182,16 @@ export class GameEngine {
     session.endTime = new Date();
 
     const result = this.createGameResult(session);
-    
+
     // 統計を更新
     this.updateStatistics(result);
-    
+
     // 報酬を付与
     this.callbacks.onRewardGiven(result.reward);
-    
+
     // セッションをクリア
     this.gameState.currentSession = null;
-    
+
     this.callbacks.onGameComplete(result);
   }
 
@@ -204,8 +217,12 @@ export class GameEngine {
    * ゲーム成功判定
    */
   private calculateGameSuccess(session: GameSession): boolean {
-    const minAccuracy = session.config.difficulty === 'easy' ? 0.6 : 
-                       session.config.difficulty === 'medium' ? 0.7 : 0.8;
+    const minAccuracy =
+      session.config.difficulty === 'easy'
+        ? 0.6
+        : session.config.difficulty === 'medium'
+          ? 0.7
+          : 0.8;
     return session.score.accuracy >= minAccuracy;
   }
 
@@ -225,7 +242,9 @@ export class GameEngine {
     const comboBonus = Math.min(session.score.combo * 0.1, 1);
 
     return {
-      experience: Math.floor(base.experience * multiplier * (1 + accuracyBonus + comboBonus)),
+      experience: Math.floor(
+        base.experience * multiplier * (1 + accuracyBonus + comboBonus)
+      ),
       happiness: Math.floor(base.happiness * multiplier),
       energy: Math.floor(base.energy * multiplier),
       coins: success ? Math.floor(session.score.points / 100) : 0,
@@ -257,10 +276,12 @@ export class GameEngine {
    */
   private generateMemoryQuestion(difficulty: GameDifficulty): MemoryGameData {
     const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
-    const sequenceLength = difficulty === 'easy' ? 3 : difficulty === 'medium' ? 5 : 8;
-    
-    const sequence = Array.from({ length: sequenceLength }, () => 
-      colors[Math.floor(Math.random() * colors.length)]
+    const sequenceLength =
+      difficulty === 'easy' ? 3 : difficulty === 'medium' ? 5 : 8;
+
+    const sequence = Array.from(
+      { length: sequenceLength },
+      () => colors[Math.floor(Math.random() * colors.length)]
     );
 
     return {
@@ -282,7 +303,7 @@ export class GameEngine {
     };
 
     const stimuli = ['green-light', 'red-light', 'sound-beep', 'flash'];
-    
+
     return {
       targetTime: targetTimes[difficulty],
       stimulus: stimuli[Math.floor(Math.random() * stimuli.length)],
@@ -322,7 +343,12 @@ export class GameEngine {
     const mediumQuestions: QuizGameData[] = [
       {
         question: 'ペットの進化に必要な条件は？',
-        options: ['レベルのみ', 'ステータスのみ', 'レベルとステータス', '運のみ'],
+        options: [
+          'レベルのみ',
+          'ステータスのみ',
+          'レベルとステータス',
+          '運のみ',
+        ],
         correctAnswer: 2,
         explanation: 'レベルと適切なステータスの両方が進化に必要です',
         category: 'pet',
@@ -332,7 +358,12 @@ export class GameEngine {
     const hardQuestions: QuizGameData[] = [
       {
         question: 'ペットの最適なケア戦略は？',
-        options: ['定期的な餌やり', 'バランスの取れた活動', 'レベル上げ重視', '総合的なケア'],
+        options: [
+          '定期的な餌やり',
+          'バランスの取れた活動',
+          'レベル上げ重視',
+          '総合的なケア',
+        ],
         correctAnswer: 3,
         explanation: '健康、幸福、エネルギーのバランスが重要です',
         category: 'pet',
@@ -340,39 +371,47 @@ export class GameEngine {
     ];
 
     switch (difficulty) {
-      case 'easy': return easyQuestions;
-      case 'medium': return [...easyQuestions, ...mediumQuestions];
-      case 'hard': return [...easyQuestions, ...mediumQuestions, ...hardQuestions];
+      case 'easy':
+        return easyQuestions;
+      case 'medium':
+        return [...easyQuestions, ...mediumQuestions];
+      case 'hard':
+        return [...easyQuestions, ...mediumQuestions, ...hardQuestions];
     }
   }
 
   /**
    * じゃんけんゲームの問題を生成
    */
-  private generateRockPaperScissorsQuestion(difficulty: GameDifficulty): RockPaperScissorsData {
+  private generateRockPaperScissorsQuestion(
+    difficulty: GameDifficulty
+  ): RockPaperScissorsData {
     return {
       playerChoice: null,
       aiChoice: null,
       result: null,
       consecutiveWins: 0,
       totalRounds: difficulty === 'easy' ? 3 : difficulty === 'medium' ? 5 : 7,
-      currentRound: 1
+      currentRound: 1,
     };
   }
 
   /**
    * 数当てゲームの問題を生成
    */
-  private generateNumberGuessingQuestion(difficulty: GameDifficulty): NumberGuessingData {
+  private generateNumberGuessingQuestion(
+    difficulty: GameDifficulty
+  ): NumberGuessingData {
     // Import difficulty settings locally to avoid circular dependency
     const settings = {
       easy: { min: 1, max: 50, maxAttempts: 8 },
       medium: { min: 1, max: 100, maxAttempts: 10 },
-      hard: { min: 1, max: 200, maxAttempts: 12 }
+      hard: { min: 1, max: 200, maxAttempts: 12 },
     };
 
     const setting = settings[difficulty];
-    const targetNumber = Math.floor(Math.random() * (setting.max - setting.min + 1)) + setting.min;
+    const targetNumber =
+      Math.floor(Math.random() * (setting.max - setting.min + 1)) + setting.min;
 
     return {
       targetNumber,
@@ -380,7 +419,7 @@ export class GameEngine {
       attemptsLeft: setting.maxAttempts,
       hints: [],
       minNumber: setting.min,
-      maxNumber: setting.max
+      maxNumber: setting.max,
     };
   }
 
@@ -396,9 +435,15 @@ export class GameEngine {
       case 'quiz':
         return this.validateQuizAnswer(question as QuizGameData, answer);
       case 'rock-paper-scissors':
-        return this.validateRockPaperScissorsAnswer(question as RockPaperScissorsData, answer);
+        return this.validateRockPaperScissorsAnswer(
+          question as RockPaperScissorsData,
+          answer
+        );
       case 'number-guessing':
-        return this.validateNumberGuessingAnswer(question as NumberGuessingData, answer);
+        return this.validateNumberGuessingAnswer(
+          question as NumberGuessingData,
+          answer
+        );
       default:
         return false;
     }
@@ -407,7 +452,10 @@ export class GameEngine {
   /**
    * メモリーゲームの回答を検証
    */
-  private validateMemoryAnswer(question: MemoryGameData, answer: string[]): boolean {
+  private validateMemoryAnswer(
+    question: MemoryGameData,
+    answer: string[]
+  ): boolean {
     if (answer.length !== question.sequence.length) return false;
     return answer.every((color, index) => color === question.sequence[index]);
   }
@@ -415,7 +463,10 @@ export class GameEngine {
   /**
    * 反射神経ゲームの回答を検証
    */
-  private validateReflexAnswer(question: ReflexGameData, answer: number): boolean {
+  private validateReflexAnswer(
+    question: ReflexGameData,
+    answer: number
+  ): boolean {
     return answer <= question.targetTime;
   }
 
@@ -429,7 +480,10 @@ export class GameEngine {
   /**
    * じゃんけんゲームの回答を検証
    */
-  private validateRockPaperScissorsAnswer(_question: RockPaperScissorsData, answer: string): boolean {
+  private validateRockPaperScissorsAnswer(
+    _question: RockPaperScissorsData,
+    answer: string
+  ): boolean {
     // For rock-paper-scissors, we'll determine the winner in the game logic
     // The answer validation here just confirms it's a valid choice
     const validChoices = ['rock', 'paper', 'scissors'];
@@ -439,7 +493,10 @@ export class GameEngine {
   /**
    * 数当てゲームの回答を検証
    */
-  private validateNumberGuessingAnswer(question: NumberGuessingData, answer: number): boolean {
+  private validateNumberGuessingAnswer(
+    question: NumberGuessingData,
+    answer: number
+  ): boolean {
     return answer === question.targetNumber;
   }
 
@@ -448,9 +505,12 @@ export class GameEngine {
    */
   private updateScore(session: GameSession, isCorrect: boolean): void {
     const { score } = session;
-    
+
     if (isCorrect) {
-      score.points += this.calculatePoints(session.config.difficulty, score.timeRemaining);
+      score.points += this.calculatePoints(
+        session.config.difficulty,
+        score.timeRemaining
+      );
       score.combo += 1;
     } else {
       score.combo = 0;
@@ -458,14 +518,19 @@ export class GameEngine {
 
     // 正答率を計算
     const totalQuestions = session.questionHistory.length + 1;
-    const correctAnswers = session.questionHistory.filter(h => h.correct).length + (isCorrect ? 1 : 0);
+    const correctAnswers =
+      session.questionHistory.filter(h => h.correct).length +
+      (isCorrect ? 1 : 0);
     score.accuracy = correctAnswers / totalQuestions;
   }
 
   /**
    * ポイント計算
    */
-  private calculatePoints(difficulty: GameDifficulty, timeRemaining: number): number {
+  private calculatePoints(
+    difficulty: GameDifficulty,
+    timeRemaining: number
+  ): number {
     const basePoints = { easy: 100, medium: 200, hard: 400 };
     const timeBonus = Math.floor(timeRemaining * 10);
     return basePoints[difficulty] + timeBonus;
@@ -475,11 +540,17 @@ export class GameEngine {
    * ゲーム継続判定
    */
   private shouldContinueGame(session: GameSession): boolean {
-    const maxQuestions = session.config.difficulty === 'easy' ? 5 : 
-                        session.config.difficulty === 'medium' ? 8 : 12;
-    
-    return session.questionHistory.length < maxQuestions && 
-           session.score.timeRemaining > 0;
+    const maxQuestions =
+      session.config.difficulty === 'easy'
+        ? 5
+        : session.config.difficulty === 'medium'
+          ? 8
+          : 12;
+
+    return (
+      session.questionHistory.length < maxQuestions &&
+      session.score.timeRemaining > 0
+    );
   }
 
   /**
@@ -489,7 +560,7 @@ export class GameEngine {
     this.gameState.totalGamesPlayed += 1;
     this.gameState.totalExperienceEarned += result.reward.experience;
     this.gameState.recentResults.unshift(result);
-    
+
     // 最近の結果は最大10件まで保持
     if (this.gameState.recentResults.length > 10) {
       this.gameState.recentResults = this.gameState.recentResults.slice(0, 10);
@@ -497,7 +568,10 @@ export class GameEngine {
 
     // 最高スコア更新
     const gameKey = `${result.type}_${result.difficulty}`;
-    if (!this.gameState.bestScores[gameKey] || result.score.points > this.gameState.bestScores[gameKey]) {
+    if (
+      !this.gameState.bestScores[gameKey] ||
+      result.score.points > this.gameState.bestScores[gameKey]
+    ) {
       this.gameState.bestScores[gameKey] = result.score.points;
     }
   }
@@ -520,7 +594,9 @@ export class GameEngine {
    * 現在のセッションを取得
    */
   getCurrentSession(): GameSession | null {
-    return this.gameState.currentSession ? { ...this.gameState.currentSession } : null;
+    return this.gameState.currentSession
+      ? { ...this.gameState.currentSession }
+      : null;
   }
 
   /**

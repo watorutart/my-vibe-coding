@@ -1,7 +1,7 @@
 /**
  * @file AchievementNotificationContainer.tsx
  * @description Container component for managing multiple achievement notifications
- * 
+ *
  * Handles positioning, stacking, and lifecycle of achievement notifications.
  */
 
@@ -17,12 +17,9 @@ interface AchievementNotificationContainerProps {
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 }
 
-const AchievementNotificationContainer: React.FC<AchievementNotificationContainerProps> = ({
-  notifications,
-  onDismiss,
-  maxVisible = 3,
-  position = 'top-right'
-}) => {
+const AchievementNotificationContainer: React.FC<
+  AchievementNotificationContainerProps
+> = ({ notifications, onDismiss, maxVisible = 3, position = 'top-right' }) => {
   // Show only the most recent notifications
   const visibleNotifications = notifications.slice(-maxVisible);
 
@@ -32,7 +29,7 @@ const AchievementNotificationContainer: React.FC<AchievementNotificationContaine
 
   const containerClasses = [
     'achievement-notification-container',
-    `achievement-notification-container--${position}`
+    `achievement-notification-container--${position}`,
   ].join(' ');
 
   return (
@@ -41,10 +38,12 @@ const AchievementNotificationContainer: React.FC<AchievementNotificationContaine
         <div
           key={notification.id}
           className="achievement-notification-container__item"
-          style={{
-            '--stack-index': index,
-            '--total-notifications': visibleNotifications.length
-          } as React.CSSProperties}
+          style={
+            {
+              '--stack-index': index,
+              '--total-notifications': visibleNotifications.length,
+            } as React.CSSProperties
+          }
         >
           <AchievementNotificationComponent
             notification={notification}

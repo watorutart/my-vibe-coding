@@ -1,9 +1,9 @@
 import type { Pet } from '../types/Pet';
-import type { 
-  ConversationMessage, 
-  ConversationPattern, 
-  ConversationCategory, 
-  PetMood 
+import type {
+  ConversationMessage,
+  ConversationPattern,
+  ConversationCategory,
+  PetMood,
 } from '../types/Conversation';
 
 // 会話パターンデータベース
@@ -16,19 +16,14 @@ const conversationPatterns: ConversationPattern[] = [
       'こんにちは！今日も元気だよ！',
       'やっほー！会えて嬉しいな！',
       'おはよう！今日は何して遊ぼうか？',
-      'ハロー！君に会えて最高の気分だよ！'
-    ]
+      'ハロー！君に会えて最高の気分だよ！',
+    ],
   },
   // 挨拶パターン - 普通の気分
   {
     category: 'greeting',
     mood: 'neutral',
-    messages: [
-      'こんにちは。',
-      'やあ、元気？',
-      'おはよう。',
-      'こんばんは。'
-    ]
+    messages: ['こんにちは。', 'やあ、元気？', 'おはよう。', 'こんばんは。'],
   },
   // 挨拶パターン - 悲しい気分
   {
@@ -38,8 +33,8 @@ const conversationPatterns: ConversationPattern[] = [
       'こんにちは...なんだか寂しいな。',
       'やあ...今日はあまり元気が出ないや。',
       'おはよう...もう少し一緒にいてくれる？',
-      'こんばんは...ちょっと落ち込んでるんだ。'
-    ]
+      'こんばんは...ちょっと落ち込んでるんだ。',
+    ],
   },
   // 挨拶パターン - 疲れた気分
   {
@@ -49,8 +44,8 @@ const conversationPatterns: ConversationPattern[] = [
       'こんにちは...ちょっと疲れちゃった。',
       'やあ...眠いなあ。',
       'おはよう...まだ眠いよ。',
-      'ふぁ...疲れたから少し休もうかな。'
-    ]
+      'ふぁ...疲れたから少し休もうかな。',
+    ],
   },
   // 挨拶パターン - 興奮した気分
   {
@@ -60,8 +55,8 @@ const conversationPatterns: ConversationPattern[] = [
       'こんにちは！すっごく楽しいことがあったんだ！',
       'やっほー！今日は最高の日だね！',
       'おはよう！エネルギー満タンだよ！',
-      'わーい！君と話せて超嬉しい！'
-    ]
+      'わーい！君と話せて超嬉しい！',
+    ],
   },
   // 挨拶パターン - お腹が空いた気分
   {
@@ -71,8 +66,8 @@ const conversationPatterns: ConversationPattern[] = [
       'こんにちは...お腹が空いたなあ。',
       'やあ...何か美味しいものない？',
       'おはよう...朝ごはんまだかな？',
-      'グルルル...お腹の音が聞こえる？'
-    ]
+      'グルルル...お腹の音が聞こえる？',
+    ],
   },
 
   // 応援パターン - 幸せな気分
@@ -83,8 +78,8 @@ const conversationPatterns: ConversationPattern[] = [
       '君なら絶対できるよ！応援してる！',
       '大丈夫、きっと上手くいくよ！',
       '頑張って！僕も一緒にいるからね！',
-      '君はすごいんだから、自信を持って！'
-    ]
+      '君はすごいんだから、自信を持って！',
+    ],
   },
   // 応援パターン - 普通の気分
   {
@@ -94,8 +89,8 @@ const conversationPatterns: ConversationPattern[] = [
       '頑張って。',
       '応援してるよ。',
       'きっと大丈夫。',
-      '君ならできる。'
-    ]
+      '君ならできる。',
+    ],
   },
 
   // 遊びパターン - 興奮した気分
@@ -106,8 +101,8 @@ const conversationPatterns: ConversationPattern[] = [
       'わーい！遊ぼう遊ぼう！',
       '何して遊ぶ？すっごく楽しみ！',
       'やったー！遊びの時間だ！',
-      '僕と一緒に楽しいことしよう！'
-    ]
+      '僕と一緒に楽しいことしよう！',
+    ],
   },
   // 遊びパターン - 幸せな気分
   {
@@ -117,8 +112,8 @@ const conversationPatterns: ConversationPattern[] = [
       '遊ぼうよ！楽しそう！',
       '一緒に遊べて嬉しいな！',
       '何かゲームしない？',
-      '君と遊ぶの大好き！'
-    ]
+      '君と遊ぶの大好き！',
+    ],
   },
   // 遊びパターン - 疲れた気分
   {
@@ -128,8 +123,8 @@ const conversationPatterns: ConversationPattern[] = [
       'ちょっと疲れたけど...少しなら遊べるよ。',
       '軽めの遊びならいいかな？',
       'あまり激しくない遊びがいいな。',
-      '疲れてるけど君となら遊びたいな。'
-    ]
+      '疲れてるけど君となら遊びたいな。',
+    ],
   },
 
   // レベルアップ特殊パターン
@@ -140,8 +135,8 @@ const conversationPatterns: ConversationPattern[] = [
     messages: [
       'レベル5になったよ！すごいでしょ？',
       'やったー！レベルアップしたんだ！',
-      '成長した僕を見て！レベル5だよ！'
-    ]
+      '成長した僕を見て！レベル5だよ！',
+    ],
   },
 
   // デフォルトパターン
@@ -153,9 +148,9 @@ const conversationPatterns: ConversationPattern[] = [
       'なるほどね。',
       'うん、わかったよ。',
       'そういうことか。',
-      '面白いね。'
-    ]
-  }
+      '面白いね。',
+    ],
+  },
 ];
 
 /**
@@ -197,7 +192,7 @@ function findConversationPatterns(
   // まず、レベル指定がある場合は完全一致を探す
   if (level !== undefined) {
     const levelSpecificPatterns = conversationPatterns.filter(
-      pattern => 
+      pattern =>
         pattern.category === category &&
         pattern.mood === mood &&
         pattern.level === level
@@ -274,7 +269,7 @@ export function generatePetResponse(
       id: Date.now().toString(),
       sender: 'pet',
       content: responseContent,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   } catch {
     // エラーが発生した場合のフォールバック
@@ -282,7 +277,7 @@ export function generatePetResponse(
       id: Date.now().toString(),
       sender: 'pet',
       content: 'ごめん、ちょっと混乱しちゃった。',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 }
@@ -295,7 +290,7 @@ export function createUserMessage(content: string): ConversationMessage {
     id: Date.now().toString(),
     sender: 'user',
     content,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 }
 
@@ -312,7 +307,7 @@ export class ConversationHistory {
 
   addMessage(message: ConversationMessage): void {
     this.messages.push(message);
-    
+
     // 最大メッセージ数を超えた場合、古いメッセージを削除
     if (this.messages.length > this.maxMessages) {
       this.messages.shift();
@@ -342,28 +337,34 @@ export class ConversationHistory {
 export function categorizeUserInput(userMessage: string): ConversationCategory {
   const message = userMessage.toLowerCase();
 
-  if (message.includes('こんにちは') || 
-      message.includes('おはよう') || 
-      message.includes('こんばんは') ||
-      message.includes('やあ') ||
-      message.includes('hello') ||
-      message.includes('hi')) {
+  if (
+    message.includes('こんにちは') ||
+    message.includes('おはよう') ||
+    message.includes('こんばんは') ||
+    message.includes('やあ') ||
+    message.includes('hello') ||
+    message.includes('hi')
+  ) {
     return 'greeting';
   }
 
-  if (message.includes('頑張') || 
-      message.includes('応援') || 
-      message.includes('励まし') ||
-      message.includes('元気') ||
-      message.includes('頑張れ')) {
+  if (
+    message.includes('頑張') ||
+    message.includes('応援') ||
+    message.includes('励まし') ||
+    message.includes('元気') ||
+    message.includes('頑張れ')
+  ) {
     return 'encouragement';
   }
 
-  if (message.includes('遊') || 
-      message.includes('ゲーム') || 
-      message.includes('楽しい') ||
-      message.includes('面白い') ||
-      message.includes('play')) {
+  if (
+    message.includes('遊') ||
+    message.includes('ゲーム') ||
+    message.includes('楽しい') ||
+    message.includes('面白い') ||
+    message.includes('play')
+  ) {
     return 'play';
   }
 
