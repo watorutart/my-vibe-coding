@@ -15,6 +15,17 @@ GitHub Copilotを活用して開発するインタラクティブなAIペット�
 - ミニゲーム
 - PWA対応
 
-## 開発中...
+## 開発について
 
-詳細な開発計画は `AI-PET-DEVELOPMENT-PLAN.md` を参照してください。
+- 詳細な開発計画: `AI-PET-DEVELOPMENT-PLAN.md`
+- 開発者向けガイド: `CONTRIBUTING.md`
+
+### 開発環境のセットアップ
+
+```bash
+cd ai-pet-buddy
+npm install
+npx lefthook install  # Git pre-commit フックの初期化
+```
+
+開発に貢献される場合は、`CONTRIBUTING.md` をご確認ください。
