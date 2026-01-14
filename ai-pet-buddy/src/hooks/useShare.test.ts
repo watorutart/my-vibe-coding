@@ -5,20 +5,24 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useShare } from './useShare';
-import type { ShareData, StatsCardData, SocialShareOptions } from '../types/Share';
+import type {
+  ShareData,
+  StatsCardData,
+  SocialShareOptions,
+} from '../types/Share';
 
 // モジュールをモック
 vi.mock('../utils/imageGenerator', () => ({
   captureElement: vi.fn(),
   generateStatsCard: vi.fn(),
-  addWatermark: vi.fn()
+  addWatermark: vi.fn(),
 }));
 
 vi.mock('../utils/shareUtils', () => ({
   shareToSocial: vi.fn(),
   downloadImage: vi.fn(),
   generateShareText: vi.fn(),
-  saveShareData: vi.fn()
+  saveShareData: vi.fn(),
 }));
 
 import * as imageGenerator from '../utils/imageGenerator';
@@ -42,7 +46,7 @@ const mockStatsData: StatsCardData = {
   totalPlayTime: 1440,
   gameWinRate: 0.75,
   achievementCount: 5,
-  birthDate: new Date('2024-01-01')
+  birthDate: new Date('2024-01-01'),
 };
 
 describe('useShare', () => {
@@ -52,7 +56,10 @@ describe('useShare', () => {
     mockCaptureElement.mockResolvedValue(MOCK_IMAGE_DATA_URL);
     mockGenerateStatsCard.mockResolvedValue(MOCK_IMAGE_DATA_URL);
     mockAddWatermark.mockResolvedValue(MOCK_IMAGE_DATA_URL);
-    mockShareToSocial.mockResolvedValue({ success: true, shareUrl: 'https://example.com' });
+    mockShareToSocial.mockResolvedValue({
+      success: true,
+      shareUrl: 'https://example.com',
+    });
     mockGenerateShareText.mockReturnValue('Test share text');
   });
 
@@ -103,8 +110,9 @@ describe('useShare', () => {
       mockCaptureElement.mockRejectedValue(new Error(errorMessage));
 
       await act(async () => {
-        await expect(result.current.captureScreenshot(mockElement))
-          .rejects.toThrow(errorMessage);
+        await expect(
+          result.current.captureScreenshot(mockElement)
+        ).rejects.toThrow(errorMessage);
       });
 
       expect(result.current.error).toBe(errorMessage);
@@ -116,11 +124,14 @@ describe('useShare', () => {
       mockCaptureElement.mockRejectedValue('Unknown error');
 
       await act(async () => {
-        await expect(result.current.captureScreenshot(mockElement))
-          .rejects.toThrow('スクリーンショットの撮影に失敗しました');
+        await expect(
+          result.current.captureScreenshot(mockElement)
+        ).rejects.toThrow('スクリーンショットの撮影に失敗しました');
       });
 
-      expect(result.current.error).toBe('スクリーンショットの撮影に失敗しました');
+      expect(result.current.error).toBe(
+        'スクリーンショットの撮影に失敗しました'
+      );
     });
   });
 
@@ -129,12 +140,12 @@ describe('useShare', () => {
       imageDataUrl: MOCK_IMAGE_DATA_URL,
       title: 'Test',
       description: 'Test description',
-      hashtags: ['#test']
+      hashtags: ['#test'],
     };
 
     const mockShareOptions: SocialShareOptions = {
       platform: 'twitter',
-      shareData: mockShareData
+      shareData: mockShareData,
     };
 
     it('should share to social successfully', async () => {
@@ -156,7 +167,10 @@ describe('useShare', () => {
     it('should handle share failure', async () => {
       const { result } = renderHook(() => useShare());
       const errorMessage = 'Share failed';
-      mockShareToSocial.mockResolvedValue({ success: false, error: errorMessage });
+      mockShareToSocial.mockResolvedValue({
+        success: false,
+        error: errorMessage,
+      });
 
       const shareResult = await act(async () => {
         return await result.current.shareToSocial(mockShareOptions);
@@ -193,15 +207,24 @@ describe('useShare', () => {
 
       expect(shareData.imageDataUrl).toBe(MOCK_IMAGE_DATA_URL);
       expect(shareData.title).toBe('AI Pet Buddy');
-      expect(shareData.description).toBe('かわいいペットと一緒に遊んでいます！');
-      expect(shareData.hashtags).toEqual(['#AIPetBuddy', '#VirtualPet', '#Gaming']);
+      expect(shareData.description).toBe(
+        'かわいいペットと一緒に遊んでいます！'
+      );
+      expect(shareData.hashtags).toEqual([
+        '#AIPetBuddy',
+        '#VirtualPet',
+        '#Gaming',
+      ]);
       expect(shareData.stats).toBeUndefined();
     });
 
     it('should generate share data with stats', () => {
       const { result } = renderHook(() => useShare());
 
-      const shareData = result.current.generateShareData(MOCK_IMAGE_DATA_URL, mockStatsData);
+      const shareData = result.current.generateShareData(
+        MOCK_IMAGE_DATA_URL,
+        mockStatsData
+      );
 
       expect(shareData.title).toBe('Test Petのペット記録');
       expect(shareData.description).toBe('レベル10のadultに成長しました！');
@@ -214,7 +237,10 @@ describe('useShare', () => {
       const { result } = renderHook(() => useShare());
       const statsWithTitle = { ...mockStatsData, specialTitle: 'Champion' };
 
-      const shareData = result.current.generateShareData(MOCK_IMAGE_DATA_URL, statsWithTitle);
+      const shareData = result.current.generateShareData(
+        MOCK_IMAGE_DATA_URL,
+        statsWithTitle
+      );
 
       expect(shareData.description).toContain('称号：Champion');
     });

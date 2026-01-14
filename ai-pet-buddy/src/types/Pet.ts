@@ -1,9 +1,9 @@
 // Pet related types for the AI Pet Buddy app
 export interface PetStats {
   happiness: number; // 0-100
-  hunger: number;    // 0-100
-  energy: number;    // 0-100
-  level: number;     // 1-10
+  hunger: number; // 0-100
+  energy: number; // 0-100
+  level: number; // 1-10
 }
 
 export interface Accessory {
@@ -32,11 +32,11 @@ export const DEFAULT_PET: Pet = {
     happiness: 80,
     hunger: 60,
     energy: 70,
-    level: 1
+    level: 1,
   },
   lastUpdate: Date.now(),
   expression: 'happy',
   experience: 0,
   color: '#FF6B6B', // デフォルトの色
-  accessories: [] // デフォルトのアクセサリー
+  accessories: [], // デフォルトのアクセサリー
 };

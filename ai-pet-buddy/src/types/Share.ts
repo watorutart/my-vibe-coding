@@ -136,14 +136,17 @@ export interface SharePreviewData {
   /** シェアテキスト */
   shareText: string;
   /** プラットフォーム固有設定 */
-  platformConfig: Record<SocialPlatform, {
-    /** 最大文字数 */
-    maxLength: number;
-    /** 推奨ハッシュタグ */
-    recommendedHashtags: string[];
-    /** プラットフォーム固有パラメータ */
-    platformParams?: Record<string, string>;
-  }>;
+  platformConfig: Record<
+    SocialPlatform,
+    {
+      /** 最大文字数 */
+      maxLength: number;
+      /** 推奨ハッシュタグ */
+      recommendedHashtags: string[];
+      /** プラットフォーム固有パラメータ */
+      platformParams?: Record<string, string>;
+    }
+  >;
 }
 
 /**

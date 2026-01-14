@@ -1,7 +1,7 @@
 /**
  * @file InstallPrompt.tsx
  * @description PWAインストールプロンプトコンポーネント
- * 
+ *
  * ユーザーにPWAのインストールを促すプロンプトUIを提供します。
  * プラットフォーム別の最適化されたメッセージとアニメーションを含みます。
  */
@@ -30,7 +30,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
   onInstall,
   onDismiss,
   platform,
-  className = ''
+  className = '',
 }) => {
   const [isInstalling, setIsInstalling] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -39,25 +39,30 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
   const platformInfo = {
     ios: {
       title: 'ホーム画面に追加',
-      message: 'ペットといつでも遊べるよう、ホーム画面に AI Pet Buddy を追加しませんか？',
-      instruction: 'Safariで画面下部の共有ボタンから「ホーム画面に追加」を選択してください。',
+      message:
+        'ペットといつでも遊べるよう、ホーム画面に AI Pet Buddy を追加しませんか？',
+      instruction:
+        'Safariで画面下部の共有ボタンから「ホーム画面に追加」を選択してください。',
       icon: '📱',
-      buttonText: '手順を見る'
+      buttonText: '手順を見る',
     },
     android: {
       title: 'アプリをインストール',
-      message: 'AI Pet Buddy をアプリとしてインストールして、もっと快適に遊びませんか？',
+      message:
+        'AI Pet Buddy をアプリとしてインストールして、もっと快適に遊びませんか？',
       instruction: 'ワンタップで簡単にインストールできます！',
       icon: '🐾',
-      buttonText: 'インストール'
+      buttonText: 'インストール',
     },
     desktop: {
       title: 'アプリをインストール',
-      message: 'AI Pet Buddy をデスクトップアプリとしてインストールしませんか？',
-      instruction: 'ブラウザから独立したアプリとして、より快適にご利用いただけます。',
+      message:
+        'AI Pet Buddy をデスクトップアプリとしてインストールしませんか？',
+      instruction:
+        'ブラウザから独立したアプリとして、より快適にご利用いただけます。',
       icon: '💻',
-      buttonText: 'インストール'
-    }
+      buttonText: 'インストール',
+    },
   };
 
   const info = platformInfo[platform];
@@ -67,10 +72,10 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
    */
   const handleInstall = async () => {
     setIsInstalling(true);
-    
+
     try {
       const success = await onInstall();
-      
+
       if (success) {
         setShowAnimation(true);
         // アニメーション後にプロンプトを閉じる
@@ -99,7 +104,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
       const timer = setTimeout(() => {
         setShowAnimation(true);
       }, 100);
-      
+
       return () => clearTimeout(timer);
     } else {
       setShowAnimation(false);
@@ -111,21 +116,26 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
   }
 
   return (
-    <div className={`install-prompt ${showAnimation ? 'install-prompt--visible' : ''} ${className}`}>
-      <div className="install-prompt__backdrop" onClick={() => handleDismiss()} />
-      
+    <div
+      className={`install-prompt ${showAnimation ? 'install-prompt--visible' : ''} ${className}`}
+    >
+      <div
+        className="install-prompt__backdrop"
+        onClick={() => handleDismiss()}
+      />
+
       <div className="install-prompt__content">
         {/* ヘッダー */}
         <div className="install-prompt__header">
           <div className="install-prompt__icon">{info.icon}</div>
           <h3 className="install-prompt__title">{info.title}</h3>
         </div>
-        
+
         {/* メッセージ */}
         <div className="install-prompt__body">
           <p className="install-prompt__message">{info.message}</p>
           <p className="install-prompt__instruction">{info.instruction}</p>
-          
+
           {/* 利点リスト */}
           <ul className="install-prompt__benefits">
             <li>
@@ -148,7 +158,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
             )}
           </ul>
         </div>
-        
+
         {/* ボタン */}
         <div className="install-prompt__actions">
           {platform === 'ios' ? (
@@ -176,7 +186,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
                   info.buttonText
                 )}
               </button>
-              
+
               <button
                 className="install-prompt__button install-prompt__button--secondary"
                 onClick={() => handleDismiss()}
@@ -185,7 +195,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
               </button>
             </>
           )}
-          
+
           <button
             className="install-prompt__button install-prompt__button--text"
             onClick={() => handleDismiss(true)}
@@ -193,7 +203,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
             今後表示しない
           </button>
         </div>
-        
+
         {/* 閉じるボタン */}
         <button
           className="install-prompt__close"
@@ -203,7 +213,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
           ×
         </button>
       </div>
-      
+
       {/* 成功アニメーション */}
       {showAnimation && isInstalling === false && (
         <div className="install-prompt__success">

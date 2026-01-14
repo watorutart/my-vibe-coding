@@ -38,10 +38,10 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
   const showSequence = async (data: MemoryGameData) => {
     setIsShowingSequence(true);
     setCurrentSequenceIndex(-1);
-    
+
     // 開始前の待機
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // シーケンスを順番に表示
     for (let i = 0; i < data.sequence.length; i++) {
       setCurrentSequenceIndex(i);
@@ -49,7 +49,7 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
       setCurrentSequenceIndex(-1);
       await new Promise(resolve => setTimeout(resolve, 400));
     }
-    
+
     setIsShowingSequence(false);
     setFeedback('順序を覚えましたか？色をクリックして再現してください！');
   };
@@ -82,18 +82,18 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
 
   const getColorClassName = (color: string, index: number) => {
     const classes = ['color-button', color];
-    
+
     if (isShowingSequence && currentSequenceIndex === index) {
       classes.push('active');
     }
-    
+
     if (!isShowingSequence && playerSequence.includes(color)) {
       const lastClickedIndex = playerSequence.lastIndexOf(color);
       if (lastClickedIndex === playerSequence.length - 1) {
         classes.push('clicked');
       }
     }
-    
+
     return classes.join(' ');
   };
 
@@ -109,9 +109,7 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
           <div className="time-remaining">
             ⏰ 残り時間: {Math.floor(getTimeRemaining())}秒
           </div>
-          <div className="score">
-            📊 スコア: {session.score.points}pts
-          </div>
+          <div className="score">📊 スコア: {session.score.points}pts</div>
           <div className="accuracy">
             🎯 正答率: {Math.round(session.score.accuracy * 100)}%
           </div>
@@ -123,7 +121,7 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
           <div className="sequence-length">
             シーケンス長: {gameData.sequence.length}色
           </div>
-          
+
           {isShowingSequence && (
             <div className="showing-sequence">
               <p>順序を覚えてください...</p>
@@ -138,7 +136,10 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
           {gameData.colors.map((color, index) => (
             <button
               key={`${color}-${index}`}
-              className={getColorClassName(color, gameData.sequence.indexOf(color))}
+              className={getColorClassName(
+                color,
+                gameData.sequence.indexOf(color)
+              )}
               onClick={() => handleColorClick(color)}
               disabled={isShowingSequence}
             >
@@ -164,17 +165,21 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({
         </div>
 
         {feedback && (
-          <div className={`feedback ${feedback.includes('正解') ? 'success' : feedback.includes('間違い') ? 'error' : 'info'}`}>
+          <div
+            className={`feedback ${feedback.includes('正解') ? 'success' : feedback.includes('間違い') ? 'error' : 'info'}`}
+          >
             {feedback}
           </div>
         )}
 
         <div className="game-actions">
-          {!isShowingSequence && playerSequence.length > 0 && playerSequence.length < gameData.sequence.length && (
-            <button className="reset-button" onClick={handleReset}>
-              リセット
-            </button>
-          )}
+          {!isShowingSequence &&
+            playerSequence.length > 0 &&
+            playerSequence.length < gameData.sequence.length && (
+              <button className="reset-button" onClick={handleReset}>
+                リセット
+              </button>
+            )}
           <button className="end-game-button" onClick={onEndGame}>
             ゲーム終了
           </button>

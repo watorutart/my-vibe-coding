@@ -52,22 +52,22 @@
     left: 10px;
     right: 10px;
   }
-  
+
   .achievement-notification-container--bottom-right,
   .achievement-notification-container--bottom-left {
     bottom: 10px;
     left: 10px;
     right: 10px;
   }
-  
+
   .achievement-notification-container {
     gap: 8px;
   }
-  
+
   .achievement-notification-container__item {
     transform: translateY(calc(var(--stack-index) * -4px));
   }
-  
+
   .achievement-notification-container__item:not(:first-child) {
     margin-top: -4px;
   }

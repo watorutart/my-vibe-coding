@@ -3,14 +3,14 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { 
-  PetCustomization, 
-  Accessory, 
+import {
+  PetCustomization,
+  Accessory,
   CustomizationState,
   DEFAULT_CUSTOMIZATION,
   DEFAULT_ACCESSORIES,
-  validatePetName, 
-  validateColor 
+  validatePetName,
+  validateColor,
 } from './Customization';
 
 describe('Customization Types', () => {
@@ -21,7 +21,7 @@ describe('Customization Types', () => {
         color: '#FF6B6B',
         accessories: [],
         unlocked: true,
-        lastModified: new Date()
+        lastModified: new Date(),
       };
 
       expect(customization.name).toBe('テストペット');
@@ -38,8 +38,8 @@ describe('Customization Types', () => {
           type: 'hat',
           name: 'テスト帽子',
           color: '#000000',
-          unlocked: true
-        }
+          unlocked: true,
+        },
       ];
 
       const customization: PetCustomization = {
@@ -47,7 +47,7 @@ describe('Customization Types', () => {
         color: '#00FF00',
         accessories,
         unlocked: true,
-        lastModified: new Date()
+        lastModified: new Date(),
       };
 
       expect(customization.accessories).toHaveLength(1);
@@ -63,7 +63,7 @@ describe('Customization Types', () => {
         type: 'ribbon',
         name: 'プリティリボン',
         color: '#FF69B4',
-        unlocked: true
+        unlocked: true,
       };
 
       expect(accessory.id).toBe('acc-001');
@@ -78,7 +78,7 @@ describe('Customization Types', () => {
         id: 'acc-002',
         type: 'glasses',
         name: 'クールサングラス',
-        unlocked: false
+        unlocked: false,
       };
 
       expect(accessory.color).toBeUndefined();
@@ -86,14 +86,19 @@ describe('Customization Types', () => {
     });
 
     it('should support all accessory types', () => {
-      const types: Accessory['type'][] = ['hat', 'ribbon', 'glasses', 'necklace'];
-      
+      const types: Accessory['type'][] = [
+        'hat',
+        'ribbon',
+        'glasses',
+        'necklace',
+      ];
+
       types.forEach(type => {
         const accessory: Accessory = {
           id: `test-${type}`,
           type,
           name: `テスト${type}`,
-          unlocked: true
+          unlocked: true,
         };
         expect(accessory.type).toBe(type);
       });
@@ -105,7 +110,7 @@ describe('Customization Types', () => {
       const state: CustomizationState = {
         current: DEFAULT_CUSTOMIZATION,
         available: DEFAULT_ACCESSORIES,
-        presets: [DEFAULT_CUSTOMIZATION]
+        presets: [DEFAULT_CUSTOMIZATION],
       };
 
       expect(state.current).toEqual(DEFAULT_CUSTOMIZATION);
@@ -125,21 +130,27 @@ describe('Customization Types', () => {
 
     it('should have valid default accessories', () => {
       expect(DEFAULT_ACCESSORIES).toHaveLength(4);
-      
+
       const hatAccessory = DEFAULT_ACCESSORIES.find(acc => acc.type === 'hat');
       expect(hatAccessory).toBeDefined();
       expect(hatAccessory?.name).toBe('麦わら帽子');
       expect(hatAccessory?.unlocked).toBe(true);
 
-      const ribbonAccessory = DEFAULT_ACCESSORIES.find(acc => acc.type === 'ribbon');
+      const ribbonAccessory = DEFAULT_ACCESSORIES.find(
+        acc => acc.type === 'ribbon'
+      );
       expect(ribbonAccessory).toBeDefined();
       expect(ribbonAccessory?.name).toBe('赤いリボン');
 
-      const glassesAccessory = DEFAULT_ACCESSORIES.find(acc => acc.type === 'glasses');
+      const glassesAccessory = DEFAULT_ACCESSORIES.find(
+        acc => acc.type === 'glasses'
+      );
       expect(glassesAccessory).toBeDefined();
       expect(glassesAccessory?.unlocked).toBe(false);
 
-      const necklaceAccessory = DEFAULT_ACCESSORIES.find(acc => acc.type === 'necklace');
+      const necklaceAccessory = DEFAULT_ACCESSORIES.find(
+        acc => acc.type === 'necklace'
+      );
       expect(necklaceAccessory).toBeDefined();
       expect(necklaceAccessory?.unlocked).toBe(false);
     });
@@ -166,7 +177,9 @@ describe('Customization Types', () => {
       expect(whitespaceResult.error).toBe('名前を入力してください');
 
       // 20文字超過
-      const longResult = validatePetName('二十一文字を超える非常に長いペット名前です');
+      const longResult = validatePetName(
+        '二十一文字を超える非常に長いペット名前です'
+      );
       expect(longResult.isValid).toBe(false);
       expect(longResult.error).toBe('名前は20文字以内で入力してください');
 
@@ -178,7 +191,7 @@ describe('Customization Types', () => {
 
     it('should reject names with special characters', () => {
       const invalidChars = ['<', '>', '"', '/', '\\', '|', '?', '*'];
-      
+
       invalidChars.forEach(char => {
         const result = validatePetName(`Pet${char}Name`);
         expect(result.isValid).toBe(false);
@@ -206,22 +219,30 @@ describe('Customization Types', () => {
       // #なし
       const noHashResult = validateColor('FF6B6B');
       expect(noHashResult.isValid).toBe(false);
-      expect(noHashResult.error).toBe('有効なHEXカラーコード（例: #FF6B6B）を入力してください');
+      expect(noHashResult.error).toBe(
+        '有効なHEXカラーコード（例: #FF6B6B）を入力してください'
+      );
 
       // 無効な文字
       const invalidCharsResult = validateColor('#GGG');
       expect(invalidCharsResult.isValid).toBe(false);
-      expect(invalidCharsResult.error).toBe('有効なHEXカラーコード（例: #FF6B6B）を入力してください');
+      expect(invalidCharsResult.error).toBe(
+        '有効なHEXカラーコード（例: #FF6B6B）を入力してください'
+      );
 
       // 長さが合わない
       const wrongLengthResult = validateColor('#FF6B');
       expect(wrongLengthResult.isValid).toBe(false);
-      expect(wrongLengthResult.error).toBe('有効なHEXカラーコード（例: #FF6B6B）を入力してください');
+      expect(wrongLengthResult.error).toBe(
+        '有効なHEXカラーコード（例: #FF6B6B）を入力してください'
+      );
 
       // 長すぎる
       const tooLongResult = validateColor('#FF6B6B6B');
       expect(tooLongResult.isValid).toBe(false);
-      expect(tooLongResult.error).toBe('有効なHEXカラーコード（例: #FF6B6B）を入力してください');
+      expect(tooLongResult.error).toBe(
+        '有効なHEXカラーコード（例: #FF6B6B）を入力してください'
+      );
     });
   });
 });

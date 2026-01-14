@@ -1,7 +1,7 @@
 /**
  * @file useDataPersistence.test.ts
  * @description データ永続化フックのテストスイート
- * 
+ *
  * 自動保存、手動保存、初期データロード、ストレージ管理の
  * 包括的なテストを実装します。
  */
@@ -32,10 +32,10 @@ describe('useDataPersistence', () => {
         happiness: 80,
         hunger: 60,
         energy: 70,
-        level: 1
+        level: 1,
       },
       lastUpdate: Date.now(),
-      expression: 'happy'
+      expression: 'happy',
     };
 
     mockConversationHistory = [
@@ -43,8 +43,8 @@ describe('useDataPersistence', () => {
         id: '1',
         sender: 'user',
         content: 'こんにちは',
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     ];
 
     // データストレージ関数のモック設定
@@ -52,8 +52,12 @@ describe('useDataPersistence', () => {
     vi.mocked(dataStorage.saveConversationHistory).mockResolvedValue(undefined);
     vi.mocked(dataStorage.saveAppSettings).mockResolvedValue(undefined);
     vi.mocked(dataStorage.loadPetData).mockReturnValue(mockPet);
-    vi.mocked(dataStorage.loadConversationHistory).mockReturnValue(mockConversationHistory);
-    vi.mocked(dataStorage.loadAppSettings).mockReturnValue({ autoSaveInterval: 30000 });
+    vi.mocked(dataStorage.loadConversationHistory).mockReturnValue(
+      mockConversationHistory
+    );
+    vi.mocked(dataStorage.loadAppSettings).mockReturnValue({
+      autoSaveInterval: 30000,
+    });
   });
 
   afterEach(() => {
@@ -108,7 +112,9 @@ describe('useDataPersistence', () => {
       });
 
       expect(dataStorage.savePetData).toHaveBeenCalledWith(mockPet);
-      expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(mockConversationHistory);
+      expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(
+        mockConversationHistory
+      );
     });
 
     it('1秒以内の連続保存は無視される', async () => {
@@ -145,10 +151,12 @@ describe('useDataPersistence', () => {
 
   describe('自動保存機能', () => {
     it('自動保存が正常に動作する', async () => {
-      const { result } = renderHook(() => useDataPersistence({
-        autoSaveInterval: 1000,
-        enableAutoSave: true
-      }));
+      const { result } = renderHook(() =>
+        useDataPersistence({
+          autoSaveInterval: 1000,
+          enableAutoSave: true,
+        })
+      );
 
       act(() => {
         result.current.setupAutoSave(mockPet, mockConversationHistory);
@@ -160,7 +168,9 @@ describe('useDataPersistence', () => {
       });
 
       expect(dataStorage.savePetData).toHaveBeenCalledWith(mockPet);
-      expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(mockConversationHistory);
+      expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(
+        mockConversationHistory
+      );
 
       act(() => {
         result.current.clearAutoSave();
@@ -168,10 +178,12 @@ describe('useDataPersistence', () => {
     });
 
     it('autoSaveが無効の場合は自動保存されない', async () => {
-      const { result } = renderHook(() => useDataPersistence({
-        autoSaveInterval: 1000,
-        enableAutoSave: false
-      }));
+      const { result } = renderHook(() =>
+        useDataPersistence({
+          autoSaveInterval: 1000,
+          enableAutoSave: false,
+        })
+      );
 
       act(() => {
         result.current.setupAutoSave(mockPet, mockConversationHistory);
@@ -189,10 +201,12 @@ describe('useDataPersistence', () => {
     });
 
     it('自動保存をクリアできる', async () => {
-      const { result } = renderHook(() => useDataPersistence({
-        autoSaveInterval: 1000,
-        enableAutoSave: true
-      }));
+      const { result } = renderHook(() =>
+        useDataPersistence({
+          autoSaveInterval: 1000,
+          enableAutoSave: true,
+        })
+      );
 
       act(() => {
         result.current.setupAutoSave(mockPet, mockConversationHistory);
@@ -207,10 +221,12 @@ describe('useDataPersistence', () => {
     });
 
     it('複数回setupAutoSaveを呼んでも古いタイマーはクリアされる', async () => {
-      const { result } = renderHook(() => useDataPersistence({
-        autoSaveInterval: 1000,
-        enableAutoSave: true
-      }));
+      const { result } = renderHook(() =>
+        useDataPersistence({
+          autoSaveInterval: 1000,
+          enableAutoSave: true,
+        })
+      );
 
       act(() => {
         result.current.setupAutoSave(mockPet, mockConversationHistory);
@@ -228,14 +244,18 @@ describe('useDataPersistence', () => {
 
   describe('設定からの間隔取得', () => {
     it('設定ファイルから自動保存間隔を取得する', () => {
-      vi.mocked(dataStorage.loadAppSettings).mockReturnValue({ autoSaveInterval: 15000 });
+      vi.mocked(dataStorage.loadAppSettings).mockReturnValue({
+        autoSaveInterval: 15000,
+      });
       vi.mocked(dataStorage.savePetData).mockImplementation(() => {
         throw new Error('保存エラー');
       });
 
-      const { result } = renderHook(() => useDataPersistence({
-        enableAutoSave: true
-      }));
+      const { result } = renderHook(() =>
+        useDataPersistence({
+          enableAutoSave: true,
+        })
+      );
 
       act(() => {
         result.current.setupAutoSave(mockPet, mockConversationHistory);
@@ -270,10 +290,10 @@ describe('useBeforeUnloadSave', () => {
         happiness: 80,
         hunger: 60,
         energy: 70,
-        level: 1
+        level: 1,
       },
       lastUpdate: Date.now(),
-      expression: 'happy'
+      expression: 'happy',
     };
 
     testMockConversationHistory = [
@@ -281,8 +301,8 @@ describe('useBeforeUnloadSave', () => {
         id: '1',
         sender: 'user',
         content: 'こんにちは',
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     ];
   });
 
@@ -290,7 +310,10 @@ describe('useBeforeUnloadSave', () => {
     const { result } = renderHook(() => useDataPersistence());
 
     act(() => {
-      result.current.setupBeforeUnloadSave(testMockPet, testMockConversationHistory);
+      result.current.setupBeforeUnloadSave(
+        testMockPet,
+        testMockConversationHistory
+      );
     });
 
     // beforeunloadイベントを発火
@@ -298,37 +321,53 @@ describe('useBeforeUnloadSave', () => {
     window.dispatchEvent(beforeUnloadEvent);
 
     expect(dataStorage.savePetData).toHaveBeenCalledWith(testMockPet);
-    expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(testMockConversationHistory);
+    expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(
+      testMockConversationHistory
+    );
   });
 
   it('visibilitychangeイベントでデータが保存される', () => {
     const { result } = renderHook(() => useDataPersistence());
 
     act(() => {
-      result.current.setupBeforeUnloadSave(testMockPet, testMockConversationHistory);
+      result.current.setupBeforeUnloadSave(
+        testMockPet,
+        testMockConversationHistory
+      );
     });
 
     // documentを非表示にしてvisibilitychangeイベントを発火
-    Object.defineProperty(document, 'hidden', { value: true, configurable: true });
+    Object.defineProperty(document, 'hidden', {
+      value: true,
+      configurable: true,
+    });
     const visibilityChangeEvent = new Event('visibilitychange');
     document.dispatchEvent(visibilityChangeEvent);
 
     expect(dataStorage.savePetData).toHaveBeenCalledWith(testMockPet);
-    expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(testMockConversationHistory);
+    expect(dataStorage.saveConversationHistory).toHaveBeenCalledWith(
+      testMockConversationHistory
+    );
   });
 
   it('visibleな状態では保存されない', () => {
     // 各テスト前にmockをクリア
     vi.clearAllMocks();
-    
+
     const { result } = renderHook(() => useDataPersistence());
 
     act(() => {
-      result.current.setupBeforeUnloadSave(testMockPet, testMockConversationHistory);
+      result.current.setupBeforeUnloadSave(
+        testMockPet,
+        testMockConversationHistory
+      );
     });
 
     // documentを表示状態にしてvisibilitychangeイベントを発火
-    Object.defineProperty(document, 'hidden', { value: false, configurable: true });
+    Object.defineProperty(document, 'hidden', {
+      value: false,
+      configurable: true,
+    });
     const visibilityChangeEvent = new Event('visibilitychange');
     document.dispatchEvent(visibilityChangeEvent);
 

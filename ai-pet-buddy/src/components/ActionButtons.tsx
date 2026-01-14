@@ -12,7 +12,16 @@ interface ActionButtonsProps {
   disabled?: boolean;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, onGames, onShare, onCustomize, onAchievements, disabled = false }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({
+  onFeed,
+  onPlay,
+  onRest,
+  onGames,
+  onShare,
+  onCustomize,
+  onAchievements,
+  disabled = false,
+}) => {
   const buttons = [
     {
       id: 'feed',
@@ -20,7 +29,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, o
       icon: '🍖',
       onClick: onFeed,
       color: '#e74c3c',
-      description: 'Reduce hunger'
+      description: 'Reduce hunger',
     },
     {
       id: 'play',
@@ -28,7 +37,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, o
       icon: '🎾',
       onClick: onPlay,
       color: '#3498db',
-      description: 'Increase happiness'
+      description: 'Increase happiness',
     },
     {
       id: 'rest',
@@ -36,47 +45,63 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, o
       icon: '😴',
       onClick: onRest,
       color: '#9b59b6',
-      description: 'Restore energy'
+      description: 'Restore energy',
     },
-    ...(onGames ? [{
-      id: 'games',
-      label: 'Games',
-      icon: '🎮',
-      onClick: onGames,
-      color: '#f39c12',
-      description: 'Play mini-games'
-    }] : []),
-    ...(onShare ? [{
-      id: 'share',
-      label: 'Share',
-      icon: '📤',
-      onClick: onShare,
-      color: '#2ecc71',
-      description: 'Share your pet'
-    }] : []),
-    ...(onCustomize ? [{
-      id: 'customize',
-      label: 'Customize',
-      icon: '🎨',
-      onClick: onCustomize,
-      color: '#e67e22',
-      description: 'Customize your pet'
-    }] : []),
-    ...(onAchievements ? [{
-      id: 'achievements',
-      label: 'Achievements',
-      icon: '🏆',
-      onClick: onAchievements,
-      color: '#8e44ad',
-      description: 'View achievements and titles'
-    }] : [])
+    ...(onGames
+      ? [
+          {
+            id: 'games',
+            label: 'Games',
+            icon: '🎮',
+            onClick: onGames,
+            color: '#f39c12',
+            description: 'Play mini-games',
+          },
+        ]
+      : []),
+    ...(onShare
+      ? [
+          {
+            id: 'share',
+            label: 'Share',
+            icon: '📤',
+            onClick: onShare,
+            color: '#2ecc71',
+            description: 'Share your pet',
+          },
+        ]
+      : []),
+    ...(onCustomize
+      ? [
+          {
+            id: 'customize',
+            label: 'Customize',
+            icon: '🎨',
+            onClick: onCustomize,
+            color: '#e67e22',
+            description: 'Customize your pet',
+          },
+        ]
+      : []),
+    ...(onAchievements
+      ? [
+          {
+            id: 'achievements',
+            label: 'Achievements',
+            icon: '🏆',
+            onClick: onAchievements,
+            color: '#8e44ad',
+            description: 'View achievements and titles',
+          },
+        ]
+      : []),
   ];
 
   return (
     <div className="action-buttons">
       <h3 className="actions-title">Pet Actions</h3>
       <div className="buttons-container">
-        {buttons.map((button) => (
+        {buttons.map(button => (
           <button
             key={button.id}
             className={`action-btn ${button.id}-btn`}
@@ -87,7 +112,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ onFeed, onPlay, onRest, o
             aria-label={`${button.label}: ${button.description}`}
             aria-describedby={`${button.id}-description`}
           >
-            <div className="btn-icon" aria-hidden="true">{button.icon}</div>
+            <div className="btn-icon" aria-hidden="true">
+              {button.icon}
+            </div>
             <div className="btn-label">{button.label}</div>
             <div id={`${button.id}-description`} className="sr-only">
               {button.description}

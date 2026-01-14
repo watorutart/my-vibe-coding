@@ -21,10 +21,10 @@ describe('Mini-Game Integration End-to-End', () => {
 
     // モックコールバック
     mockCallbacks = {
-      onGameStart: vi.fn((session) => gameStartedResults.push(session)),
+      onGameStart: vi.fn(session => gameStartedResults.push(session)),
       onGameUpdate: vi.fn(),
-      onGameComplete: vi.fn((result) => gameCompletedResults.push(result)),
-      onRewardGiven: vi.fn((reward) => rewardsEarned.push(reward))
+      onGameComplete: vi.fn(result => gameCompletedResults.push(result)),
+      onRewardGiven: vi.fn(reward => rewardsEarned.push(reward)),
     };
 
     // GameEngine初期化
@@ -40,7 +40,7 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 60,
         name: 'じゃんけん（簡単）',
         description: 'AIと勝負！',
-        points: { correct: 15, wrong: -3, bonus: 10 }
+        points: { correct: 15, wrong: -3, bonus: 10 },
       };
 
       // 2. ゲーム開始
@@ -75,33 +75,33 @@ describe('Mini-Game Integration End-to-End', () => {
 
     it('should handle multiple difficulty levels', () => {
       const difficulties = ['easy', 'medium', 'hard'] as const;
-      
+
       difficulties.forEach((difficulty, index) => {
         // 新しいGameEngineインスタンスを作成（前のゲームとの干渉を避ける）
         const localEngine = new GameEngine(mockCallbacks);
-        
+
         const config = {
           type: 'rock-paper-scissors' as const,
           difficulty,
           duration: 60,
           name: `じゃんけん（${difficulty}）`,
           description: 'AIと勝負！',
-          points: { correct: 15, wrong: -3, bonus: 10 }
+          points: { correct: 15, wrong: -3, bonus: 10 },
         };
 
         const session = localEngine.startGame(config);
         expect(session.config.difficulty).toBe(difficulty);
-        
+
         // ゲーム開始して1回プレイ
         localEngine.playGame();
         localEngine.submitAnswer('rock');
-        
+
         // セッション設定が正しく適用されていることを確認
         expect(session.config.type).toBe('rock-paper-scissors');
         expect(session.config.duration).toBe(60);
         expect(session.config.points.correct).toBe(15);
       });
-      
+
       // 全ての難易度が正しく処理されたことを確認
       expect(gameStartedResults.length).toBe(difficulties.length);
     });
@@ -116,7 +116,7 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 120,
         name: '数当て（簡単）',
         description: '1-50の数字を当てよう',
-        points: { correct: 20, wrong: -5, bonus: 15 }
+        points: { correct: 20, wrong: -5, bonus: 15 },
       };
 
       // 2. ゲーム開始
@@ -130,15 +130,15 @@ describe('Mini-Game Integration End-to-End', () => {
       // 4. 数字推測を実行（最大8回まで）
       let attempts = 0;
       let gameCompleted = false;
-      
+
       // セッションから実際のターゲット番号を取得して確実に当てる
       const targetNumber = session.currentQuestion?.targetNumber || 25;
-      
+
       while (attempts < 8 && !gameCompleted) {
         const guess = targetNumber; // 実際のターゲット番号を使用
         const result = gameEngine.submitAnswer(guess);
         attempts++;
-        
+
         if (gameCompletedResults.length > 0) {
           gameCompleted = true;
         }
@@ -167,25 +167,25 @@ describe('Mini-Game Integration End-to-End', () => {
       const configs = [
         { difficulty: 'easy' as const, expectedMin: 1, expectedMax: 50 },
         { difficulty: 'medium' as const, expectedMin: 1, expectedMax: 100 },
-        { difficulty: 'hard' as const, expectedMin: 1, expectedMax: 200 }
+        { difficulty: 'hard' as const, expectedMin: 1, expectedMax: 200 },
       ];
 
       configs.forEach(({ difficulty, expectedMin, expectedMax }) => {
         // 新しいGameEngineインスタンスを作成
         const localEngine = new GameEngine(mockCallbacks);
-        
+
         const config = {
           type: 'number-guessing' as const,
           difficulty,
           duration: 120,
           name: `数当て（${difficulty}）`,
           description: `${expectedMin}-${expectedMax}の数字を当てよう`,
-          points: { correct: 20, wrong: -5, bonus: 15 }
+          points: { correct: 20, wrong: -5, bonus: 15 },
         };
 
         const session = localEngine.startGame(config);
         localEngine.playGame();
-        
+
         // 現在の問題データを確認
         const questionData = session.currentQuestion;
         expect(questionData.minNumber).toBe(expectedMin);
@@ -205,7 +205,7 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 60,
         name: 'じゃんけん（簡単）',
         description: 'AIと勝負！',
-        points: { correct: 15, wrong: -3, bonus: 10 }
+        points: { correct: 15, wrong: -3, bonus: 10 },
       };
 
       gameEngine.startGame(rpsConfig);
@@ -217,18 +217,22 @@ describe('Mini-Game Integration End-to-End', () => {
       const timeout = 5000; // 5秒
       let submissionCount = 0;
       const maxSubmissions = 10; // 最大提出回数を制限
-      
+
       while (gameCompletedResults.length === 0) {
         if (Date.now() - startTime > timeout) {
-          throw new Error('ゲームがタイムアウトしました: gameCompletedResults が更新されませんでした');
+          throw new Error(
+            'ゲームがタイムアウトしました: gameCompletedResults が更新されませんでした'
+          );
         }
         if (submissionCount >= maxSubmissions) {
-          throw new Error('最大提出回数に達しました。ゲームが正常に完了しませんでした。');
+          throw new Error(
+            '最大提出回数に達しました。ゲームが正常に完了しませんでした。'
+          );
         }
-        
+
         gameEngine.submitAnswer('rock');
         submissionCount++;
-        
+
         // 短い待機時間を追加してイベントループを回す
         await new Promise(resolve => setTimeout(resolve, 10));
       }
@@ -243,7 +247,7 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 120,
         name: '数当て（簡単）',
         description: '1-50の数字を当てよう',
-        points: { correct: 20, wrong: -5, bonus: 15 }
+        points: { correct: 20, wrong: -5, bonus: 15 },
       };
 
       gameEngine.startGame(ngConfig);
@@ -264,12 +268,12 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 60,
         name: 'じゃんけん（簡単）',
         description: 'AIと勝負！',
-        points: { correct: 15, wrong: -3, bonus: 10 }
+        points: { correct: 15, wrong: -3, bonus: 10 },
       };
 
       gameEngine.startGame(rpsConfig);
       gameEngine.playGame();
-      
+
       // じゃんけんゲームを完了させる
       for (let i = 0; i < 5; i++) {
         gameEngine.submitAnswer('rock');
@@ -284,8 +288,8 @@ describe('Mini-Game Integration End-to-End', () => {
       const localEngine = new GameEngine({
         onGameStart: vi.fn(),
         onGameUpdate: vi.fn(),
-        onGameComplete: vi.fn((result) => localCompletedResults.push(result)),
-        onRewardGiven: vi.fn((reward) => localRewards.push(reward))
+        onGameComplete: vi.fn(result => localCompletedResults.push(result)),
+        onRewardGiven: vi.fn(reward => localRewards.push(reward)),
       });
 
       const ngConfig = {
@@ -294,12 +298,12 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 120,
         name: '数当て（簡単）',
         description: '1-50の数字を当てよう',
-        points: { correct: 25, wrong: -5, bonus: 20 }
+        points: { correct: 25, wrong: -5, bonus: 20 },
       };
 
       localEngine.startGame(ngConfig);
       localEngine.playGame();
-      
+
       // 数当てゲームを完了させる（最大8回まで試行）
       let attempts = 0;
       let completed = false;
@@ -311,9 +315,10 @@ describe('Mini-Game Integration End-to-End', () => {
 
       // 最低限の検証：どちらのゲームも実行されていることを確認
       expect(rewardsEarned).toHaveLength(1); // 最初のエンジンの報酬
-      
+
       // 合計経験値が正の値であることを確認
-      const totalExperience = rewardsEarned[0].experience + (localRewards[0]?.experience || 0);
+      const totalExperience =
+        rewardsEarned[0].experience + (localRewards[0]?.experience || 0);
       expect(totalExperience).toBeGreaterThan(0);
     });
   });
@@ -327,7 +332,7 @@ describe('Mini-Game Integration End-to-End', () => {
           duration: 60,
           name: '無効なゲーム',
           description: 'テスト',
-          points: { correct: 10, wrong: -2, bonus: 5 }
+          points: { correct: 10, wrong: -2, bonus: 5 },
         });
       }).toThrow();
     });
@@ -339,7 +344,7 @@ describe('Mini-Game Integration End-to-End', () => {
         duration: 60,
         name: 'じゃんけん（簡単）',
         description: 'AIと勝負！',
-        points: { correct: 15, wrong: -3, bonus: 10 }
+        points: { correct: 15, wrong: -3, bonus: 10 },
       };
 
       // 1回目のゲーム開始

@@ -1,29 +1,29 @@
 /**
  * @file customizationUtils.ts
  * @description カスタマイズシステム関連のユーティリティ関数
- * 
+ *
  * カスタマイズデータの保存・読み込み、バリデーション、プリセット管理機能を提供します。
  */
 
-import type { 
-  PetCustomization, 
-  CustomizationState, 
+import type {
+  PetCustomization,
+  CustomizationState,
   Accessory,
   NameValidationResult,
-  ColorValidationResult
+  ColorValidationResult,
 } from '../types/Customization';
-import { 
-  DEFAULT_CUSTOMIZATION, 
+import {
+  DEFAULT_CUSTOMIZATION,
   DEFAULT_ACCESSORIES,
   validatePetName as validateName,
-  validateColor as validateColorCode
+  validateColor as validateColorCode,
 } from '../types/Customization';
 
 // ストレージキー
 const STORAGE_KEYS = {
   CUSTOMIZATION_DATA: 'ai-pet-buddy-customization-data',
   AVAILABLE_ACCESSORIES: 'ai-pet-buddy-available-accessories',
-  CUSTOMIZATION_PRESETS: 'ai-pet-buddy-customization-presets'
+  CUSTOMIZATION_PRESETS: 'ai-pet-buddy-customization-presets',
 } as const;
 
 /**
@@ -36,15 +36,15 @@ export const saveCustomizationData = (data: CustomizationState): boolean => {
     // 現在のカスタマイズを保存
     const currentData = JSON.stringify(data.current);
     localStorage.setItem(STORAGE_KEYS.CUSTOMIZATION_DATA, currentData);
-    
+
     // 利用可能アクセサリーを保存
     const availableData = JSON.stringify(data.available);
     localStorage.setItem(STORAGE_KEYS.AVAILABLE_ACCESSORIES, availableData);
-    
+
     // プリセットを保存
     const presetsData = JSON.stringify(data.presets);
     localStorage.setItem(STORAGE_KEYS.CUSTOMIZATION_PRESETS, presetsData);
-    
+
     console.log('カスタマイズデータを保存しました');
     return true;
   } catch (error) {
@@ -62,45 +62,47 @@ export const loadCustomizationData = (): CustomizationState => {
     // 現在のカスタマイズを読み込み
     const currentData = localStorage.getItem(STORAGE_KEYS.CUSTOMIZATION_DATA);
     let current: PetCustomization = DEFAULT_CUSTOMIZATION;
-    
+
     if (currentData) {
       const parsed = JSON.parse(currentData);
       if (isValidCustomization(parsed)) {
         // Date オブジェクトを復元
         current = {
           ...parsed,
-          lastModified: new Date(parsed.lastModified)
+          lastModified: new Date(parsed.lastModified),
         };
       }
     }
-    
+
     // 利用可能アクセサリーを読み込み
-    const availableData = localStorage.getItem(STORAGE_KEYS.AVAILABLE_ACCESSORIES);
+    const availableData = localStorage.getItem(
+      STORAGE_KEYS.AVAILABLE_ACCESSORIES
+    );
     let available: Accessory[] = DEFAULT_ACCESSORIES;
-    
+
     if (availableData) {
       const parsed = JSON.parse(availableData);
       if (Array.isArray(parsed) && parsed.every(isValidAccessory)) {
         available = parsed;
       }
     }
-    
+
     // プリセットを読み込み
-    const presetsData = localStorage.getItem(STORAGE_KEYS.CUSTOMIZATION_PRESETS);
+    const presetsData = localStorage.getItem(
+      STORAGE_KEYS.CUSTOMIZATION_PRESETS
+    );
     let presets: PetCustomization[] = [];
-    
+
     if (presetsData) {
       const parsed = JSON.parse(presetsData);
       if (Array.isArray(parsed)) {
-        presets = parsed
-          .filter(isValidCustomization)
-          .map(preset => ({
-            ...preset,
-            lastModified: new Date(preset.lastModified)
-          }));
+        presets = parsed.filter(isValidCustomization).map(preset => ({
+          ...preset,
+          lastModified: new Date(preset.lastModified),
+        }));
       }
     }
-    
+
     console.log('カスタマイズデータを読み込みました');
     return { current, available, presets };
   } catch (error) {
@@ -108,7 +110,7 @@ export const loadCustomizationData = (): CustomizationState => {
     return {
       current: DEFAULT_CUSTOMIZATION,
       available: DEFAULT_ACCESSORIES,
-      presets: []
+      presets: [],
     };
   }
 };
@@ -138,22 +140,25 @@ export const validateColor = (color: string): ColorValidationResult => {
  * @returns バリデーション結果
  */
 export const validateAccessoryId = (
-  id: string, 
+  id: string,
   availableAccessories: Accessory[]
 ): { isValid: boolean; error?: string } => {
   if (!id || id.trim().length === 0) {
     return { isValid: false, error: 'アクセサリーIDが指定されていません' };
   }
-  
+
   const accessory = availableAccessories.find(acc => acc.id === id);
   if (!accessory) {
     return { isValid: false, error: '指定されたアクセサリーは存在しません' };
   }
-  
+
   if (!accessory.unlocked) {
-    return { isValid: false, error: 'このアクセサリーはまだ解除されていません' };
+    return {
+      isValid: false,
+      error: 'このアクセサリーはまだ解除されていません',
+    };
   }
-  
+
   return { isValid: true };
 };
 
@@ -171,11 +176,11 @@ export const addAccessoryToCustomization = (
   const filteredAccessories = customization.accessories.filter(
     acc => acc.type !== accessory.type
   );
-  
+
   return {
     ...customization,
     accessories: [...filteredAccessories, accessory],
-    lastModified: new Date()
+    lastModified: new Date(),
   };
 };
 
@@ -191,8 +196,10 @@ export const removeAccessoryFromCustomization = (
 ): PetCustomization => {
   return {
     ...customization,
-    accessories: customization.accessories.filter(acc => acc.id !== accessoryId),
-    lastModified: new Date()
+    accessories: customization.accessories.filter(
+      acc => acc.id !== accessoryId
+    ),
+    lastModified: new Date(),
   };
 };
 
@@ -209,7 +216,7 @@ export const createPreset = (
   return {
     ...customization,
     name: presetName,
-    lastModified: new Date()
+    lastModified: new Date(),
   };
 };
 
@@ -220,7 +227,7 @@ export const createPreset = (
 export const resetCustomization = (): PetCustomization => {
   return {
     ...DEFAULT_CUSTOMIZATION,
-    lastModified: new Date()
+    lastModified: new Date(),
   };
 };
 
@@ -230,12 +237,14 @@ export const resetCustomization = (): PetCustomization => {
  * @returns 有効性
  */
 function isValidCustomization(data: any): data is PetCustomization {
-  return data &&
+  return (
+    data &&
     typeof data.name === 'string' &&
     typeof data.color === 'string' &&
     Array.isArray(data.accessories) &&
     typeof data.unlocked === 'boolean' &&
-    data.lastModified;
+    data.lastModified
+  );
 }
 
 /**
@@ -245,11 +254,13 @@ function isValidCustomization(data: any): data is PetCustomization {
  */
 function isValidAccessory(data: any): data is Accessory {
   const validTypes = ['hat', 'ribbon', 'glasses', 'necklace'];
-  return data &&
+  return (
+    data &&
     typeof data.id === 'string' &&
     validTypes.includes(data.type) &&
     typeof data.name === 'string' &&
-    typeof data.unlocked === 'boolean';
+    typeof data.unlocked === 'boolean'
+  );
 }
 
 /**
@@ -259,13 +270,13 @@ function isValidAccessory(data: any): data is Accessory {
 export const getColorPalette = (): string[] => {
   return [
     '#FF6B6B', // レッド
-    '#4ECDC4', // ティール  
+    '#4ECDC4', // ティール
     '#45B7D1', // ブルー
     '#96CEB4', // グリーン
     '#FECA57', // イエロー
     '#FF9FF3', // ピンク
     '#A55EEA', // パープル
-    '#FD79A8'  // ローズ
+    '#FD79A8', // ローズ
   ];
 };
 
@@ -280,8 +291,6 @@ export const unlockAccessory = (
   availableAccessories: Accessory[]
 ): Accessory[] => {
   return availableAccessories.map(accessory =>
-    accessory.id === accessoryId
-      ? { ...accessory, unlocked: true }
-      : accessory
+    accessory.id === accessoryId ? { ...accessory, unlocked: true } : accessory
   );
 };

@@ -12,12 +12,12 @@ describe('useEvolution', () => {
     stats: {
       happiness: 50,
       energy: 50,
-      hunger: 50,  // health 50 -> hunger 50
-      level: 1
+      hunger: 50, // health 50 -> hunger 50
+      level: 1,
     },
     lastUpdate: Date.now(),
     expression: 'neutral',
-    experience: 0
+    experience: 0,
   };
 
   const mockOnPetUpdate = vi.fn();
@@ -28,7 +28,7 @@ describe('useEvolution', () => {
 
   describe('初期化', () => {
     it('should initialize with baby stage for level 1 pet', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(mockBasePet, mockOnPetUpdate)
       );
 
@@ -41,15 +41,17 @@ describe('useEvolution', () => {
       const initialProgress: EvolutionProgress = {
         currentStage: 'teen',
         lastEvolutionTime: new Date(),
-        evolutionHistory: [{
-          fromStage: 'child',
-          toStage: 'teen',
-          timestamp: new Date(),
-          level: 15
-        }]
+        evolutionHistory: [
+          {
+            fromStage: 'child',
+            toStage: 'teen',
+            timestamp: new Date(),
+            level: 15,
+          },
+        ],
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(mockBasePet, mockOnPetUpdate, initialProgress)
       );
 
@@ -67,11 +69,11 @@ describe('useEvolution', () => {
           level: 5,
           happiness: 40,
           energy: 30,
-          hunger: 75  // health 25 -> hunger 75
-        }
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(evolutionReadyPet, mockOnPetUpdate)
       );
 
@@ -87,11 +89,11 @@ describe('useEvolution', () => {
           level: 3,
           happiness: 20,
           energy: 15,
-          hunger: 90  // health 10 -> hunger 90
-        }
+          hunger: 90, // health 10 -> hunger 90
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(notReadyPet, mockOnPetUpdate)
       );
 
@@ -107,11 +109,11 @@ describe('useEvolution', () => {
           level: 50,
           happiness: 90,
           energy: 85,
-          hunger: 20  // health 80 -> hunger 20
-        }
+          hunger: 20, // health 80 -> hunger 20
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(elderPet, mockOnPetUpdate)
       );
 
@@ -127,14 +129,14 @@ describe('useEvolution', () => {
         ...mockBasePet,
         stats: {
           ...mockBasePet.stats,
-          level: 5,      // 100% of requirement
+          level: 5, // 100% of requirement
           happiness: 15, // 50% of requirement (30)
-          energy: 12,    // ~48% of requirement (25)
-          hunger: 80     // health 20 -> hunger 80, 100% of requirement (health 20)
-        }
+          energy: 12, // ~48% of requirement (25)
+          hunger: 80, // health 20 -> hunger 80, 100% of requirement (health 20)
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(partialPet, mockOnPetUpdate)
       );
 
@@ -147,11 +149,11 @@ describe('useEvolution', () => {
         ...mockBasePet,
         stats: {
           ...mockBasePet.stats,
-          level: 50
-        }
+          level: 50,
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(elderPet, mockOnPetUpdate)
       );
 
@@ -168,11 +170,11 @@ describe('useEvolution', () => {
           level: 5,
           happiness: 40,
           energy: 30,
-          hunger: 75  // health 25 -> hunger 75
-        }
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(evolutionReadyPet, mockOnPetUpdate)
       );
 
@@ -189,8 +191,8 @@ describe('useEvolution', () => {
           stats: expect.objectContaining({
             happiness: expect.any(Number),
             energy: expect.any(Number),
-            hunger: expect.any(Number)
-          })
+            hunger: expect.any(Number),
+          }),
         })
       );
     });
@@ -203,11 +205,11 @@ describe('useEvolution', () => {
           level: 3,
           happiness: 20,
           energy: 15,
-          hunger: 90  // health 10 -> hunger 90
-        }
+          hunger: 90, // health 10 -> hunger 90
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(notReadyPet, mockOnPetUpdate)
       );
 
@@ -228,11 +230,11 @@ describe('useEvolution', () => {
           level: 5,
           happiness: 40,
           energy: 30,
-          hunger: 75  // health 25 -> hunger 75
-        }
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(evolutionReadyPet, mockOnPetUpdate)
       );
 
@@ -247,7 +249,7 @@ describe('useEvolution', () => {
 
   describe('プログレスリセット', () => {
     it('should reset evolution progress to initial state', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(mockBasePet, mockOnPetUpdate)
       );
 
@@ -264,18 +266,20 @@ describe('useEvolution', () => {
       expect(result.current.evolutionProgress.currentStage).toBe('baby');
       expect(result.current.latestEvolutionEvent).toBeNull();
       expect(result.current.evolutionProgress.evolutionHistory).toHaveLength(1);
-      expect(result.current.evolutionProgress.evolutionHistory[0].toStage).toBe('baby');
+      expect(result.current.evolutionProgress.evolutionHistory[0].toStage).toBe(
+        'baby'
+      );
     });
   });
 
   describe('進化履歴', () => {
     it('should return correct evolution history', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(mockBasePet, mockOnPetUpdate)
       );
 
       const history = result.current.getEvolutionHistory();
-      
+
       expect(history).toHaveLength(1);
       expect(history[0].toStage).toBe('baby');
       expect(history[0].fromStage).toBe('none');
@@ -289,11 +293,11 @@ describe('useEvolution', () => {
           level: 5,
           happiness: 40,
           energy: 30,
-          hunger: 75  // health 25 -> hunger 75
-        }
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useEvolution(evolutionReadyPet, mockOnPetUpdate)
       );
 
@@ -302,7 +306,7 @@ describe('useEvolution', () => {
       });
 
       const history = result.current.getEvolutionHistory();
-      
+
       expect(history).toHaveLength(2);
       expect(history[1].toStage).toBe('child');
       expect(history[1].fromStage).toBe('baby');
@@ -311,14 +315,14 @@ describe('useEvolution', () => {
 
   describe('ペット更新の反応', () => {
     it('should react to pet level changes', () => {
-      let currentPet = { 
-        ...mockBasePet, 
+      let currentPet = {
+        ...mockBasePet,
         stats: {
           ...mockBasePet.stats,
-          level: 1
-        }
+          level: 1,
+        },
       };
-      
+
       const { result, rerender } = renderHook(
         ({ pet }) => useEvolution(pet, mockOnPetUpdate),
         { initialProps: { pet: currentPet } }
@@ -327,15 +331,15 @@ describe('useEvolution', () => {
       expect(result.current.currentStage.id).toBe('baby');
 
       // ペットのレベルを上げる
-      currentPet = { 
-        ...currentPet, 
+      currentPet = {
+        ...currentPet,
         stats: {
           ...currentPet.stats,
-          level: 5, 
-          happiness: 40, 
-          energy: 30, 
-          hunger: 75  // health 25 -> hunger 75
-        }
+          level: 5,
+          happiness: 40,
+          energy: 30,
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
       rerender({ pet: currentPet });
 
@@ -343,17 +347,17 @@ describe('useEvolution', () => {
     });
 
     it('should react to pet stat changes', () => {
-      let currentPet = { 
-        ...mockBasePet, 
+      let currentPet = {
+        ...mockBasePet,
         stats: {
           ...mockBasePet.stats,
-          level: 5, 
-          happiness: 10, 
-          energy: 10, 
-          hunger: 90  // health 10 -> hunger 90
-        }
+          level: 5,
+          happiness: 10,
+          energy: 10,
+          hunger: 90, // health 10 -> hunger 90
+        },
       };
-      
+
       const { result, rerender } = renderHook(
         ({ pet }) => useEvolution(pet, mockOnPetUpdate),
         { initialProps: { pet: currentPet } }
@@ -362,14 +366,14 @@ describe('useEvolution', () => {
       expect(result.current.canEvolveNext).toBe(false);
 
       // ペットの統計値を上げる
-      currentPet = { 
-        ...currentPet, 
+      currentPet = {
+        ...currentPet,
         stats: {
           ...currentPet.stats,
-          happiness: 40, 
-          energy: 30, 
-          hunger: 75  // health 25 -> hunger 75
-        }
+          happiness: 40,
+          energy: 30,
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
       rerender({ pet: currentPet });
 
@@ -380,7 +384,7 @@ describe('useEvolution', () => {
   describe('コンソールログ', () => {
     it('should log when evolution is possible', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      
+
       const evolutionReadyPet: Pet = {
         ...mockBasePet,
         stats: {
@@ -388,8 +392,8 @@ describe('useEvolution', () => {
           level: 5,
           happiness: 40,
           energy: 30,
-          hunger: 75  // health 25 -> hunger 75
-        }
+          hunger: 75, // health 25 -> hunger 75
+        },
       };
 
       renderHook(() => useEvolution(evolutionReadyPet, mockOnPetUpdate));

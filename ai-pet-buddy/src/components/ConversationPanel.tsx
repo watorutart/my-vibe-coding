@@ -14,7 +14,7 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
   pet,
   conversationHistory,
   onSendMessage,
-  maxMessageLength = 200
+  maxMessageLength = 200,
 }) => {
   const [inputMessage, setInputMessage] = useState('');
   const historyEndRef = useRef<HTMLDivElement>(null);
@@ -51,12 +51,12 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
   const formatTimestamp = (timestamp: Date) => {
     return timestamp.toLocaleTimeString('ja-JP', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   return (
-    <div 
+    <div
       className={`conversation-panel mood-${pet.expression}`}
       data-testid="conversation-panel"
     >
@@ -64,23 +64,18 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
         <h3>💬 {pet.name}との会話</h3>
       </div>
 
-      <div 
-        className="conversation-history"
-        data-testid="conversation-history"
-      >
+      <div className="conversation-history" data-testid="conversation-history">
         {conversationHistory.length === 0 ? (
           <div className="welcome-message">
             <p>{pet.name}と会話を始めよう！</p>
           </div>
         ) : (
-          conversationHistory.map((message) => (
+          conversationHistory.map(message => (
             <div
               key={message.id}
               className={`message ${message.sender}-message`}
             >
-              <div className="message-content">
-                {message.content}
-              </div>
+              <div className="message-content">{message.content}</div>
               <div className="message-timestamp">
                 {formatTimestamp(new Date(message.timestamp))}
               </div>

@@ -194,50 +194,50 @@
     padding: 16px;
     gap: 20px;
   }
-  
+
   .achievement-list__title {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .achievement-list__title h2 {
     font-size: 1.5rem;
   }
-  
+
   .achievement-list__active-title {
     padding: 6px 12px;
   }
-  
+
   .achievement-list__stats {
     gap: 16px;
   }
-  
+
   .achievement-list__stat {
     min-width: 100px;
   }
-  
+
   .achievement-list__filters {
     padding: 16px;
     gap: 12px;
   }
-  
+
   .achievement-list__filter-group {
     gap: 6px;
   }
-  
+
   .achievement-list__filter-buttons {
     gap: 6px;
   }
-  
+
   .achievement-list__filter-button {
     padding: 6px 12px;
     font-size: 0.8rem;
   }
-  
+
   .achievement-list__section-title {
     font-size: 1.2rem;
   }
-  
+
   .achievement-list__grid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -248,19 +248,19 @@
   .achievement-list {
     padding: 12px;
   }
-  
+
   .achievement-list__title h2 {
     font-size: 1.3rem;
   }
-  
+
   .achievement-list__stat-value {
     font-size: 1.2rem;
   }
-  
+
   .achievement-list__filters {
     padding: 12px;
   }
-  
+
   .achievement-list__filter-button {
     padding: 4px 8px;
     font-size: 0.75rem;
@@ -272,11 +272,11 @@
   .achievement-list__filter-button {
     border-width: 3px;
   }
-  
+
   .achievement-list__filter-button--active {
     border-width: 3px;
   }
-  
+
   .achievement-list__active-title {
     border-width: 3px;
   }
@@ -287,7 +287,7 @@
   .achievement-list__stat-fill {
     transition: none;
   }
-  
+
   .achievement-list__filter-button {
     transition: none;
   }

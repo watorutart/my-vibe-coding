@@ -23,7 +23,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
   isOpen,
   onClose,
   captureTargetRef,
-  statsData
+  statsData,
 }) => {
   const {
     captureScreenshot,
@@ -34,11 +34,13 @@ export const SharePanel: React.FC<SharePanelProps> = ({
     isSharing,
     error,
     lastShareImageUrl,
-    clearError
+    clearError,
   } = useShare();
-  
+
   const [shareImageUrl, setShareImageUrl] = useState<string | null>(null);
-  const [shareMode, setShareMode] = useState<'screenshot' | 'stats'>('screenshot');
+  const [shareMode, setShareMode] = useState<'screenshot' | 'stats'>(
+    'screenshot'
+  );
 
   /**
    * スクリーンショット撮影
@@ -53,7 +55,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
       const imageUrl = await captureScreenshot(captureTargetRef.current, {
         width: 1080,
         height: 1080,
-        showWatermark: true
+        showWatermark: true,
       });
       setShareImageUrl(imageUrl);
       setShareMode('screenshot');
@@ -74,7 +76,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
       clearError();
       const imageUrl = await generateStatsCard(statsData, {
         watermark: { text: 'AI Pet Buddy' },
-        screenshot: { width: 1080, height: 1080 }
+        screenshot: { width: 1080, height: 1080 },
       });
       setShareImageUrl(imageUrl);
       setShareMode('stats');
@@ -86,7 +88,9 @@ export const SharePanel: React.FC<SharePanelProps> = ({
   /**
    * SNSシェア
    */
-  const handleShare = async (platform: 'twitter' | 'facebook' | 'instagram' | 'line') => {
+  const handleShare = async (
+    platform: 'twitter' | 'facebook' | 'instagram' | 'line'
+  ) => {
     const imageUrl = shareImageUrl || lastShareImageUrl;
     if (!imageUrl) {
       return;
@@ -94,12 +98,15 @@ export const SharePanel: React.FC<SharePanelProps> = ({
 
     try {
       clearError();
-      const shareData = generateShareData(imageUrl, shareMode === 'stats' ? statsData : undefined);
-      
+      const shareData = generateShareData(
+        imageUrl,
+        shareMode === 'stats' ? statsData : undefined
+      );
+
       const result = await shareToSocial({
         platform,
         shareData,
-        url: window.location.href
+        url: window.location.href,
       });
 
       if (result.success) {
@@ -119,10 +126,11 @@ export const SharePanel: React.FC<SharePanelProps> = ({
       return;
     }
 
-    const filename = shareMode === 'stats' 
-      ? `pet-stats-${Date.now()}.png`
-      : `pet-screenshot-${Date.now()}.png`;
-    
+    const filename =
+      shareMode === 'stats'
+        ? `pet-stats-${Date.now()}.png`
+        : `pet-screenshot-${Date.now()}.png`;
+
     downloadImage(imageUrl, filename);
   };
 
@@ -141,10 +149,15 @@ export const SharePanel: React.FC<SharePanelProps> = ({
 
   return (
     <div className="share-panel-overlay" onClick={handleClose}>
-      <div className="share-panel" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="シェア">
+      <div
+        className="share-panel"
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-label="シェア"
+      >
         <div className="share-panel__header">
           <h2 className="share-panel__title">シェア</h2>
-          <button 
+          <button
             className="share-panel__close"
             onClick={handleClose}
             aria-label="閉じる"
@@ -163,7 +176,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
             >
               📷 スクリーンショット
             </button>
-            
+
             {statsData && (
               <button
                 className="share-button share-button--stats"
@@ -207,7 +220,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
                 >
                   🐦 Twitter
                 </button>
-                
+
                 <button
                   className="share-button share-button--facebook"
                   onClick={() => handleShare('facebook')}
@@ -215,7 +228,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
                 >
                   📘 Facebook
                 </button>
-                
+
                 <button
                   className="share-button share-button--instagram"
                   onClick={() => handleShare('instagram')}
@@ -223,7 +236,7 @@ export const SharePanel: React.FC<SharePanelProps> = ({
                 >
                   📷 Instagram
                 </button>
-                
+
                 <button
                   className="share-button share-button--line"
                   onClick={() => handleShare('line')}

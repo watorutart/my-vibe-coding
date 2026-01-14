@@ -1,22 +1,22 @@
 /**
  * @file pushNotification.ts
  * @description プッシュ通知管理ユーティリティ
- * 
+ *
  * PWAプッシュ通知の許可取得、送信、スケジューリング機能を提供します。
  */
 
-import type { 
+import type {
   NotificationPermissionState,
   NotificationData,
   PetNotificationConfig,
-  PWAEvent
+  PWAEvent,
 } from '../types/PWA';
 
 // ローカルストレージキー
 const STORAGE_KEYS = {
   NOTIFICATION_CONFIG: 'ai-pet-buddy-notification-config',
   NOTIFICATION_HISTORY: 'ai-pet-buddy-notification-history',
-  LAST_PERMISSION_REQUEST: 'ai-pet-buddy-last-permission-request'
+  LAST_PERMISSION_REQUEST: 'ai-pet-buddy-last-permission-request',
 } as const;
 
 // 通知スケジューリング用のタイマー管理
@@ -31,11 +31,11 @@ const eventListeners: EventListener[] = [];
  */
 export class PushNotificationManager {
   private config: PetNotificationConfig | null = null;
-  
+
   constructor() {
     this.loadConfig();
   }
-  
+
   /**
    * 通知許可を要求
    */
@@ -44,45 +44,45 @@ export class PushNotificationManager {
       console.warn('[Notification] Notifications not supported');
       return false;
     }
-    
+
     try {
       // すでに許可されている場合
       if (Notification.permission === 'granted') {
         return true;
       }
-      
+
       // 拒否されている場合は要求しない
       if (Notification.permission === 'denied') {
         console.warn('[Notification] Notifications denied');
         return false;
       }
-      
+
       // 最後の要求から時間が経っていない場合はスキップ
       const lastRequest = this.getLastPermissionRequest();
       const now = Date.now();
       const oneHour = 60 * 60 * 1000;
-      
-      if (lastRequest && (now - lastRequest.getTime()) < oneHour) {
+
+      if (lastRequest && now - lastRequest.getTime() < oneHour) {
         console.log('[Notification] Permission recently requested, skipping');
         return false;
       }
-      
+
       // 許可を要求
       console.log('[Notification] Requesting notification permission...');
       const permission = await Notification.requestPermission();
-      
+
       // 要求時刻を保存
       this.saveLastPermissionRequest(new Date());
-      
+
       const granted = permission === 'granted';
-      
+
       // イベントを発火
       this.emitEvent({
         type: granted ? 'notification-granted' : 'notification-denied',
         data: { permission },
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
+
       if (granted) {
         console.log('[Notification] Permission granted');
         // 設定を有効化
@@ -90,30 +90,29 @@ export class PushNotificationManager {
       } else {
         console.log('[Notification] Permission denied');
       }
-      
+
       return granted;
-      
     } catch (error) {
       console.error('[Notification] Permission request failed:', error);
       return false;
     }
   }
-  
+
   /**
    * 通知許可状態を取得
    */
   getPermissionState(): NotificationPermissionState {
     const isSupported = this.isNotificationSupported();
     const isServiceWorkerSupported = 'serviceWorker' in navigator;
-    
+
     return {
       permission: isSupported ? Notification.permission : 'denied',
       isSupported,
       isServiceWorkerSupported,
-      lastRequested: this.getLastPermissionRequest()
+      lastRequested: this.getLastPermissionRequest(),
     };
   }
-  
+
   /**
    * 通知を送信
    */
@@ -121,20 +120,22 @@ export class PushNotificationManager {
     if (!this.canSendNotification()) {
       return false;
     }
-    
+
     try {
       // 通知履歴をチェック（重複防止）
       if (data.tag && this.isRecentNotification(data.tag, 5 * 60 * 1000)) {
-        console.log(`[Notification] Skipping duplicate notification: ${data.tag}`);
+        console.log(
+          `[Notification] Skipping duplicate notification: ${data.tag}`
+        );
         return false;
       }
-      
+
       // 静音時間をチェック
       if (this.isQuietTime()) {
         console.log('[Notification] Quiet time, skipping notification');
         return false;
       }
-      
+
       const options: NotificationOptions = {
         body: data.body,
         icon: data.icon || '/icons/icon-192x192.png',
@@ -144,34 +145,33 @@ export class PushNotificationManager {
         data: data.data,
         actions: data.actions,
         requireInteraction: false,
-        silent: false
+        silent: false,
       };
-      
+
       // Service Workerが利用可能な場合
       if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
         // Service Worker経由で通知を表示
         navigator.serviceWorker.controller.postMessage({
           type: 'SHOW_NOTIFICATION',
           title: data.title,
-          options
+          options,
         });
       } else {
         // 直接通知を表示
         new Notification(data.title, options);
       }
-      
+
       // 通知履歴に追加
       this.addNotificationHistory(data);
-      
+
       console.log(`[Notification] Sent: ${data.title}`);
       return true;
-      
     } catch (error) {
       console.error('[Notification] Failed to send notification:', error);
       return false;
     }
   }
-  
+
   /**
    * ペット状態に基づいた通知をスケジュール
    */
@@ -184,40 +184,52 @@ export class PushNotificationManager {
     if (!this.config?.enabled) {
       return;
     }
-    
+
     const { hunger, energy, happiness } = this.config;
-    
+
     // 空腹通知
     if (hunger.enabled && petStats.hunger < hunger.threshold) {
-      this.scheduleNotification('pet-hunger', {
-        title: 'ペットがお腹を空かせています！',
-        body: `空腹度: ${petStats.hunger}% - ご飯をあげて元気にしてあげましょう 🍖`,
-        tag: 'pet-hunger',
-        data: { type: 'hunger', value: petStats.hunger }
-      }, hunger.interval * 60 * 1000);
+      this.scheduleNotification(
+        'pet-hunger',
+        {
+          title: 'ペットがお腹を空かせています！',
+          body: `空腹度: ${petStats.hunger}% - ご飯をあげて元気にしてあげましょう 🍖`,
+          tag: 'pet-hunger',
+          data: { type: 'hunger', value: petStats.hunger },
+        },
+        hunger.interval * 60 * 1000
+      );
     }
-    
+
     // エネルギー通知
     if (energy.enabled && petStats.energy < energy.threshold) {
-      this.scheduleNotification('pet-energy', {
-        title: 'ペットが疲れています！',
-        body: `エネルギー: ${petStats.energy}% - 休憩させてあげましょう 😴`,
-        tag: 'pet-energy',
-        data: { type: 'energy', value: petStats.energy }
-      }, energy.interval * 60 * 1000);
+      this.scheduleNotification(
+        'pet-energy',
+        {
+          title: 'ペットが疲れています！',
+          body: `エネルギー: ${petStats.energy}% - 休憩させてあげましょう 😴`,
+          tag: 'pet-energy',
+          data: { type: 'energy', value: petStats.energy },
+        },
+        energy.interval * 60 * 1000
+      );
     }
-    
+
     // 幸福度通知
     if (happiness.enabled && petStats.happiness < happiness.threshold) {
-      this.scheduleNotification('pet-happiness', {
-        title: 'ペットが寂しがっています！',
-        body: `幸福度: ${petStats.happiness}% - 一緒に遊んであげましょう 🎮`,
-        tag: 'pet-happiness',
-        data: { type: 'happiness', value: petStats.happiness }
-      }, happiness.interval * 60 * 1000);
+      this.scheduleNotification(
+        'pet-happiness',
+        {
+          title: 'ペットが寂しがっています！',
+          body: `幸福度: ${petStats.happiness}% - 一緒に遊んであげましょう 🎮`,
+          tag: 'pet-happiness',
+          data: { type: 'happiness', value: petStats.happiness },
+        },
+        happiness.interval * 60 * 1000
+      );
     }
   }
-  
+
   /**
    * レベルアップ通知を送信
    */
@@ -225,7 +237,7 @@ export class PushNotificationManager {
     if (!this.config?.levelUp.enabled) {
       return false;
     }
-    
+
     return this.sendNotification({
       title: '🎉 レベルアップ！',
       body: `ペットがレベル ${level} に成長しました！おめでとうございます！`,
@@ -235,12 +247,12 @@ export class PushNotificationManager {
         {
           action: 'celebrate',
           title: 'お祝いする',
-          icon: '/icons/shortcut-play.png'
-        }
-      ]
+          icon: '/icons/shortcut-play.png',
+        },
+      ],
     });
   }
-  
+
   /**
    * 進化通知を送信
    */
@@ -248,7 +260,7 @@ export class PushNotificationManager {
     if (!this.config?.evolution.enabled) {
       return false;
     }
-    
+
     return this.sendNotification({
       title: '✨ 進化しました！',
       body: `ペットが ${evolutionStage} に進化しました！新しい姿を見に行きましょう！`,
@@ -258,12 +270,12 @@ export class PushNotificationManager {
         {
           action: 'view',
           title: '見に行く',
-          icon: '/icons/shortcut-play.png'
-        }
-      ]
+          icon: '/icons/shortcut-play.png',
+        },
+      ],
     });
   }
-  
+
   /**
    * 通知をスケジュール
    */
@@ -276,16 +288,16 @@ export class PushNotificationManager {
     if (notificationTimers.has(id)) {
       clearTimeout(notificationTimers.get(id)!);
     }
-    
+
     // 新しいタイマーを設定
     const timerId = window.setTimeout(async () => {
       await this.sendNotification(notification);
       notificationTimers.delete(id);
     }, delay);
-    
+
     notificationTimers.set(id, timerId);
   }
-  
+
   /**
    * スケジュールされた通知をキャンセル
    */
@@ -295,25 +307,25 @@ export class PushNotificationManager {
       notificationTimers.delete(id);
     }
   }
-  
+
   /**
    * すべてのスケジュールされた通知をキャンセル
    */
   cancelAllScheduledNotifications(): void {
-    notificationTimers.forEach((timerId) => clearTimeout(timerId));
+    notificationTimers.forEach(timerId => clearTimeout(timerId));
     notificationTimers.clear();
   }
-  
+
   /**
    * 通知設定を更新
    */
   updateConfig(updates: Partial<PetNotificationConfig>): void {
     this.config = { ...this.config!, ...updates };
     this.saveConfig();
-    
+
     console.log('[Notification] Config updated:', updates);
   }
-  
+
   /**
    * 通知設定を取得
    */
@@ -323,7 +335,7 @@ export class PushNotificationManager {
     }
     return this.config!;
   }
-  
+
   /**
    * 通知が送信可能かチェック
    */
@@ -334,14 +346,14 @@ export class PushNotificationManager {
       this.config?.enabled === true
     );
   }
-  
+
   /**
    * 通知がサポートされているかチェック
    */
   private isNotificationSupported(): boolean {
     return 'Notification' in window;
   }
-  
+
   /**
    * 静音時間かチェック
    */
@@ -349,13 +361,13 @@ export class PushNotificationManager {
     if (!this.config?.quietHours.enabled) {
       return false;
     }
-    
+
     const now = new Date();
     const currentTime = now.getHours() * 100 + now.getMinutes();
-    
+
     const startTime = this.parseTime(this.config.quietHours.start);
     const endTime = this.parseTime(this.config.quietHours.end);
-    
+
     if (startTime <= endTime) {
       // 同じ日の範囲内
       return currentTime >= startTime && currentTime <= endTime;
@@ -364,7 +376,7 @@ export class PushNotificationManager {
       return currentTime >= startTime || currentTime <= endTime;
     }
   }
-  
+
   /**
    * 時刻文字列を数値に変換
    */
@@ -372,19 +384,17 @@ export class PushNotificationManager {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 100 + minutes;
   }
-  
+
   /**
    * 最近の重複通知をチェック
    */
   private isRecentNotification(tag: string, withinMs: number): boolean {
     const history = this.getNotificationHistory();
     const cutoff = Date.now() - withinMs;
-    
-    return history.some(entry => 
-      entry.tag === tag && entry.timestamp > cutoff
-    );
+
+    return history.some(entry => entry.tag === tag && entry.timestamp > cutoff);
   }
-  
+
   /**
    * 通知履歴に追加
    */
@@ -393,16 +403,16 @@ export class PushNotificationManager {
     const entry = {
       title: notification.title,
       tag: notification.tag,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     history.unshift(entry);
-    
+
     // 最大100件まで保持
     if (history.length > 100) {
       history.splice(100);
     }
-    
+
     try {
       localStorage.setItem(
         STORAGE_KEYS.NOTIFICATION_HISTORY,
@@ -412,7 +422,7 @@ export class PushNotificationManager {
       console.error('[Notification] Failed to save history:', error);
     }
   }
-  
+
   /**
    * 通知履歴を取得
    */
@@ -429,7 +439,7 @@ export class PushNotificationManager {
       return [];
     }
   }
-  
+
   /**
    * 最後の許可要求時刻を保存
    */
@@ -443,7 +453,7 @@ export class PushNotificationManager {
       console.error('[Notification] Failed to save last request time:', error);
     }
   }
-  
+
   /**
    * 最後の許可要求時刻を取得
    */
@@ -456,7 +466,7 @@ export class PushNotificationManager {
       return null;
     }
   }
-  
+
   /**
    * 設定を保存
    */
@@ -470,7 +480,7 @@ export class PushNotificationManager {
       console.error('[Notification] Failed to save config:', error);
     }
   }
-  
+
   /**
    * 設定を読み込み
    */
@@ -488,7 +498,7 @@ export class PushNotificationManager {
           happiness: { enabled: true, threshold: 40, interval: 45 },
           levelUp: { enabled: true },
           evolution: { enabled: true },
-          quietHours: { enabled: false, start: "22:00", end: "08:00" }
+          quietHours: { enabled: false, start: '22:00', end: '08:00' },
         };
         this.saveConfig();
       }
@@ -502,11 +512,11 @@ export class PushNotificationManager {
         happiness: { enabled: true, threshold: 40, interval: 45 },
         levelUp: { enabled: true },
         evolution: { enabled: true },
-        quietHours: { enabled: false, start: "22:00", end: "08:00" }
+        quietHours: { enabled: false, start: '22:00', end: '08:00' },
       };
     }
   }
-  
+
   /**
    * イベントを発火
    */
@@ -525,13 +535,13 @@ export class PushNotificationManager {
 export const pushNotificationManager = new PushNotificationManager();
 
 // 便利関数をエクスポート
-export const requestNotificationPermission = () => 
+export const requestNotificationPermission = () =>
   pushNotificationManager.requestPermission();
 
-export const getNotificationPermissionState = () => 
+export const getNotificationPermissionState = () =>
   pushNotificationManager.getPermissionState();
 
-export const sendNotification = (data: NotificationData) => 
+export const sendNotification = (data: NotificationData) =>
   pushNotificationManager.sendNotification(data);
 
 export const schedulePetNotifications = (petStats: {
@@ -541,17 +551,17 @@ export const schedulePetNotifications = (petStats: {
   level: number;
 }) => pushNotificationManager.schedulePetNotifications(petStats);
 
-export const sendLevelUpNotification = (level: number) => 
+export const sendLevelUpNotification = (level: number) =>
   pushNotificationManager.sendLevelUpNotification(level);
 
-export const sendEvolutionNotification = (stage: string) => 
+export const sendEvolutionNotification = (stage: string) =>
   pushNotificationManager.sendEvolutionNotification(stage);
 
-export const updateNotificationConfig = (updates: Partial<PetNotificationConfig>) => 
-  pushNotificationManager.updateConfig(updates);
+export const updateNotificationConfig = (
+  updates: Partial<PetNotificationConfig>
+) => pushNotificationManager.updateConfig(updates);
 
-export const getNotificationConfig = () => 
-  pushNotificationManager.getConfig();
+export const getNotificationConfig = () => pushNotificationManager.getConfig();
 
 /**
  * イベントリスナーを追加

@@ -12,7 +12,7 @@ import {
   calculateReward,
   getResultMessage,
   getWarningMessage,
-  validateGuess
+  validateGuess,
 } from './numberGuessingLogic';
 
 describe('numberGuessingLogic', () => {
@@ -22,21 +22,21 @@ describe('numberGuessingLogic', () => {
         min: 1,
         max: 50,
         maxAttempts: 8,
-        baseReward: 75
+        baseReward: 75,
       });
-      
+
       expect(DIFFICULTY_SETTINGS.medium).toEqual({
         min: 1,
         max: 100,
         maxAttempts: 10,
-        baseReward: 100
+        baseReward: 100,
       });
-      
+
       expect(DIFFICULTY_SETTINGS.hard).toEqual({
         min: 1,
         max: 200,
         maxAttempts: 12,
-        baseReward: 150
+        baseReward: 150,
       });
     });
   });
@@ -108,10 +108,10 @@ describe('numberGuessingLogic', () => {
     it('should calculate efficiency-based score for correct answer', () => {
       // Perfect efficiency (1 attempt)
       expect(calculateScore(1, 10, 100, true)).toBe(100); // 100 * (10/10)
-      
+
       // 50% efficiency (6 attempts out of 10)
       expect(calculateScore(6, 10, 100, true)).toBe(50); // 100 * (5/10)
-      
+
       // Worst efficiency (10 attempts)
       expect(calculateScore(10, 10, 100, true)).toBe(10); // 100 * (1/10)
     });
@@ -151,7 +151,9 @@ describe('numberGuessingLogic', () => {
   describe('getResultMessage', () => {
     it('should return failure message for incorrect answer', () => {
       const message = getResultMessage(false, 8, 8, 42);
-      expect(message).toBe('残念！正解は 42 でした。8回以内に当てられませんでした。');
+      expect(message).toBe(
+        '残念！正解は 42 でした。8回以内に当てられませんでした。'
+      );
     });
 
     it('should return perfect message for 1 attempt', () => {
@@ -160,16 +162,24 @@ describe('numberGuessingLogic', () => {
     });
 
     it('should return excellent message for 2-3 attempts', () => {
-      expect(getResultMessage(true, 2, 8, 42)).toBe('🎊 素晴らしい！2回で正解です！');
-      expect(getResultMessage(true, 3, 8, 42)).toBe('🎊 素晴らしい！3回で正解です！');
+      expect(getResultMessage(true, 2, 8, 42)).toBe(
+        '🎊 素晴らしい！2回で正解です！'
+      );
+      expect(getResultMessage(true, 3, 8, 42)).toBe(
+        '🎊 素晴らしい！3回で正解です！'
+      );
     });
 
     it('should return good message for attempts <= half of max', () => {
-      expect(getResultMessage(true, 4, 8, 42)).toBe('👏 良い感じ！4回で正解です！');
+      expect(getResultMessage(true, 4, 8, 42)).toBe(
+        '👏 良い感じ！4回で正解です！'
+      );
     });
 
     it('should return basic success message for more attempts', () => {
-      expect(getResultMessage(true, 6, 8, 42)).toBe('✅ 正解！6回で当てました！');
+      expect(getResultMessage(true, 6, 8, 42)).toBe(
+        '✅ 正解！6回で当てました！'
+      );
     });
   });
 
@@ -202,19 +212,25 @@ describe('numberGuessingLogic', () => {
     it('should reject values outside easy range', () => {
       expect(validateGuess(0, 'easy').isValid).toBe(false);
       expect(validateGuess(51, 'easy').isValid).toBe(false);
-      expect(validateGuess(0, 'easy').errorMessage).toBe('1〜50の範囲で入力してください');
+      expect(validateGuess(0, 'easy').errorMessage).toBe(
+        '1〜50の範囲で入力してください'
+      );
     });
 
     it('should reject values outside medium range', () => {
       expect(validateGuess(0, 'medium').isValid).toBe(false);
       expect(validateGuess(101, 'medium').isValid).toBe(false);
-      expect(validateGuess(101, 'medium').errorMessage).toBe('1〜100の範囲で入力してください');
+      expect(validateGuess(101, 'medium').errorMessage).toBe(
+        '1〜100の範囲で入力してください'
+      );
     });
 
     it('should reject values outside hard range', () => {
       expect(validateGuess(0, 'hard').isValid).toBe(false);
       expect(validateGuess(201, 'hard').isValid).toBe(false);
-      expect(validateGuess(201, 'hard').errorMessage).toBe('1〜200の範囲で入力してください');
+      expect(validateGuess(201, 'hard').errorMessage).toBe(
+        '1〜200の範囲で入力してください'
+      );
     });
 
     it('should reject non-integer values', () => {

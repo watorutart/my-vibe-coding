@@ -13,11 +13,11 @@ const mockPet: Pet = {
     happiness: 80,
     hunger: 60,
     energy: 70,
-    level: 5
+    level: 5,
   },
   lastUpdate: Date.now(),
   expression: 'happy',
-  experience: 150
+  experience: 150,
 };
 
 describe('ConversationPanel', () => {
@@ -29,15 +29,17 @@ describe('ConversationPanel', () => {
 
   it('会話パネルの基本要素がレンダリングされる', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
     );
 
     expect(screen.getByText('💬 テストペットとの会話')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('メッセージを入力...')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('メッセージを入力...')
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '送信' })).toBeInTheDocument();
   });
 
@@ -47,19 +49,19 @@ describe('ConversationPanel', () => {
         id: '1',
         type: 'user',
         content: 'こんにちは',
-        timestamp: new Date('2024-01-01T10:00:00')
+        timestamp: new Date('2024-01-01T10:00:00'),
       },
       {
         id: '2',
         type: 'pet',
         content: 'にゃーん！元気だよ！',
-        timestamp: new Date('2024-01-01T10:00:01')
-      }
+        timestamp: new Date('2024-01-01T10:00:01'),
+      },
     ];
 
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={history}
       />
@@ -75,25 +77,27 @@ describe('ConversationPanel', () => {
         id: '1',
         sender: 'user',
         content: 'ユーザーメッセージ',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       },
       {
         id: '2',
         sender: 'pet',
         content: 'ペットメッセージ',
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     ];
 
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={history}
       />
     );
 
-    const userMessage = screen.getByText('ユーザーメッセージ').closest('.message');
+    const userMessage = screen
+      .getByText('ユーザーメッセージ')
+      .closest('.message');
     const petMessage = screen.getByText('ペットメッセージ').closest('.message');
 
     expect(userMessage).toHaveClass('user-message');
@@ -102,23 +106,25 @@ describe('ConversationPanel', () => {
 
   it('メッセージ入力フィールドが正常に動作する', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
     );
 
-    const input = screen.getByPlaceholderText('メッセージを入力...') as HTMLInputElement;
-    
+    const input = screen.getByPlaceholderText(
+      'メッセージを入力...'
+    ) as HTMLInputElement;
+
     fireEvent.change(input, { target: { value: 'テストメッセージ' } });
     expect(input.value).toBe('テストメッセージ');
   });
 
   it('送信ボタンクリックでメッセージが送信される', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
@@ -135,8 +141,8 @@ describe('ConversationPanel', () => {
 
   it('Enterキーでメッセージが送信される', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
@@ -152,8 +158,8 @@ describe('ConversationPanel', () => {
 
   it('空のメッセージは送信されない', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
@@ -167,8 +173,8 @@ describe('ConversationPanel', () => {
 
   it('空白のみのメッセージは送信されない', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
@@ -185,14 +191,16 @@ describe('ConversationPanel', () => {
 
   it('メッセージ送信後に入力フィールドがクリアされる', async () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
     );
 
-    const input = screen.getByPlaceholderText('メッセージを入力...') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'メッセージを入力...'
+    ) as HTMLInputElement;
     const sendButton = screen.getByRole('button', { name: '送信' });
 
     fireEvent.change(input, { target: { value: 'クリアテスト' } });
@@ -205,15 +213,17 @@ describe('ConversationPanel', () => {
 
   it('最大メッセージ長制限が適用される', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
         maxMessageLength={10}
       />
     );
 
-    const input = screen.getByPlaceholderText('メッセージを入力...') as HTMLInputElement;
+    const input = screen.getByPlaceholderText(
+      'メッセージを入力...'
+    ) as HTMLInputElement;
     const longMessage = '１２３４５６７８９０１１１２';
 
     fireEvent.change(input, { target: { value: longMessage } });
@@ -221,34 +231,37 @@ describe('ConversationPanel', () => {
   });
 
   it('メッセージ履歴が多い場合にスクロールが適用される', () => {
-    const longHistory: ConversationMessage[] = Array.from({ length: 20 }, (_, i) => ({
-      id: `${i}`,
-      sender: i % 2 === 0 ? 'user' : 'pet',
-      content: `メッセージ ${i + 1}`,
-      timestamp: Date.now()
-    }));
+    const longHistory: ConversationMessage[] = Array.from(
+      { length: 20 },
+      (_, i) => ({
+        id: `${i}`,
+        sender: i % 2 === 0 ? 'user' : 'pet',
+        content: `メッセージ ${i + 1}`,
+        timestamp: Date.now(),
+      })
+    );
 
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={longHistory}
       />
     );
 
     const historyContainer = screen.getByTestId('conversation-history');
-    expect(historyContainer).toHaveStyle({ 
+    expect(historyContainer).toHaveStyle({
       overflowY: 'auto',
-      maxHeight: '300px'
+      maxHeight: '300px',
     });
   });
 
   it('ペットの気分に応じたスタイルが適用される', () => {
     const happyPet = { ...mockPet, mood: 'happy' as const };
-    
+
     render(
-      <ConversationPanel 
-        pet={happyPet} 
+      <ConversationPanel
+        pet={happyPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
@@ -264,13 +277,13 @@ describe('ConversationPanel', () => {
         id: '1',
         type: 'user',
         content: 'タイムスタンプテスト',
-        timestamp: new Date('2024-01-01T15:30:45')
-      }
+        timestamp: new Date('2024-01-01T15:30:45'),
+      },
     ];
 
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={history}
       />
@@ -281,13 +294,15 @@ describe('ConversationPanel', () => {
 
   it('会話履歴がない場合のウェルカムメッセージが表示される', () => {
     render(
-      <ConversationPanel 
-        pet={mockPet} 
+      <ConversationPanel
+        pet={mockPet}
         onSendMessage={mockOnSendMessage}
         conversationHistory={[]}
       />
     );
 
-    expect(screen.getByText('テストペットと会話を始めよう！')).toBeInTheDocument();
+    expect(
+      screen.getByText('テストペットと会話を始めよう！')
+    ).toBeInTheDocument();
   });
 });

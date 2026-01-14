@@ -42,7 +42,11 @@ describe('useGame', () => {
   describe('ゲーム開始', () => {
     it('ゲームを開始できる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'memory', difficulty: 'easy', duration: 30 };
+      const config: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 30,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -55,7 +59,11 @@ describe('useGame', () => {
 
     it('ゲーム開始時にタイマーがリセットされる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'quiz', difficulty: 'medium', duration: 60 };
+      const config: GameConfig = {
+        type: 'quiz',
+        difficulty: 'medium',
+        duration: 60,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -66,7 +74,11 @@ describe('useGame', () => {
 
     it('autoStartTimer=falseの場合、タイマーが自動開始されない', () => {
       const { result } = renderHook(() => useGame({ autoStartTimer: false }));
-      const config: GameConfig = { type: 'memory', difficulty: 'easy', duration: 30 };
+      const config: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 30,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -83,7 +95,11 @@ describe('useGame', () => {
   describe('ゲームプレイ', () => {
     it('ゲームをプレイ状態に移行できる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'reflex', difficulty: 'hard', duration: 45 };
+      const config: GameConfig = {
+        type: 'reflex',
+        difficulty: 'hard',
+        duration: 45,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -96,7 +112,11 @@ describe('useGame', () => {
 
     it('プレイ中にタイマーが動作する', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'quiz', difficulty: 'easy', duration: 60 };
+      const config: GameConfig = {
+        type: 'quiz',
+        difficulty: 'easy',
+        duration: 60,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -115,14 +135,19 @@ describe('useGame', () => {
   describe('回答提出', () => {
     it('クイズゲームで正解を提出できる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'quiz', difficulty: 'easy', duration: 60 };
+      const config: GameConfig = {
+        type: 'quiz',
+        difficulty: 'easy',
+        duration: 60,
+      };
 
       act(() => {
         result.current.startGame(config);
         result.current.playGame();
       });
 
-      const correctAnswer = result.current.currentSession?.currentQuestion.correctAnswer;
+      const correctAnswer =
+        result.current.currentSession?.currentQuestion.correctAnswer;
       let isCorrect: boolean;
 
       act(() => {
@@ -134,14 +159,19 @@ describe('useGame', () => {
 
     it('メモリーゲームで正しいシーケンスを提出できる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'memory', difficulty: 'easy', duration: 30 };
+      const config: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 30,
+      };
 
       act(() => {
         result.current.startGame(config);
         result.current.playGame();
       });
 
-      const correctSequence = result.current.currentSession?.currentQuestion.sequence;
+      const correctSequence =
+        result.current.currentSession?.currentQuestion.sequence;
       let isCorrect: boolean;
 
       act(() => {
@@ -153,14 +183,19 @@ describe('useGame', () => {
 
     it('反射神経ゲームで早い反応時間を提出できる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'reflex', difficulty: 'medium', duration: 45 };
+      const config: GameConfig = {
+        type: 'reflex',
+        difficulty: 'medium',
+        duration: 45,
+      };
 
       act(() => {
         result.current.startGame(config);
         result.current.playGame();
       });
 
-      const targetTime = result.current.currentSession?.currentQuestion.targetTime;
+      const targetTime =
+        result.current.currentSession?.currentQuestion.targetTime;
       const fastReaction = targetTime! - 100; // 目標時間より100ms早い
       let isCorrect: boolean;
 
@@ -175,7 +210,11 @@ describe('useGame', () => {
   describe('ゲーム終了', () => {
     it('強制終了ができる', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'quiz', difficulty: 'medium', duration: 90 };
+      const config: GameConfig = {
+        type: 'quiz',
+        difficulty: 'medium',
+        duration: 90,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -194,7 +233,11 @@ describe('useGame', () => {
 
     it('時間切れで自動終了する', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'memory', difficulty: 'easy', duration: 10 };
+      const config: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 10,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -214,7 +257,11 @@ describe('useGame', () => {
     it('ゲーム完了時にコールバックが呼ばれる', () => {
       const onGameComplete = vi.fn();
       const { result } = renderHook(() => useGame({ onGameComplete }));
-      const config: GameConfig = { type: 'quiz', difficulty: 'easy', duration: 60 };
+      const config: GameConfig = {
+        type: 'quiz',
+        difficulty: 'easy',
+        duration: 60,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -236,7 +283,11 @@ describe('useGame', () => {
     it('報酬付与時にコールバックが呼ばれる', () => {
       const onRewardGiven = vi.fn();
       const { result } = renderHook(() => useGame({ onRewardGiven }));
-      const config: GameConfig = { type: 'memory', difficulty: 'medium', duration: 45 };
+      const config: GameConfig = {
+        type: 'memory',
+        difficulty: 'medium',
+        duration: 45,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -258,7 +309,11 @@ describe('useGame', () => {
   describe('統計情報', () => {
     it('ゲーム完了後に統計が更新される', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'reflex', difficulty: 'hard', duration: 30 };
+      const config: GameConfig = {
+        type: 'reflex',
+        difficulty: 'hard',
+        duration: 30,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -273,7 +328,11 @@ describe('useGame', () => {
 
     it('最高スコアが記録される', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'quiz', difficulty: 'medium', duration: 90 };
+      const config: GameConfig = {
+        type: 'quiz',
+        difficulty: 'medium',
+        duration: 90,
+      };
 
       act(() => {
         result.current.startGame(config);
@@ -288,8 +347,16 @@ describe('useGame', () => {
 
     it('最近のゲーム結果が取得できる', () => {
       const { result } = renderHook(() => useGame());
-      const config1: GameConfig = { type: 'memory', difficulty: 'easy', duration: 30 };
-      const config2: GameConfig = { type: 'quiz', difficulty: 'medium', duration: 60 };
+      const config1: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 30,
+      };
+      const config2: GameConfig = {
+        type: 'quiz',
+        difficulty: 'medium',
+        duration: 60,
+      };
 
       // 1つ目のゲーム
       act(() => {
@@ -315,7 +382,11 @@ describe('useGame', () => {
   describe('エラーハンドリング', () => {
     it('進行中のゲームがある状態で新しいゲームを開始しようとするとエラー', () => {
       const { result } = renderHook(() => useGame());
-      const config: GameConfig = { type: 'memory', difficulty: 'easy', duration: 30 };
+      const config: GameConfig = {
+        type: 'memory',
+        difficulty: 'easy',
+        duration: 30,
+      };
 
       act(() => {
         result.current.startGame(config);

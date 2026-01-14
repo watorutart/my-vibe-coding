@@ -24,7 +24,7 @@ vi.mock('../hooks/useGame', () => ({
         duration: 30,
         name: 'メモリーゲーム（簡単）',
         description: '短い順序を覚えよう',
-        points: { correct: 10, wrong: -2, bonus: 5 }
+        points: { correct: 10, wrong: -2, bonus: 5 },
       },
       {
         type: 'rock-paper-scissors',
@@ -32,7 +32,7 @@ vi.mock('../hooks/useGame', () => ({
         duration: 60,
         name: 'じゃんけん（簡単）',
         description: 'AIと勝負！',
-        points: { correct: 15, wrong: -3, bonus: 10 }
+        points: { correct: 15, wrong: -3, bonus: 10 },
       },
       {
         type: 'number-guessing',
@@ -40,12 +40,12 @@ vi.mock('../hooks/useGame', () => ({
         duration: 120,
         name: '数当て（簡単）',
         description: '1-50の数字を当てよう',
-        points: { correct: 20, wrong: -5, bonus: 15 }
-      }
+        points: { correct: 20, wrong: -5, bonus: 15 },
+      },
     ],
     recentResults: [],
-    bestScores: {}
-  }))
+    bestScores: {},
+  })),
 }));
 
 describe('MiniGamePanel', () => {
@@ -59,7 +59,7 @@ describe('MiniGamePanel', () => {
   describe('ゲーム選択画面', () => {
     it('should render game selection with all available games', () => {
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -81,7 +81,7 @@ describe('MiniGamePanel', () => {
 
     it('should display difficulty buttons for each game', () => {
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -94,23 +94,29 @@ describe('MiniGamePanel', () => {
 
     it('should show game descriptions', () => {
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
       );
 
       // ゲーム説明の確認 (実際にコンポーネントに表示される説明文)
-      expect(screen.getByText('表示された色の順序を覚えて再現しよう！')).toBeInTheDocument();
-      expect(screen.getByText('AIと勝負！連勝を目指そう！')).toBeInTheDocument();
-      expect(screen.getByText('隠された数字を効率的に当てよう！')).toBeInTheDocument();
+      expect(
+        screen.getByText('表示された色の順序を覚えて再現しよう！')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('AIと勝負！連勝を目指そう！')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('隠された数字を効率的に当てよう！')
+      ).toBeInTheDocument();
     });
   });
 
   describe('クローズボタン', () => {
     it('should call onClose when close button is clicked', () => {
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -132,7 +138,7 @@ describe('MiniGamePanel', () => {
             type: 'rock-paper-scissors',
             difficulty: 'easy',
             duration: 60,
-            name: 'じゃんけん（簡単）'
+            name: 'じゃんけん（簡単）',
           },
           status: 'playing',
           startTime: new Date(),
@@ -144,8 +150,8 @@ describe('MiniGamePanel', () => {
             result: null,
             consecutiveWins: 0,
             totalRounds: 5,
-            currentRound: 1
-          }
+            currentRound: 1,
+          },
         },
         isGameActive: true,
         timeElapsed: 0,
@@ -155,7 +161,7 @@ describe('MiniGamePanel', () => {
         forceEndGame: vi.fn(),
         availableGames: [],
         recentResults: [],
-        bestScores: {}
+        bestScores: {},
       }));
 
       // モック更新
@@ -163,7 +169,7 @@ describe('MiniGamePanel', () => {
       vi.mocked(useGame).mockImplementation(mockUseGame);
 
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -183,7 +189,7 @@ describe('MiniGamePanel', () => {
             type: 'number-guessing',
             difficulty: 'easy',
             duration: 120,
-            name: '数当て（簡単）'
+            name: '数当て（簡単）',
           },
           status: 'playing',
           startTime: new Date(),
@@ -195,8 +201,8 @@ describe('MiniGamePanel', () => {
             attemptsLeft: 8,
             hints: [],
             minNumber: 1,
-            maxNumber: 50
-          }
+            maxNumber: 50,
+          },
         },
         isGameActive: true,
         timeElapsed: 0,
@@ -206,7 +212,7 @@ describe('MiniGamePanel', () => {
         forceEndGame: vi.fn(),
         availableGames: [],
         recentResults: [],
-        bestScores: {}
+        bestScores: {},
       }));
 
       // モック更新
@@ -214,7 +220,7 @@ describe('MiniGamePanel', () => {
       vi.mocked(useGame).mockImplementation(mockUseGame);
 
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -239,15 +245,15 @@ describe('MiniGamePanel', () => {
         forceEndGame: vi.fn(),
         availableGames: [],
         recentResults: [],
-        bestScores: {}
+        bestScores: {},
       }));
 
       // コールバック関数付きでモックを設定
-      mockUseGame.mockImplementation((callbacks) => {
+      mockUseGame.mockImplementation(callbacks => {
         // コールバックが正しく渡されることを確認
         expect(callbacks.onRewardGiven).toBeDefined();
         expect(callbacks.onGameComplete).toBeDefined();
-        
+
         return {
           currentSession: null,
           isGameActive: false,
@@ -258,7 +264,7 @@ describe('MiniGamePanel', () => {
           forceEndGame: vi.fn(),
           availableGames: [],
           recentResults: [],
-          bestScores: {}
+          bestScores: {},
         };
       });
 
@@ -266,7 +272,7 @@ describe('MiniGamePanel', () => {
       vi.mocked(useGame).mockImplementation(mockUseGame);
 
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -275,7 +281,7 @@ describe('MiniGamePanel', () => {
       expect(mockUseGame).toHaveBeenCalledWith(
         expect.objectContaining({
           onGameComplete: expect.any(Function),
-          onRewardGiven: expect.any(Function)
+          onRewardGiven: expect.any(Function),
         })
       );
     });
@@ -290,13 +296,13 @@ describe('MiniGamePanel', () => {
             type: 'unknown-game' as any,
             difficulty: 'easy',
             duration: 60,
-            name: '未知のゲーム'
+            name: '未知のゲーム',
           },
           status: 'playing',
           startTime: new Date(),
           score: { points: 0, accuracy: 0, timeRemaining: 60, combo: 0 },
           questionHistory: [],
-          currentQuestion: null
+          currentQuestion: null,
         },
         isGameActive: true,
         timeElapsed: 0,
@@ -306,14 +312,14 @@ describe('MiniGamePanel', () => {
         forceEndGame: vi.fn(),
         availableGames: [],
         recentResults: [],
-        bestScores: {}
+        bestScores: {},
       }));
 
       const { useGame } = await import('../hooks/useGame');
       vi.mocked(useGame).mockImplementation(mockUseGame);
 
       render(
-        <MiniGamePanel 
+        <MiniGamePanel
           onRewardEarned={mockOnRewardEarned}
           onClose={mockOnClose}
         />
@@ -321,7 +327,9 @@ describe('MiniGamePanel', () => {
 
       // エラーメッセージが表示されることを確認
       await waitFor(() => {
-        expect(screen.getByText('未対応のゲームタイプです')).toBeInTheDocument();
+        expect(
+          screen.getByText('未対応のゲームタイプです')
+        ).toBeInTheDocument();
       });
     });
   });

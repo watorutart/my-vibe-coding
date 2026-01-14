@@ -1,7 +1,7 @@
 /**
  * @file PWAProvider.tsx
  * @description PWA機能統合プロバイダーコンポーネント
- * 
+ *
  * アプリ全体のPWA機能を統合管理し、必要なUIコンポーネントを
  * 適切なタイミングで表示します。
  */
@@ -24,10 +24,7 @@ interface PWAProviderProps {
 /**
  * PWA機能統合プロバイダー
  */
-export const PWAProvider: React.FC<PWAProviderProps> = ({
-  children,
-  pet
-}) => {
+export const PWAProvider: React.FC<PWAProviderProps> = ({ children, pet }) => {
   // PWA状態管理
   const {
     pwaState,
@@ -37,7 +34,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
     shouldShowInstallPrompt,
     isOffline,
     hasUpdate,
-    platform
+    platform,
   } = usePWA();
 
   // 通知管理
@@ -49,12 +46,13 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
     sendTestNotification,
     monitorPetStats,
     sendLevelUp,
-    sendEvolution
+    sendEvolution,
   } = useNotification();
 
   // UIの表示状態
   const [showInstallUI, setShowInstallUI] = useState(false);
-  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  const [showNotificationSettings, setShowNotificationSettings] =
+    useState(false);
   const [installPromptDismissed, setInstallPromptDismissed] = useState(false);
 
   // ペット状態の監視と通知
@@ -64,9 +62,9 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
         hunger: pet.stats.hunger,
         energy: pet.stats.energy,
         happiness: pet.stats.happiness,
-        level: pet.stats.level
+        level: pet.stats.level,
       };
-      
+
       monitorPetStats(petStats);
     }
   }, [pet, notificationConfig.enabled, monitorPetStats]);
@@ -78,7 +76,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
       const timer = setTimeout(() => {
         setShowInstallUI(true);
       }, 5000);
-      
+
       return () => clearTimeout(timer);
     }
   }, [shouldShowInstallPrompt, installPromptDismissed]);
@@ -87,11 +85,16 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
   useEffect(() => {
     if (pet) {
       const currentLevel = pet.stats.level;
-      const savedLevel = parseInt(localStorage.getItem('ai-pet-buddy-last-level') || '1');
-      
+      const savedLevel = parseInt(
+        localStorage.getItem('ai-pet-buddy-last-level') || '1'
+      );
+
       if (currentLevel > savedLevel) {
         sendLevelUp(currentLevel);
-        localStorage.setItem('ai-pet-buddy-last-level', currentLevel.toString());
+        localStorage.setItem(
+          'ai-pet-buddy-last-level',
+          currentLevel.toString()
+        );
       }
     }
   }, [pet?.stats.level, sendLevelUp]);
@@ -116,7 +119,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
   const handleDismissInstallPrompt = (permanent = false) => {
     dismissInstallPrompt(permanent);
     setShowInstallUI(false);
-    
+
     if (permanent) {
       setInstallPromptDismissed(true);
     }
@@ -131,7 +134,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
       // オンラインの場合、Service Workerに再接続を通知
       if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage({
-          type: 'RETRY_CONNECTION'
+          type: 'RETRY_CONNECTION',
         });
       }
     } else {
@@ -156,7 +159,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
   return (
     <>
       {children}
-      
+
       {/* オフライン状態インジケーター */}
       <OfflineIndicator
         isOffline={isOffline}
@@ -165,7 +168,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
         hasPendingSync={pwaState.offline.hasPendingSync}
         onRetry={handleRetryConnection}
       />
-      
+
       {/* インストールプロンプト */}
       <InstallPrompt
         isVisible={showInstallUI}
@@ -173,7 +176,7 @@ export const PWAProvider: React.FC<PWAProviderProps> = ({
         onDismiss={handleDismissInstallPrompt}
         platform={platform}
       />
-      
+
       {/* 更新通知 */}
       <UpdateNotification
         hasUpdate={hasUpdate}

@@ -17,13 +17,14 @@ import {
   isValidImageDataUrl,
   normalizeHashtags,
   DEFAULT_SHARE_SETTINGS,
-  PLATFORM_CONFIG
+  PLATFORM_CONFIG,
 } from './shareUtils';
 import type { ShareData, SocialShareOptions } from '../types/Share';
 
 // モックデータ
 const mockShareData: ShareData = {
-  imageDataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+  imageDataUrl:
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
   title: 'My AI Pet Buddy',
   description: 'Check out my adorable pet!',
   hashtags: ['#AIPetBuddy', '#VirtualPet', '#Gaming'],
@@ -32,8 +33,8 @@ const mockShareData: ShareData = {
     happiness: 85,
     energy: 70,
     experience: 1250,
-    evolutionStage: 'child'
-  }
+    evolutionStage: 'child',
+  },
 };
 
 describe('shareUtils', () => {
@@ -69,9 +70,9 @@ describe('shareUtils', () => {
       // This test ensures files have consistent names across different user timezones
       vi.setSystemTime(new Date('2024-01-01T12:00:00Z'));
       const filename = generateFileName();
-      
+
       // The filename should be based on UTC time, not local time
-      // When system time is set to 2024-01-01T12:00:00Z, 
+      // When system time is set to 2024-01-01T12:00:00Z,
       // the filename should always be pet-buddy-20240101-120000.png
       // regardless of the user's local timezone
       expect(filename).toBe('pet-buddy-20240101-120000.png');
@@ -105,7 +106,7 @@ describe('shareUtils', () => {
     it('should generate text for Facebook', () => {
       const dataWithoutHashtags: ShareData = {
         ...mockShareData,
-        hashtags: []
+        hashtags: [],
       };
       const text = generateShareText(dataWithoutHashtags, 'facebook');
       expect(text).toContain('My AI Pet Buddy');
@@ -115,7 +116,7 @@ describe('shareUtils', () => {
     it('should handle text without stats', () => {
       const dataWithoutStats: ShareData = {
         ...mockShareData,
-        stats: undefined
+        stats: undefined,
       };
       const text = generateShareText(dataWithoutStats, 'twitter');
       expect(text).not.toContain('レベル:');
@@ -126,7 +127,7 @@ describe('shareUtils', () => {
       const longShareData: ShareData = {
         ...mockShareData,
         description: 'A'.repeat(300), // 非常に長い説明文
-        hashtags: ['#AIPetBuddy', '#VirtualPet', '#Gaming', '#LongHashtag']
+        hashtags: ['#AIPetBuddy', '#VirtualPet', '#Gaming', '#LongHashtag'],
       };
       const text = generateShareText(longShareData, 'twitter');
       expect(text.length).toBeLessThanOrEqual(280);
@@ -136,7 +137,7 @@ describe('shareUtils', () => {
     it('should use custom hashtags when provided', () => {
       const customHashtagData: ShareData = {
         ...mockShareData,
-        hashtags: ['#CustomTag1', '#CustomTag2']
+        hashtags: ['#CustomTag1', '#CustomTag2'],
       };
       const text = generateShareText(customHashtagData, 'twitter');
       expect(text).toContain('#CustomTag1');
@@ -150,7 +151,7 @@ describe('shareUtils', () => {
       const options: SocialShareOptions = {
         platform: 'twitter',
         shareData: mockShareData,
-        url: 'https://example.com'
+        url: 'https://example.com',
       };
       const url = generateShareUrl(options);
       expect(url).toContain('https://twitter.com/intent/tweet');
@@ -162,7 +163,7 @@ describe('shareUtils', () => {
       const options: SocialShareOptions = {
         platform: 'facebook',
         shareData: mockShareData,
-        url: 'https://example.com'
+        url: 'https://example.com',
       };
       const url = generateShareUrl(options);
       expect(url).toContain('https://www.facebook.com/sharer/sharer.php');
@@ -173,7 +174,7 @@ describe('shareUtils', () => {
       const options: SocialShareOptions = {
         platform: 'line',
         shareData: mockShareData,
-        url: 'https://example.com'
+        url: 'https://example.com',
       };
       const url = generateShareUrl(options);
       expect(url).toContain('https://social-plugins.line.me/lineit/share');
@@ -183,7 +184,7 @@ describe('shareUtils', () => {
     it('should return empty string for Instagram', () => {
       const options: SocialShareOptions = {
         platform: 'instagram',
-        shareData: mockShareData
+        shareData: mockShareData,
       };
       const url = generateShareUrl(options);
       expect(url).toBe('');
@@ -192,7 +193,7 @@ describe('shareUtils', () => {
     it('should handle missing URL for Facebook', () => {
       const options: SocialShareOptions = {
         platform: 'facebook',
-        shareData: mockShareData
+        shareData: mockShareData,
       };
       const url = generateShareUrl(options);
       expect(url).toBe('');
@@ -202,11 +203,11 @@ describe('shareUtils', () => {
       const specialCharData: ShareData = {
         ...mockShareData,
         title: 'Test & Title with "quotes"',
-        description: 'Description with special chars: @#$%'
+        description: 'Description with special chars: @#$%',
       };
       const options: SocialShareOptions = {
         platform: 'twitter',
-        shareData: specialCharData
+        shareData: specialCharData,
       };
       const url = generateShareUrl(options);
       expect(url).toContain('Test%20%26%20Title');
@@ -228,13 +229,13 @@ describe('shareUtils', () => {
 
     it('should successfully share to Twitter', async () => {
       mockWindowOpen.mockReturnValue({}); // 成功をシミュレート
-      
+
       const options: SocialShareOptions = {
         platform: 'twitter',
         shareData: mockShareData,
-        url: 'https://example.com'
+        url: 'https://example.com',
       };
-      
+
       const result = await shareToSocial(options);
       expect(result.success).toBe(true);
       expect(result.shareUrl).toContain('twitter.com');
@@ -248,22 +249,24 @@ describe('shareUtils', () => {
     it('should handle Instagram sharing', async () => {
       const options: SocialShareOptions = {
         platform: 'instagram',
-        shareData: mockShareData
+        shareData: mockShareData,
       };
-      
+
       const result = await shareToSocial(options);
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Instagram does not support direct web sharing');
+      expect(result.error).toContain(
+        'Instagram does not support direct web sharing'
+      );
     });
 
     it('should handle popup blocking', async () => {
       mockWindowOpen.mockReturnValue(null); // ポップアップブロックをシミュレート
-      
+
       const options: SocialShareOptions = {
         platform: 'twitter',
-        shareData: mockShareData
+        shareData: mockShareData,
       };
-      
+
       const result = await shareToSocial(options);
       expect(result.success).toBe(false);
       expect(result.error).toContain('Popup blocked');
@@ -273,12 +276,12 @@ describe('shareUtils', () => {
       mockWindowOpen.mockImplementation(() => {
         throw new Error('Test error');
       });
-      
+
       const options: SocialShareOptions = {
         platform: 'twitter',
-        shareData: mockShareData
+        shareData: mockShareData,
       };
-      
+
       const result = await shareToSocial(options);
       expect(result.success).toBe(false);
       expect(result.error).toBe('Test error');
@@ -295,19 +298,19 @@ describe('shareUtils', () => {
       mockLink = {
         download: '',
         href: '',
-        click: vi.fn()
+        click: vi.fn(),
       };
-      
+
       mockCreateElement = vi.fn().mockReturnValue(mockLink);
       mockAppendChild = vi.fn();
       mockRemoveChild = vi.fn();
-      
+
       vi.stubGlobal('document', {
         createElement: mockCreateElement,
         body: {
           appendChild: mockAppendChild,
-          removeChild: mockRemoveChild
-        }
+          removeChild: mockRemoveChild,
+        },
       });
     });
 
@@ -317,7 +320,7 @@ describe('shareUtils', () => {
 
     it('should download image with default filename', () => {
       downloadImage(mockShareData.imageDataUrl);
-      
+
       expect(mockCreateElement).toHaveBeenCalledWith('a');
       expect(mockLink.download).toBe('pet-buddy-20240101-120000.png');
       expect(mockLink.href).toBe(mockShareData.imageDataUrl);
@@ -329,7 +332,7 @@ describe('shareUtils', () => {
     it('should download image with custom filename', () => {
       const customFilename = 'custom-image.jpg';
       downloadImage(mockShareData.imageDataUrl, customFilename);
-      
+
       expect(mockLink.download).toBe(customFilename);
     });
   });
@@ -342,19 +345,22 @@ describe('shareUtils', () => {
         height: 100,
         onload: null as any,
         onerror: null as any,
-        src: ''
+        src: '',
       };
-      
-      vi.stubGlobal('Image', vi.fn().mockImplementation(() => mockImage));
-      
+
+      vi.stubGlobal(
+        'Image',
+        vi.fn().mockImplementation(() => mockImage)
+      );
+
       const promise = getImageDimensions(mockShareData.imageDataUrl);
-      
+
       // onload を呼び出す
       mockImage.onload();
-      
+
       const dimensions = await promise;
       expect(dimensions).toEqual({ width: 100, height: 100 });
-      
+
       vi.unstubAllGlobals();
     });
 
@@ -362,18 +368,21 @@ describe('shareUtils', () => {
       const mockImage = {
         onload: null as any,
         onerror: null as any,
-        src: ''
+        src: '',
       };
-      
-      vi.stubGlobal('Image', vi.fn().mockImplementation(() => mockImage));
-      
+
+      vi.stubGlobal(
+        'Image',
+        vi.fn().mockImplementation(() => mockImage)
+      );
+
       const promise = getImageDimensions('invalid-url');
-      
+
       // onerror を呼び出す
       mockImage.onerror();
-      
+
       await expect(promise).rejects.toThrow('Failed to load image');
-      
+
       vi.unstubAllGlobals();
     });
   });
@@ -415,7 +424,7 @@ describe('shareUtils', () => {
       mockLocalStorage = {
         setItem: vi.fn(),
         getItem: vi.fn(),
-        removeItem: vi.fn()
+        removeItem: vi.fn(),
       };
       vi.stubGlobal('localStorage', mockLocalStorage);
     });
@@ -426,7 +435,7 @@ describe('shareUtils', () => {
 
     it('should save share data to localStorage', () => {
       saveShareData(mockShareData, 'test-key');
-      
+
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
         'test-key',
         expect.stringContaining('"imageDataUrl"')
@@ -436,20 +445,22 @@ describe('shareUtils', () => {
     it('should load share data from localStorage', () => {
       const savedData = JSON.stringify({
         ...mockShareData,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
       mockLocalStorage.getItem.mockReturnValue(savedData);
-      
+
       const loadedData = loadShareData('test-key');
-      expect(loadedData).toEqual(expect.objectContaining({
-        title: mockShareData.title,
-        description: mockShareData.description
-      }));
+      expect(loadedData).toEqual(
+        expect.objectContaining({
+          title: mockShareData.title,
+          description: mockShareData.description,
+        })
+      );
     });
 
     it('should return null for non-existent data', () => {
       mockLocalStorage.getItem.mockReturnValue(null);
-      
+
       const loadedData = loadShareData('non-existent-key');
       expect(loadedData).toBeNull();
     });
@@ -458,15 +469,15 @@ describe('shareUtils', () => {
       mockLocalStorage.setItem.mockImplementation(() => {
         throw new Error('Storage quota exceeded');
       });
-      
+
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      
+
       saveShareData(mockShareData);
       expect(consoleSpy).toHaveBeenCalledWith(
         'Failed to save share data:',
         expect.any(Error)
       );
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -483,7 +494,9 @@ describe('shareUtils', () => {
 
     it('should reject invalid data URL', () => {
       expect(isValidImageDataUrl('invalid-url')).toBe(false);
-      expect(isValidImageDataUrl('data:text/plain;base64,SGVsbG8=')).toBe(false);
+      expect(isValidImageDataUrl('data:text/plain;base64,SGVsbG8=')).toBe(
+        false
+      );
     });
   });
 

@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { GameEngineCallbacks, GameResult, GameReward, GameSession } from '../types/Game';
+import type {
+  GameEngineCallbacks,
+  GameResult,
+  GameReward,
+  GameSession,
+} from '../types/Game';
 import { GameEngine } from './gameEngine';
 
 describe('GameEngine', () => {
@@ -41,7 +46,7 @@ describe('GameEngine', () => {
   describe('初期化', () => {
     it('初期状態が正しく設定される', () => {
       const gameState = gameEngine.getGameState();
-      
+
       expect(gameState.currentSession).toBeNull();
       expect(gameState.availableGames).toHaveLength(15); // 5 types × 3 difficulties
       expect(gameState.recentResults).toEqual([]);
@@ -52,19 +57,39 @@ describe('GameEngine', () => {
 
     it('利用可能なゲームが正しく設定される', () => {
       const availableGames = gameEngine.getAvailableGames();
-      
+
       expect(availableGames).toHaveLength(15);
-      expect(availableGames.some(g => g.type === 'memory' && g.difficulty === 'easy')).toBe(true);
-      expect(availableGames.some(g => g.type === 'reflex' && g.difficulty === 'medium')).toBe(true);
-      expect(availableGames.some(g => g.type === 'quiz' && g.difficulty === 'hard')).toBe(true);
-      expect(availableGames.some(g => g.type === 'rock-paper-scissors' && g.difficulty === 'easy')).toBe(true);
-      expect(availableGames.some(g => g.type === 'number-guessing' && g.difficulty === 'medium')).toBe(true);
+      expect(
+        availableGames.some(g => g.type === 'memory' && g.difficulty === 'easy')
+      ).toBe(true);
+      expect(
+        availableGames.some(
+          g => g.type === 'reflex' && g.difficulty === 'medium'
+        )
+      ).toBe(true);
+      expect(
+        availableGames.some(g => g.type === 'quiz' && g.difficulty === 'hard')
+      ).toBe(true);
+      expect(
+        availableGames.some(
+          g => g.type === 'rock-paper-scissors' && g.difficulty === 'easy'
+        )
+      ).toBe(true);
+      expect(
+        availableGames.some(
+          g => g.type === 'number-guessing' && g.difficulty === 'medium'
+        )
+      ).toBe(true);
     });
   });
 
   describe('ゲーム開始', () => {
     it('新しいゲームセッションを開始できる', () => {
-      const config = { type: 'memory' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       const session = gameEngine.startGame(config);
 
       expect(session.gameId).toMatch(/^game_\d+_[a-z0-9]+$/);
@@ -80,7 +105,11 @@ describe('GameEngine', () => {
     });
 
     it('ゲーム開始時にコールバック が呼ばれる', () => {
-      const config = { type: 'quiz' as const, difficulty: 'medium' as const, duration: 60 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'medium' as const,
+        duration: 60,
+      };
       gameEngine.startGame(config);
 
       expect(mockCallbacks.onGameStart).toHaveBeenCalledTimes(1);
@@ -88,7 +117,11 @@ describe('GameEngine', () => {
     });
 
     it('進行中のゲームがある場合はエラーを投げる', () => {
-      const config = { type: 'memory' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -100,7 +133,11 @@ describe('GameEngine', () => {
 
   describe('ゲームプレイ', () => {
     it('ゲームをプレイ状態に移行できる', () => {
-      const config = { type: 'memory' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -118,17 +155,21 @@ describe('GameEngine', () => {
 
   describe('回答提出', () => {
     beforeEach(() => {
-      const config = { type: 'quiz' as const, difficulty: 'easy' as const, duration: 60 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'easy' as const,
+        duration: 60,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
     });
 
     it('正解の場合は適切に処理される', () => {
-      const session = gameEngine.getCurrentSession()!; 
+      const session = gameEngine.getCurrentSession()!;
       const correctAnswer = session.currentQuestion.correctAnswer;
-      
+
       const isCorrect = gameEngine.submitAnswer(correctAnswer);
-      
+
       expect(isCorrect).toBe(true);
       expect(mockCallbacks.onGameUpdate).toHaveBeenCalled();
     });
@@ -136,15 +177,15 @@ describe('GameEngine', () => {
     it('不正解の場合も適切に処理される', () => {
       const session = gameEngine.getCurrentSession()!;
       const wrongAnswer = (session.currentQuestion.correctAnswer + 1) % 4;
-      
+
       const isCorrect = gameEngine.submitAnswer(wrongAnswer);
-      
+
       expect(isCorrect).toBe(false);
     });
 
     it('アクティブなセッションがない場合はエラーを投げる', () => {
       gameEngine.forceEndGame();
-      
+
       expect(() => {
         gameEngine.submitAnswer(0);
       }).toThrow('アクティブなゲームセッションがありません');
@@ -153,7 +194,11 @@ describe('GameEngine', () => {
 
   describe('メモリーゲーム', () => {
     it('メモリーゲームの問題が生成される', () => {
-      const config = { type: 'memory' as const, difficulty: 'medium' as const, duration: 45 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'medium' as const,
+        duration: 45,
+      };
       const session = gameEngine.startGame(config);
 
       expect(session.currentQuestion.sequence).toBeInstanceOf(Array);
@@ -163,24 +208,32 @@ describe('GameEngine', () => {
     });
 
     it('正しいシーケンスで正解判定される', () => {
-      const config = { type: 'memory' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
       const session = gameEngine.getCurrentSession()!;
       const correctSequence = session.currentQuestion.sequence;
-      
+
       const isCorrect = gameEngine.submitAnswer(correctSequence);
       expect(isCorrect).toBe(true);
     });
 
     it('間違ったシーケンスで不正解判定される', () => {
-      const config = { type: 'memory' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
       const wrongSequence = ['red', 'blue', 'green'];
-      
+
       const isCorrect = gameEngine.submitAnswer(wrongSequence);
       expect(isCorrect).toBe(false);
     });
@@ -188,7 +241,11 @@ describe('GameEngine', () => {
 
   describe('反射神経ゲーム', () => {
     it('反射神経ゲームの問題が生成される', () => {
-      const config = { type: 'reflex' as const, difficulty: 'hard' as const, duration: 60 };
+      const config = {
+        type: 'reflex' as const,
+        difficulty: 'hard' as const,
+        duration: 60,
+      };
       const session = gameEngine.startGame(config);
 
       expect(session.currentQuestion.targetTime).toBe(500); // hard difficulty
@@ -197,25 +254,33 @@ describe('GameEngine', () => {
     });
 
     it('目標時間内の反応で正解判定される', () => {
-      const config = { type: 'reflex' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'reflex' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
       const session = gameEngine.getCurrentSession()!;
       const fastReactionTime = session.currentQuestion.targetTime - 100; // 目標時間より早い
-      
+
       const isCorrect = gameEngine.submitAnswer(fastReactionTime);
       expect(isCorrect).toBe(true);
     });
 
     it('目標時間オーバーで不正解判定される', () => {
-      const config = { type: 'reflex' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'reflex' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
       const session = gameEngine.getCurrentSession()!;
       const slowReactionTime = session.currentQuestion.targetTime + 100; // 目標時間より遅い
-      
+
       const isCorrect = gameEngine.submitAnswer(slowReactionTime);
       expect(isCorrect).toBe(false);
     });
@@ -223,7 +288,11 @@ describe('GameEngine', () => {
 
   describe('時間管理', () => {
     it('時間経過で時間残量が減る', () => {
-      const config = { type: 'quiz' as const, difficulty: 'easy' as const, duration: 60 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'easy' as const,
+        duration: 60,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -234,7 +303,11 @@ describe('GameEngine', () => {
     });
 
     it('時間切れでゲームが終了する', () => {
-      const config = { type: 'quiz' as const, difficulty: 'easy' as const, duration: 60 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'easy' as const,
+        duration: 60,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -247,7 +320,11 @@ describe('GameEngine', () => {
 
   describe('ゲーム終了', () => {
     it('強制終了が正常に動作する', () => {
-      const config = { type: 'quiz' as const, difficulty: 'easy' as const, duration: 60 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'easy' as const,
+        duration: 60,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -258,7 +335,11 @@ describe('GameEngine', () => {
     });
 
     it('ゲーム完了時に適切な結果が生成される', () => {
-      const config = { type: 'quiz' as const, difficulty: 'medium' as const, duration: 90 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'medium' as const,
+        duration: 90,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -275,7 +356,11 @@ describe('GameEngine', () => {
     });
 
     it('報酬が適切に計算される', () => {
-      const config = { type: 'quiz' as const, difficulty: 'hard' as const, duration: 120 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'hard' as const,
+        duration: 120,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
 
@@ -291,7 +376,11 @@ describe('GameEngine', () => {
 
   describe('統計情報', () => {
     it('ゲーム完了後に統計が更新される', () => {
-      const config = { type: 'memory' as const, difficulty: 'easy' as const, duration: 30 };
+      const config = {
+        type: 'memory' as const,
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
       gameEngine.forceEndGame();
@@ -303,7 +392,11 @@ describe('GameEngine', () => {
     });
 
     it('最高スコアが記録される', () => {
-      const config = { type: 'reflex' as const, difficulty: 'medium' as const, duration: 45 };
+      const config = {
+        type: 'reflex' as const,
+        difficulty: 'medium' as const,
+        duration: 45,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
       gameEngine.forceEndGame();
@@ -314,7 +407,11 @@ describe('GameEngine', () => {
     });
 
     it('最近のゲーム結果が取得できる', () => {
-      const config = { type: 'quiz' as const, difficulty: 'easy' as const, duration: 60 };
+      const config = {
+        type: 'quiz' as const,
+        difficulty: 'easy' as const,
+        duration: 60,
+      };
       gameEngine.startGame(config);
       gameEngine.playGame();
       gameEngine.forceEndGame();
@@ -327,8 +424,12 @@ describe('GameEngine', () => {
 
   describe('エラーハンドリング', () => {
     it('未対応のゲームタイプでエラーを投げる', () => {
-      const config = { type: 'unknown' as 'memory', difficulty: 'easy' as const, duration: 30 };
-      
+      const config = {
+        type: 'unknown' as 'memory',
+        difficulty: 'easy' as const,
+        duration: 30,
+      };
+
       expect(() => {
         gameEngine.startGame(config);
       }).toThrow('未対応のゲームタイプ: unknown');

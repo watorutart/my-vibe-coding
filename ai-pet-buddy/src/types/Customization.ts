@@ -39,7 +39,13 @@ export interface CustomizationState {
 }
 
 export interface CustomizationAction {
-  type: 'UPDATE_NAME' | 'UPDATE_COLOR' | 'ADD_ACCESSORY' | 'REMOVE_ACCESSORY' | 'LOAD_PRESET' | 'RESET';
+  type:
+    | 'UPDATE_NAME'
+    | 'UPDATE_COLOR'
+    | 'ADD_ACCESSORY'
+    | 'REMOVE_ACCESSORY'
+    | 'LOAD_PRESET'
+    | 'RESET';
   payload?: any;
 }
 
@@ -67,7 +73,7 @@ export const DEFAULT_CUSTOMIZATION: PetCustomization = {
   color: '#FF6B6B',
   accessories: [],
   unlocked: true,
-  lastModified: new Date()
+  lastModified: new Date(),
 };
 
 /**
@@ -79,29 +85,29 @@ export const DEFAULT_ACCESSORIES: Accessory[] = [
     type: 'hat',
     name: '麦わら帽子',
     color: '#D4AF37',
-    unlocked: true
+    unlocked: true,
   },
   {
     id: 'ribbon-1',
     type: 'ribbon',
     name: '赤いリボン',
     color: '#FF0000',
-    unlocked: true
+    unlocked: true,
   },
   {
     id: 'glasses-1',
     type: 'glasses',
     name: 'サングラス',
     color: '#000000',
-    unlocked: false
+    unlocked: false,
   },
   {
     id: 'necklace-1',
     type: 'necklace',
     name: '金のネックレス',
     color: '#FFD700',
-    unlocked: false
-  }
+    unlocked: false,
+  },
 ];
 
 /**
@@ -113,17 +119,17 @@ export const validatePetName = (name: string): NameValidationResult => {
   if (!name || name.trim().length === 0) {
     return { isValid: false, error: '名前を入力してください' };
   }
-  
+
   if (name.length > 20) {
     return { isValid: false, error: '名前は20文字以内で入力してください' };
   }
-  
+
   // 特殊文字チェック（基本的な記号のみ許可）
   const invalidChars = /[<>"/\\|?*]/;
   if (invalidChars.test(name)) {
     return { isValid: false, error: '使用できない文字が含まれています' };
   }
-  
+
   return { isValid: true };
 };
 
@@ -136,12 +142,15 @@ export const validateColor = (color: string): ColorValidationResult => {
   if (!color) {
     return { isValid: false, error: 'カラーコードを入力してください' };
   }
-  
+
   // HEXカラーコードの形式チェック
   const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
   if (!hexPattern.test(color)) {
-    return { isValid: false, error: '有効なHEXカラーコード（例: #FF6B6B）を入力してください' };
+    return {
+      isValid: false,
+      error: '有効なHEXカラーコード（例: #FF6B6B）を入力してください',
+    };
   }
-  
+
   return { isValid: true };
 };

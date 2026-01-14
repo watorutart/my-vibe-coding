@@ -70,7 +70,8 @@ export const GameResults: React.FC<GameResultsProps> = ({
   };
 
   const getPerformanceLevel = (score: number) => {
-    if (score >= 1500) return { level: 'EXCELLENT', color: '#a855f7', icon: '🏆' };
+    if (score >= 1500)
+      return { level: 'EXCELLENT', color: '#a855f7', icon: '🏆' };
     if (score >= 1000) return { level: 'GREAT', color: '#3b82f6', icon: '🥇' };
     if (score >= 500) return { level: 'GOOD', color: '#22c55e', icon: '🥈' };
     if (score >= 200) return { level: 'FAIR', color: '#f59e0b', icon: '🥉' };
@@ -92,14 +93,19 @@ export const GameResults: React.FC<GameResultsProps> = ({
           <span className="game-icon">{getGameIcon(result.type)}</span>
           <div className="game-details">
             <h2>{getGameName(result.type)}</h2>
-            <div className="difficulty-badge" style={{ backgroundColor: getDifficultyColor(result.difficulty) }}>
+            <div
+              className="difficulty-badge"
+              style={{ backgroundColor: getDifficultyColor(result.difficulty) }}
+            >
               {getDifficultyName(result.difficulty)}
             </div>
           </div>
         </div>
-        
+
         <div className="completion-status">
-          <div className={`status-badge ${result.success ? 'success' : 'failure'}`}>
+          <div
+            className={`status-badge ${result.success ? 'success' : 'failure'}`}
+          >
             {result.success ? (
               <>
                 <span className="status-icon">🎉</span>
@@ -118,14 +124,19 @@ export const GameResults: React.FC<GameResultsProps> = ({
       <div className="performance-section">
         <div className="performance-level">
           <span className="performance-icon">{performance.icon}</span>
-          <span className="performance-text" style={{ color: performance.color }}>
+          <span
+            className="performance-text"
+            style={{ color: performance.color }}
+          >
             {performance.level}
           </span>
         </div>
-        
+
         <div className="final-score">
           <span className="score-label">最終スコア</span>
-          <span className="score-value">{result.score.points.toLocaleString()}</span>
+          <span className="score-value">
+            {result.score.points.toLocaleString()}
+          </span>
           <span className="score-unit">pts</span>
         </div>
       </div>
@@ -135,7 +146,9 @@ export const GameResults: React.FC<GameResultsProps> = ({
           <div className="stat-icon">🎯</div>
           <div className="stat-content">
             <div className="stat-label">正答率</div>
-            <div className="stat-value">{Math.round(result.score.accuracy * 100)}%</div>
+            <div className="stat-value">
+              {Math.round(result.score.accuracy * 100)}%
+            </div>
           </div>
         </div>
 
@@ -143,7 +156,9 @@ export const GameResults: React.FC<GameResultsProps> = ({
           <div className="stat-icon">⏱️</div>
           <div className="stat-content">
             <div className="stat-label">残り時間</div>
-            <div className="stat-value">{formatTime(result.score.timeRemaining)}</div>
+            <div className="stat-value">
+              {formatTime(result.score.timeRemaining)}
+            </div>
           </div>
         </div>
 
@@ -160,9 +175,9 @@ export const GameResults: React.FC<GameResultsProps> = ({
           <div className="stat-content">
             <div className="stat-label">完了時刻</div>
             <div className="stat-value">
-              {result.completedAt.toLocaleTimeString('ja-JP', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+              {result.completedAt.toLocaleTimeString('ja-JP', {
+                hour: '2-digit',
+                minute: '2-digit',
               })}
             </div>
           </div>
@@ -177,18 +192,21 @@ export const GameResults: React.FC<GameResultsProps> = ({
             <span className="reward-label">経験値</span>
             <span className="reward-value">+{result.reward.experience}</span>
           </div>
-          
+
           <div className="reward-item">
             <span className="reward-icon">😊</span>
             <span className="reward-label">幸福度</span>
             <span className="reward-value">+{result.reward.happiness}</span>
           </div>
-          
+
           <div className="reward-item">
             <span className="reward-icon">⚡</span>
             <span className="reward-label">エネルギー</span>
-            <span className={`reward-value ${result.reward.energy < 0 ? 'negative' : 'positive'}`}>
-              {result.reward.energy > 0 ? '+' : ''}{result.reward.energy}
+            <span
+              className={`reward-value ${result.reward.energy < 0 ? 'negative' : 'positive'}`}
+            >
+              {result.reward.energy > 0 ? '+' : ''}
+              {result.reward.energy}
             </span>
           </div>
         </div>
@@ -213,7 +231,7 @@ export const GameResults: React.FC<GameResultsProps> = ({
           <span className="button-icon">🔄</span>
           もう一度プレイ
         </button>
-        
+
         <button className="back-to-menu-button" onClick={onBackToMenu}>
           <span className="button-icon">📋</span>
           メニューに戻る

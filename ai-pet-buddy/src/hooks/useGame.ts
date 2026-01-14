@@ -4,12 +4,12 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
-    GameConfig,
-    GameEngineCallbacks,
-    GameResult,
-    GameReward,
-    GameSession,
-    GameState,
+  GameConfig,
+  GameEngineCallbacks,
+  GameResult,
+  GameReward,
+  GameSession,
+  GameState,
 } from '../types/Game';
 import { GameEngine } from '../utils/gameEngine';
 
@@ -25,7 +25,7 @@ export interface UseGameReturn {
   playGame: () => void;
   submitAnswer: (answer: any) => boolean;
   forceEndGame: () => void;
-  
+
   // Data
   availableGames: GameConfig[];
   recentResults: GameResult[];
@@ -43,15 +43,11 @@ export interface UseGameOptions {
 }
 
 export function useGame(options: UseGameOptions = {}): UseGameReturn {
-  const {
-    onGameComplete,
-    onRewardGiven,
-    autoStartTimer = true,
-  } = options;
+  const { onGameComplete, onRewardGiven, autoStartTimer = true } = options;
 
   // Game engine instance (singleton per hook)
   const gameEngineRef = useRef<GameEngine | null>(null);
-  
+
   // State management
   const [gameState, setGameState] = useState<GameState>({
     currentSession: null,
@@ -61,55 +57,69 @@ export function useGame(options: UseGameOptions = {}): UseGameReturn {
     totalExperienceEarned: 0,
     bestScores: {},
   });
-  
+
   const [timeElapsed, setTimeElapsed] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Callbacks for game engine
   const engineCallbacks: GameEngineCallbacks = {
-    onGameStart: useCallback((session: GameSession) => {
-      console.log('🎮 ゲーム開始:', session.config.type, session.config.difficulty);
-      setGameState(prev => ({ ...prev, currentSession: session }));
-      setTimeElapsed(0);
-      
-      if (autoStartTimer) {
-        startTimer();
-      }
-    }, [autoStartTimer]),
+    onGameStart: useCallback(
+      (session: GameSession) => {
+        console.log(
+          '🎮 ゲーム開始:',
+          session.config.type,
+          session.config.difficulty
+        );
+        setGameState(prev => ({ ...prev, currentSession: session }));
+        setTimeElapsed(0);
+
+        if (autoStartTimer) {
+          startTimer();
+        }
+      },
+      [autoStartTimer]
+    ),
 
     onGameUpdate: useCallback((session: GameSession) => {
       console.log('⚡ ゲーム更新:', session.score);
       setGameState(prev => ({ ...prev, currentSession: session }));
     }, []),
 
-    onGameComplete: useCallback((result: GameResult) => {
-      console.log('🏁 ゲーム終了:', result.type, '成功:', result.success);
-      console.log('📊 スコア:', result.score);
-      console.log('🎁 報酬:', result.reward);
-      
-      setGameState(prev => ({
-        ...gameState,
-        currentSession: null,
-        recentResults: [result, ...prev.recentResults.slice(0, 9)],
-        totalGamesPlayed: prev.totalGamesPlayed + 1,
-        totalExperienceEarned: prev.totalExperienceEarned + result.reward.experience,
-        bestScores: {
-          ...prev.bestScores,
-          [`${result.type}_${result.difficulty}`]: Math.max(
-            prev.bestScores[`${result.type}_${result.difficulty}`] || 0,
-            result.score.points
-          ),
-        },
-      }));
-      
-      stopTimer();
-      onGameComplete?.(result);
-    }, [gameState, onGameComplete]),
+    onGameComplete: useCallback(
+      (result: GameResult) => {
+        console.log('🏁 ゲーム終了:', result.type, '成功:', result.success);
+        console.log('📊 スコア:', result.score);
+        console.log('🎁 報酬:', result.reward);
 
-    onRewardGiven: useCallback((reward: GameReward) => {
-      console.log('💰 報酬付与:', reward);
-      onRewardGiven?.(reward);
-    }, [onRewardGiven]),
+        setGameState(prev => ({
+          ...gameState,
+          currentSession: null,
+          recentResults: [result, ...prev.recentResults.slice(0, 9)],
+          totalGamesPlayed: prev.totalGamesPlayed + 1,
+          totalExperienceEarned:
+            prev.totalExperienceEarned + result.reward.experience,
+          bestScores: {
+            ...prev.bestScores,
+            [`${result.type}_${result.difficulty}`]: Math.max(
+              prev.bestScores[`${result.type}_${result.difficulty}`] || 0,
+              result.score.points
+            ),
+          },
+        }));
+
+        stopTimer();
+        onGameComplete?.(result);
+      },
+      [gameState, onGameComplete]
+    ),
+
+    onRewardGiven: useCallback(
+      (reward: GameReward) => {
+        console.log('💰 報酬付与:', reward);
+        onRewardGiven?.(reward);
+      },
+      [onRewardGiven]
+    ),
   };
 
   // Initialize game engine
@@ -126,7 +136,7 @@ export function useGame(options: UseGameOptions = {}): UseGameReturn {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    
+
     timerRef.current = setInterval(() => {
       setTimeElapsed(prev => {
         const newElapsed = prev + 1;
@@ -220,7 +230,7 @@ export function useGame(options: UseGameOptions = {}): UseGameReturn {
     playGame,
     submitAnswer,
     forceEndGame,
-    
+
     // Data
     availableGames,
     recentResults,

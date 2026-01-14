@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,7 +20,8 @@ export default defineConfig({
       manifest: {
         name: 'AI Pet Buddy',
         short_name: 'Pet Buddy',
-        description: '可愛いペットと一緒に遊ぼう！AI Pet Buddyは、バーチャルペットを育成・カスタマイズして楽しむWebアプリケーションです。',
+        description:
+          '可愛いペットと一緒に遊ぼう！AI Pet Buddyは、バーチャルペットを育成・カスタマイズして楽しむWebアプリケーションです。',
         theme_color: '#FF6B6B',
         background_color: '#FFFFFF',
         display: 'standalone',
@@ -50,7 +51,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
+        manualChunks: id => {
           // Core React libraries
           if (id.includes('react') || id.includes('react-dom')) {
             return 'vendor';
@@ -79,7 +80,7 @@ export default defineConfig({
           return undefined;
         },
         // Optimize asset file names for better caching
-        assetFileNames: (assetInfo) => {
+        assetFileNames: assetInfo => {
           const info = assetInfo.name?.split('.') || [];
           const extType = info[info.length - 1];
           if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType || '')) {
@@ -110,4 +111,4 @@ export default defineConfig({
       overlay: false,
     },
   },
-})
+});

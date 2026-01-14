@@ -2,7 +2,12 @@
  * ミニゲーム関連の型定義
  */
 
-export type GameType = 'memory' | 'reflex' | 'quiz' | 'rock-paper-scissors' | 'number-guessing';
+export type GameType =
+  | 'memory'
+  | 'reflex'
+  | 'quiz'
+  | 'rock-paper-scissors'
+  | 'number-guessing';
 
 export type GameDifficulty = 'easy' | 'medium' | 'hard';
 

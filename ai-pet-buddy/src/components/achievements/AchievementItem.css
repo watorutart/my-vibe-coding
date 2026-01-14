@@ -144,7 +144,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -279,34 +280,34 @@
     padding: 10px;
     min-height: 70px;
   }
-  
+
   .achievement-item--medium {
     padding: 12px;
     min-height: 80px;
   }
-  
+
   .achievement-item__icon-section {
     width: 40px;
     height: 40px;
   }
-  
+
   .achievement-item--medium .achievement-item__icon-section {
     width: 48px;
     height: 48px;
   }
-  
+
   .achievement-item__icon {
     font-size: 1.5rem;
   }
-  
+
   .achievement-item--medium .achievement-item__icon {
     font-size: 1.7rem;
   }
-  
+
   .achievement-item__name {
     font-size: 0.9rem;
   }
-  
+
   .achievement-item--medium .achievement-item__name {
     font-size: 1rem;
   }

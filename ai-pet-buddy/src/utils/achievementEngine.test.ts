@@ -5,7 +5,10 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { Pet } from '../types/Pet';
-import type { AchievementState, AchievementProgress } from '../types/Achievement';
+import type {
+  AchievementState,
+  AchievementProgress,
+} from '../types/Achievement';
 import { DEFAULT_ACHIEVEMENT_PROGRESS } from '../types/Achievement';
 import {
   initializeAchievementState,
@@ -22,7 +25,7 @@ import {
   getNextAchievements,
   type GameData,
   type CareActionData,
-  type SessionData
+  type SessionData,
 } from './achievementEngine';
 
 describe('AchievementEngine', () => {
@@ -39,26 +42,26 @@ describe('AchievementEngine', () => {
         happiness: 80,
         hunger: 20,
         energy: 90,
-        level: 3  // Changed to match mockProgress.maxLevel
+        level: 3, // Changed to match mockProgress.maxLevel
       },
       lastUpdate: Date.now(),
       expression: 'happy',
-      experience: 500
+      experience: 500,
     };
 
     mockProgress = {
       evolutionCount: 0, // Changed to 0 to ensure first-evolution badge is not complete
-      maxWinStreak: 3,   // Changed to 3 to ensure game achievements are not complete  
+      maxWinStreak: 3, // Changed to 3 to ensure game achievements are not complete
       currentWinStreak: 1,
       consecutiveDays: 2, // Changed to 2 to ensure week-streak is not complete
-      maxLevel: 3,       // Changed to 3 to ensure level achievements are not complete
-      maxHappiness: 85,  // Changed to 85 to ensure happiness-max is not complete
-      maxEnergy: 90,     // Changed to 90 to ensure no stat maxed
-      totalGames: 20,    // Reduced to ensure total game achievements are not complete
+      maxLevel: 3, // Changed to 3 to ensure level achievements are not complete
+      maxHappiness: 85, // Changed to 85 to ensure happiness-max is not complete
+      maxEnergy: 90, // Changed to 90 to ensure no stat maxed
+      totalGames: 20, // Reduced to ensure total game achievements are not complete
       totalWins: 12,
       totalPlaytime: 500, // Reduced to ensure playtime achievements are not complete
       lastPlayDate: Date.now() - 86400000, // 1 day ago
-      firstPlayDate: Date.now() - 86400000 * 30 // 30 days ago
+      firstPlayDate: Date.now() - 86400000 * 30, // 30 days ago
     };
 
     mockAchievementState = initializeAchievementState();
@@ -71,7 +74,7 @@ describe('AchievementEngine', () => {
 
       expect(state.badges.length).toBeGreaterThan(0);
       expect(state.titles.length).toBeGreaterThan(0);
-      
+
       // Most badges should be locked
       const lockedBadges = state.badges.filter(badge => !badge.unlocked);
       expect(lockedBadges.length).toBe(state.badges.length);
@@ -85,7 +88,9 @@ describe('AchievementEngine', () => {
     it('should unlock beginner trainer title by default', () => {
       const state = initializeAchievementState();
 
-      const beginnerTitle = state.titles.find(title => title.id === 'beginner-trainer');
+      const beginnerTitle = state.titles.find(
+        title => title.id === 'beginner-trainer'
+      );
       expect(beginnerTitle).toBeDefined();
       expect(beginnerTitle!.unlocked).toBe(true);
       expect(beginnerTitle!.active).toBe(true);
@@ -106,15 +111,19 @@ describe('AchievementEngine', () => {
         type: 'rock-paper-scissors',
         result: 'win',
         timestamp: Date.now(),
-        duration: 60 // 1 minute
+        duration: 60, // 1 minute
       };
 
       const updatedProgress = updateGameProgress(mockProgress, gameData);
 
       expect(updatedProgress.totalGames).toBe(mockProgress.totalGames + 1);
       expect(updatedProgress.totalWins).toBe(mockProgress.totalWins + 1);
-      expect(updatedProgress.currentWinStreak).toBe(mockProgress.currentWinStreak + 1);
-      expect(updatedProgress.totalPlaytime).toBe(mockProgress.totalPlaytime + 1); // 60 seconds = 1 minute
+      expect(updatedProgress.currentWinStreak).toBe(
+        mockProgress.currentWinStreak + 1
+      );
+      expect(updatedProgress.totalPlaytime).toBe(
+        mockProgress.totalPlaytime + 1
+      ); // 60 seconds = 1 minute
       expect(updatedProgress.lastPlayDate).toBe(gameData.timestamp);
     });
 
@@ -123,14 +132,14 @@ describe('AchievementEngine', () => {
         type: 'number-guess',
         result: 'win',
         timestamp: Date.now(),
-        duration: 30
+        duration: 30,
       };
 
       // Set current streak near max
       const progress = {
         ...mockProgress,
         currentWinStreak: 2, // Changed from 7
-        maxWinStreak: 3      // Changed from 8
+        maxWinStreak: 3, // Changed from 8
       };
 
       const updatedProgress = updateGameProgress(progress, gameData);
@@ -149,7 +158,7 @@ describe('AchievementEngine', () => {
         type: 'rock-paper-scissors',
         result: 'lose',
         timestamp: Date.now(),
-        duration: 45
+        duration: 45,
       };
 
       const updatedProgress = updateGameProgress(mockProgress, gameData);
@@ -165,7 +174,7 @@ describe('AchievementEngine', () => {
         type: 'rock-paper-scissors',
         result: 'draw',
         timestamp: Date.now(),
-        duration: 30
+        duration: 30,
       };
 
       const updatedProgress = updateGameProgress(mockProgress, gameData);
@@ -184,13 +193,13 @@ describe('AchievementEngine', () => {
         statsBefore: {
           happiness: 90,
           energy: 80,
-          hunger: 40
+          hunger: 40,
         },
         statsAfter: {
           happiness: 100, // New max
           energy: 85,
-          hunger: 20
-        }
+          hunger: 20,
+        },
       };
 
       const updatedProgress = updateCareProgress(mockProgress, careData);
@@ -206,13 +215,13 @@ describe('AchievementEngine', () => {
         statsBefore: {
           happiness: 80,
           energy: 95,
-          hunger: 30
+          hunger: 30,
         },
         statsAfter: {
           happiness: 85,
           energy: 100, // Equal to current max
-          hunger: 25
-        }
+          hunger: 25,
+        },
       };
 
       const updatedProgress = updateCareProgress(mockProgress, careData);
@@ -227,13 +236,13 @@ describe('AchievementEngine', () => {
         statsBefore: {
           happiness: 100,
           energy: 100,
-          hunger: 20
+          hunger: 20,
         },
         statsAfter: {
           happiness: 80, // Lower than max (85)
-          energy: 80,   // Lower than max (90)
-          hunger: 40
-        }
+          energy: 80, // Lower than max (90)
+          hunger: 40,
+        },
       };
 
       const updatedProgress = updateCareProgress(mockProgress, careData);
@@ -249,8 +258,8 @@ describe('AchievementEngine', () => {
         ...mockPet,
         stats: {
           ...mockPet.stats,
-          level: 8 // Higher than current max (3)
-        }
+          level: 8, // Higher than current max (3)
+        },
       };
 
       const updatedProgress = updateLevelProgress(mockProgress, petLevelUp);
@@ -263,8 +272,8 @@ describe('AchievementEngine', () => {
         ...mockPet,
         stats: {
           ...mockPet.stats,
-          level: 2 // Lower than current max (3)
-        }
+          level: 2, // Lower than current max (3)
+        },
       };
 
       const updatedProgress = updateLevelProgress(mockProgress, petLowerLevel);
@@ -276,12 +285,17 @@ describe('AchievementEngine', () => {
   describe('updateEvolutionProgress', () => {
     it('should increment evolution count', () => {
       const evolutionData = {
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
-      const updatedProgress = updateEvolutionProgress(mockProgress, evolutionData);
+      const updatedProgress = updateEvolutionProgress(
+        mockProgress,
+        evolutionData
+      );
 
-      expect(updatedProgress.evolutionCount).toBe(mockProgress.evolutionCount + 1); // 0 + 1 = 1
+      expect(updatedProgress.evolutionCount).toBe(
+        mockProgress.evolutionCount + 1
+      ); // 0 + 1 = 1
       expect(updatedProgress.lastPlayDate).toBe(evolutionData.timestamp);
     });
   });
@@ -291,19 +305,24 @@ describe('AchievementEngine', () => {
       const sessionData: SessionData = {
         startTime: Date.now() - 1800000, // 30 minutes ago
         endTime: Date.now(),
-        actionsPerformed: 10
+        actionsPerformed: 10,
       };
 
       // Set last play date to yesterday
       const progressYesterday = {
         ...mockProgress,
         lastPlayDate: Date.now() - 86400000, // Yesterday
-        consecutiveDays: 1 // Changed from 3
+        consecutiveDays: 1, // Changed from 3
       };
 
-      const updatedProgress = updateSessionProgress(progressYesterday, sessionData);
+      const updatedProgress = updateSessionProgress(
+        progressYesterday,
+        sessionData
+      );
 
-      expect(updatedProgress.totalPlaytime).toBe(progressYesterday.totalPlaytime + 30);
+      expect(updatedProgress.totalPlaytime).toBe(
+        progressYesterday.totalPlaytime + 30
+      );
       expect(updatedProgress.consecutiveDays).toBe(2); // Increment from 1 to 2
       expect(updatedProgress.lastPlayDate).toBe(sessionData.endTime);
     });
@@ -312,17 +331,20 @@ describe('AchievementEngine', () => {
       const sessionData: SessionData = {
         startTime: Date.now() - 1800000,
         endTime: Date.now(),
-        actionsPerformed: 5
+        actionsPerformed: 5,
       };
 
       // Set last play date to 3 days ago
       const progressWithGap = {
         ...mockProgress,
         lastPlayDate: Date.now() - 86400000 * 3, // 3 days ago
-        consecutiveDays: 2 // Changed from 5
+        consecutiveDays: 2, // Changed from 5
       };
 
-      const updatedProgress = updateSessionProgress(progressWithGap, sessionData);
+      const updatedProgress = updateSessionProgress(
+        progressWithGap,
+        sessionData
+      );
 
       expect(updatedProgress.consecutiveDays).toBe(1); // Reset to 1
     });
@@ -331,14 +353,14 @@ describe('AchievementEngine', () => {
       const sessionData: SessionData = {
         startTime: Date.now() - 1800000,
         endTime: Date.now(),
-        actionsPerformed: 8
+        actionsPerformed: 8,
       };
 
       // Set last play date to today
       const progressToday = {
         ...mockProgress,
         lastPlayDate: Date.now() - 3600000, // 1 hour ago (same day)
-        consecutiveDays: 1 // Changed from 3
+        consecutiveDays: 1, // Changed from 3
       };
 
       const updatedProgress = updateSessionProgress(progressToday, sessionData);
@@ -352,18 +374,26 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'evolution_count' as const,
         value: 3,
-        description: 'Evolve 3 times'
+        description: 'Evolve 3 times',
       };
 
-      const result = checkAchievementRequirement(requirement, mockProgress, mockPet);
+      const result = checkAchievementRequirement(
+        requirement,
+        mockProgress,
+        mockPet
+      );
 
       expect(result.currentValue).toBe(0); // Changed from 2 to 0
       expect(result.met).toBe(false);
 
       // Test with met requirement
       const progressWith3Evolutions = { ...mockProgress, evolutionCount: 3 };
-      const result2 = checkAchievementRequirement(requirement, progressWith3Evolutions, mockPet);
-      
+      const result2 = checkAchievementRequirement(
+        requirement,
+        progressWith3Evolutions,
+        mockPet
+      );
+
       expect(result2.currentValue).toBe(3);
       expect(result2.met).toBe(true);
     });
@@ -372,10 +402,14 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'game_win_streak' as const,
         value: 10,
-        description: 'Win 10 games in a row'
+        description: 'Win 10 games in a row',
       };
 
-      const result = checkAchievementRequirement(requirement, mockProgress, mockPet);
+      const result = checkAchievementRequirement(
+        requirement,
+        mockProgress,
+        mockPet
+      );
 
       expect(result.currentValue).toBe(3); // maxWinStreak changed to 3
       expect(result.met).toBe(false);
@@ -385,10 +419,14 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'consecutive_days' as const,
         value: 7,
-        description: 'Play 7 days in a row'
+        description: 'Play 7 days in a row',
       };
 
-      const result = checkAchievementRequirement(requirement, mockProgress, mockPet);
+      const result = checkAchievementRequirement(
+        requirement,
+        mockProgress,
+        mockPet
+      );
 
       expect(result.currentValue).toBe(2); // consecutiveDays changed to 2
       expect(result.met).toBe(false);
@@ -398,10 +436,14 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'level_reached' as const,
         value: 5,
-        description: 'Reach level 5'
+        description: 'Reach level 5',
       };
 
-      const result = checkAchievementRequirement(requirement, mockProgress, mockPet);
+      const result = checkAchievementRequirement(
+        requirement,
+        mockProgress,
+        mockPet
+      );
 
       expect(result.currentValue).toBe(3); // maxLevel changed to 3
       expect(result.met).toBe(false); // Should be false since 3 < 5
@@ -411,10 +453,14 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'stat_max' as const,
         value: 100,
-        description: 'Max happiness'
+        description: 'Max happiness',
       };
 
-      const result = checkAchievementRequirement(requirement, mockProgress, mockPet);
+      const result = checkAchievementRequirement(
+        requirement,
+        mockProgress,
+        mockPet
+      );
 
       expect(result.currentValue).toBe(85); // maxHappiness changed to 85
       expect(result.met).toBe(false);
@@ -426,10 +472,14 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'evolution_count' as const,
         value: 5,
-        description: 'Evolve 5 times'
+        description: 'Evolve 5 times',
       };
 
-      const progress = calculateAchievementProgress(requirement, mockProgress, mockPet);
+      const progress = calculateAchievementProgress(
+        requirement,
+        mockProgress,
+        mockPet
+      );
 
       expect(progress).toBeCloseTo(0); // 0/5 = 0
     });
@@ -438,12 +488,16 @@ describe('AchievementEngine', () => {
       const requirement = {
         type: 'evolution_count' as const,
         value: 1,
-        description: 'Evolve once'
+        description: 'Evolve once',
       };
 
       // Use a progress with evolutionCount >= requirement value
       const progressWithMoreEvolutions = { ...mockProgress, evolutionCount: 2 };
-      const progress = calculateAchievementProgress(requirement, progressWithMoreEvolutions, mockPet);
+      const progress = calculateAchievementProgress(
+        requirement,
+        progressWithMoreEvolutions,
+        mockPet
+      );
 
       expect(progress).toBe(1); // Capped at 1 (100%)
     });
@@ -455,18 +509,25 @@ describe('AchievementEngine', () => {
       const progressWithEvolution = { ...mockProgress, evolutionCount: 1 };
       const stateWithEvolution = {
         ...mockAchievementState,
-        progress: progressWithEvolution
+        progress: progressWithEvolution,
       };
 
-      const { updatedState, notifications } = checkAchievements(stateWithEvolution, mockPet);
+      const { updatedState, notifications } = checkAchievements(
+        stateWithEvolution,
+        mockPet
+      );
 
-      const firstEvolutionBadge = updatedState.badges.find(badge => badge.id === 'first-evolution');
-      
+      const firstEvolutionBadge = updatedState.badges.find(
+        badge => badge.id === 'first-evolution'
+      );
+
       expect(firstEvolutionBadge?.unlocked).toBe(true);
       expect(firstEvolutionBadge?.unlockedAt).toBeDefined();
       expect(updatedState.newlyUnlocked).toContain('first-evolution');
-      
-      const notification = notifications.find(n => n.id === 'badge-first-evolution');
+
+      const notification = notifications.find(
+        n => n.id === 'badge-first-evolution'
+      );
       expect(notification).toBeDefined();
       expect(notification?.type).toBe('badge');
     });
@@ -475,23 +536,30 @@ describe('AchievementEngine', () => {
       // Set up progress that meets veteran trainer requirement (level 10)
       const petLevel10 = {
         ...mockPet,
-        stats: { ...mockPet.stats, level: 10 }
+        stats: { ...mockPet.stats, level: 10 },
       };
       const progressLevel10 = { ...mockProgress, maxLevel: 10 };
       const stateLevel10 = {
         ...mockAchievementState,
-        progress: progressLevel10
+        progress: progressLevel10,
       };
 
-      const { updatedState, notifications } = checkAchievements(stateLevel10, petLevel10);
+      const { updatedState, notifications } = checkAchievements(
+        stateLevel10,
+        petLevel10
+      );
 
-      const veteranTitle = updatedState.titles.find(title => title.id === 'veteran-trainer');
-      
+      const veteranTitle = updatedState.titles.find(
+        title => title.id === 'veteran-trainer'
+      );
+
       expect(veteranTitle?.unlocked).toBe(true);
       expect(veteranTitle?.active).toBe(false); // Not auto-activated
       expect(updatedState.newlyUnlocked).toContain('veteran-trainer');
-      
-      const notification = notifications.find(n => n.id === 'title-veteran-trainer');
+
+      const notification = notifications.find(
+        n => n.id === 'title-veteran-trainer'
+      );
       expect(notification).toBeDefined();
       expect(notification?.type).toBe('title');
     });
@@ -501,8 +569,10 @@ describe('AchievementEngine', () => {
 
       // Find a badge that should have some progress with our mock data
       // Let's use the game beginner badge which requires 5 win streak, and we have 3
-      const gameBeginnerBadge = updatedState.badges.find(badge => badge.id === 'game-beginner');
-      
+      const gameBeginnerBadge = updatedState.badges.find(
+        badge => badge.id === 'game-beginner'
+      );
+
       expect(gameBeginnerBadge?.progress).toBeGreaterThan(0);
       expect(gameBeginnerBadge?.progress).toBeLessThan(1);
       expect(gameBeginnerBadge?.unlocked).toBe(false);
@@ -516,13 +586,18 @@ describe('AchievementEngine', () => {
           badge.id === 'first-evolution'
             ? { ...badge, unlocked: true, unlockedAt: Date.now() - 86400000 }
             : badge
-        )
+        ),
       };
 
-      const { updatedState, notifications } = checkAchievements(unlockedState, mockPet);
+      const { updatedState, notifications } = checkAchievements(
+        unlockedState,
+        mockPet
+      );
 
       expect(updatedState.newlyUnlocked).not.toContain('first-evolution');
-      expect(notifications.find(n => n.id === 'badge-first-evolution')).toBeUndefined();
+      expect(
+        notifications.find(n => n.id === 'badge-first-evolution')
+      ).toBeUndefined();
     });
   });
 
@@ -534,24 +609,33 @@ describe('AchievementEngine', () => {
         titles: mockAchievementState.titles.map(title => ({
           ...title,
           unlocked: true,
-          active: title.id === 'beginner-trainer' // One already active
-        }))
+          active: title.id === 'beginner-trainer', // One already active
+        })),
       };
 
       const updatedState = activateTitle(stateWithTitles, 'veteran-trainer');
 
-      const veteranTitle = updatedState.titles.find(title => title.id === 'veteran-trainer');
-      const beginnerTitle = updatedState.titles.find(title => title.id === 'beginner-trainer');
+      const veteranTitle = updatedState.titles.find(
+        title => title.id === 'veteran-trainer'
+      );
+      const beginnerTitle = updatedState.titles.find(
+        title => title.id === 'beginner-trainer'
+      );
 
       expect(veteranTitle?.active).toBe(true);
       expect(beginnerTitle?.active).toBe(false);
     });
 
     it('should not activate locked titles', () => {
-      const updatedState = activateTitle(mockAchievementState, 'master-trainer');
+      const updatedState = activateTitle(
+        mockAchievementState,
+        'master-trainer'
+      );
 
-      const masterTitle = updatedState.titles.find(title => title.id === 'master-trainer');
-      
+      const masterTitle = updatedState.titles.find(
+        title => title.id === 'master-trainer'
+      );
+
       expect(masterTitle?.active).toBe(false); // Not unlocked, so can't activate
     });
   });
@@ -563,13 +647,13 @@ describe('AchievementEngine', () => {
         ...mockAchievementState,
         badges: mockAchievementState.badges.map((badge, index) => ({
           ...badge,
-          unlocked: index < 3 // Unlock first 3 badges
+          unlocked: index < 3, // Unlock first 3 badges
         })),
         titles: mockAchievementState.titles.map((title, index) => ({
           ...title,
           unlocked: index < 2, // Unlock first 2 titles
-          active: index === 0
-        }))
+          active: index === 0,
+        })),
       };
 
       const summary = getAchievementSummary(stateWithSomeUnlocked);
@@ -585,10 +669,14 @@ describe('AchievementEngine', () => {
 
   describe('getNextAchievements', () => {
     it('should return closest achievements to completion', () => {
-      const nextAchievements = getNextAchievements(mockAchievementState, mockPet, 3);
+      const nextAchievements = getNextAchievements(
+        mockAchievementState,
+        mockPet,
+        3
+      );
 
       expect(nextAchievements).toHaveLength(3);
-      
+
       // Should be sorted by progress (descending)
       for (let i = 0; i < nextAchievements.length - 1; i++) {
         expect(nextAchievements[i].progress).toBeGreaterThanOrEqual(
@@ -604,13 +692,21 @@ describe('AchievementEngine', () => {
     });
 
     it('should limit results to specified number', () => {
-      const nextAchievements = getNextAchievements(mockAchievementState, mockPet, 2);
+      const nextAchievements = getNextAchievements(
+        mockAchievementState,
+        mockPet,
+        2
+      );
 
       expect(nextAchievements).toHaveLength(2);
     });
 
     it('should include both badges and titles', () => {
-      const nextAchievements = getNextAchievements(mockAchievementState, mockPet, 5);
+      const nextAchievements = getNextAchievements(
+        mockAchievementState,
+        mockPet,
+        5
+      );
 
       const hasBadges = nextAchievements.some(achievement => achievement.badge);
       const hasTitles = nextAchievements.some(achievement => achievement.title);

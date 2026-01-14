@@ -6,7 +6,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import type { Pet } from '../types/Pet';
-import { useAchievements, type UseAchievementsOptions } from './useAchievements';
+import {
+  useAchievements,
+  type UseAchievementsOptions,
+} from './useAchievements';
 import type { GameData, CareActionData } from '../utils/achievementEngine';
 
 // Mock localStorage
@@ -14,21 +17,21 @@ const mockLocalStorage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
-  clear: vi.fn()
+  clear: vi.fn(),
 };
 
 Object.defineProperty(window, 'localStorage', {
   value: mockLocalStorage,
-  writable: true
+  writable: true,
 });
 
 describe('useAchievements', () => {
   let mockPet: Pet;
-  
+
   beforeEach(() => {
     // Reset all mocks
     vi.clearAllMocks();
-    
+
     mockPet = {
       id: 'test-pet',
       name: 'Test Pet',
@@ -37,13 +40,13 @@ describe('useAchievements', () => {
         happiness: 80,
         hunger: 20,
         energy: 90,
-        level: 3
+        level: 3,
       },
       lastUpdate: Date.now(),
       expression: 'happy',
-      experience: 300
+      experience: 300,
     };
-    
+
     // Mock localStorage to return null (no saved data)
     mockLocalStorage.getItem.mockReturnValue(null);
   });
@@ -57,7 +60,7 @@ describe('useAchievements', () => {
       const { result } = renderHook(() => useAchievements(mockPet));
 
       expect(result.current.isLoading).toBe(true);
-      
+
       // Wait for loading to complete
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -73,28 +76,40 @@ describe('useAchievements', () => {
 
     it('should load saved achievement data when available', async () => {
       const savedData = {
-        badges: [{ 
-          id: 'test-badge', 
-          name: 'Test Badge', 
-          unlocked: true, 
-          progress: 1,
-          description: 'Test',
-          icon: '🏆',
-          category: 'game' as const,
-          rarity: 'common' as const,
-          requirements: { type: 'total_games' as const, value: 1, description: 'Test' }
-        }],
-        titles: [{ 
-          id: 'test-title', 
-          name: 'Test Title', 
-          unlocked: true, 
-          active: true,
-          description: 'Test',
-          icon: '👑',
-          category: 'level' as const,
-          rarity: 'common' as const,
-          requirements: { type: 'level_reached' as const, value: 1, description: 'Test' }
-        }],
+        badges: [
+          {
+            id: 'test-badge',
+            name: 'Test Badge',
+            unlocked: true,
+            progress: 1,
+            description: 'Test',
+            icon: '🏆',
+            category: 'game' as const,
+            rarity: 'common' as const,
+            requirements: {
+              type: 'total_games' as const,
+              value: 1,
+              description: 'Test',
+            },
+          },
+        ],
+        titles: [
+          {
+            id: 'test-title',
+            name: 'Test Title',
+            unlocked: true,
+            active: true,
+            description: 'Test',
+            icon: '👑',
+            category: 'level' as const,
+            rarity: 'common' as const,
+            requirements: {
+              type: 'level_reached' as const,
+              value: 1,
+              description: 'Test',
+            },
+          },
+        ],
         progress: {
           evolutionCount: 1,
           maxWinStreak: 5,
@@ -107,10 +122,10 @@ describe('useAchievements', () => {
           totalWins: 7,
           totalPlaytime: 300,
           lastPlayDate: Date.now(),
-          firstPlayDate: Date.now() - 86400000
+          firstPlayDate: Date.now() - 86400000,
         },
         newlyUnlocked: [],
-        lastSaved: Date.now()
+        lastSaved: Date.now(),
       };
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedData));
@@ -150,7 +165,7 @@ describe('useAchievements', () => {
       const beginnerTitle = result.current.achievementState.titles.find(
         title => title.id === 'beginner-trainer'
       );
-      
+
       expect(beginnerTitle?.unlocked).toBe(true);
       expect(beginnerTitle?.active).toBe(true);
     });
@@ -168,7 +183,7 @@ describe('useAchievements', () => {
         type: 'rock-paper-scissors',
         result: 'win',
         timestamp: Date.now(),
-        duration: 30
+        duration: 30,
       };
 
       act(() => {
@@ -192,7 +207,7 @@ describe('useAchievements', () => {
         type: 'rock-paper-scissors',
         result: 'win',
         timestamp: Date.now(),
-        duration: 30
+        duration: 30,
       };
 
       act(() => {
@@ -206,7 +221,7 @@ describe('useAchievements', () => {
         type: 'rock-paper-scissors',
         result: 'lose',
         timestamp: Date.now(),
-        duration: 25
+        duration: 25,
       };
 
       act(() => {
@@ -232,7 +247,7 @@ describe('useAchievements', () => {
 
       expect(result.current.achievementState.progress.evolutionCount).toBe(1);
       expect(result.current.notifications.length).toBeGreaterThan(0);
-      
+
       const evolutionBadge = result.current.achievementState.badges.find(
         badge => badge.id === 'first-evolution'
       );
@@ -252,7 +267,7 @@ describe('useAchievements', () => {
         action: 'feed',
         timestamp: Date.now(),
         statsBefore: { happiness: 80, energy: 90, hunger: 30 },
-        statsAfter: { happiness: 100, energy: 95, hunger: 10 }
+        statsAfter: { happiness: 100, energy: 95, hunger: 10 },
       };
 
       act(() => {
@@ -274,7 +289,7 @@ describe('useAchievements', () => {
 
       const leveledUpPet = {
         ...mockPet,
-        stats: { ...mockPet.stats, level: 8 }
+        stats: { ...mockPet.stats, level: 8 },
       };
 
       act(() => {
@@ -297,7 +312,7 @@ describe('useAchievements', () => {
       // Change pet level and rerender
       const leveledUpPet = {
         ...mockPet,
-        stats: { ...mockPet.stats, level: 7 }
+        stats: { ...mockPet.stats, level: 7 },
       };
 
       rerender({ pet: leveledUpPet });
@@ -308,7 +323,9 @@ describe('useAchievements', () => {
 
   describe('Session Tracking', () => {
     it('should track session start and end', async () => {
-      const { result } = renderHook(() => useAchievements(mockPet, { enableSessionTracking: true }));
+      const { result } = renderHook(() =>
+        useAchievements(mockPet, { enableSessionTracking: true })
+      );
 
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -324,7 +341,7 @@ describe('useAchievements', () => {
           type: 'test',
           result: 'win',
           timestamp: Date.now(),
-          duration: 30
+          duration: 30,
         });
       });
 
@@ -334,11 +351,15 @@ describe('useAchievements', () => {
       });
 
       // Session data should be recorded in playtime
-      expect(result.current.achievementState.progress.totalPlaytime).toBeGreaterThan(0);
+      expect(
+        result.current.achievementState.progress.totalPlaytime
+      ).toBeGreaterThan(0);
     });
 
     it('should disable session tracking when option is false', async () => {
-      const { result } = renderHook(() => useAchievements(mockPet, { enableSessionTracking: false }));
+      const { result } = renderHook(() =>
+        useAchievements(mockPet, { enableSessionTracking: false })
+      );
 
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -365,7 +386,7 @@ describe('useAchievements', () => {
       // First unlock a title by reaching requirements
       const leveledUpPet = {
         ...mockPet,
-        stats: { ...mockPet.stats, level: 10 }
+        stats: { ...mockPet.stats, level: 10 },
       };
 
       act(() => {
@@ -416,7 +437,9 @@ describe('useAchievements', () => {
         result.current.dismissNotification(notificationId);
       });
 
-      expect(result.current.notifications.find(n => n.id === notificationId)).toBeUndefined();
+      expect(
+        result.current.notifications.find(n => n.id === notificationId)
+      ).toBeUndefined();
     });
 
     it('should clear all notifications', async () => {
@@ -442,7 +465,9 @@ describe('useAchievements', () => {
     });
 
     it('should limit notification count', async () => {
-      const { result } = renderHook(() => useAchievements(mockPet, { maxNotifications: 2 }));
+      const { result } = renderHook(() =>
+        useAchievements(mockPet, { maxNotifications: 2 })
+      );
 
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -463,10 +488,12 @@ describe('useAchievements', () => {
     it('should auto-save when enabled', async () => {
       vi.useFakeTimers();
 
-      const { result } = renderHook(() => useAchievements(mockPet, { 
-        autoSave: true, 
-        saveInterval: 1000 
-      }));
+      const { result } = renderHook(() =>
+        useAchievements(mockPet, {
+          autoSave: true,
+          saveInterval: 1000,
+        })
+      );
 
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -477,7 +504,7 @@ describe('useAchievements', () => {
           type: 'test',
           result: 'win',
           timestamp: Date.now(),
-          duration: 30
+          duration: 30,
         });
       });
 
@@ -494,7 +521,9 @@ describe('useAchievements', () => {
     });
 
     it('should not auto-save when disabled', async () => {
-      const { result } = renderHook(() => useAchievements(mockPet, { autoSave: false }));
+      const { result } = renderHook(() =>
+        useAchievements(mockPet, { autoSave: false })
+      );
 
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -505,7 +534,7 @@ describe('useAchievements', () => {
           type: 'test',
           result: 'win',
           timestamp: Date.now(),
-          duration: 30
+          duration: 30,
         });
       });
 
@@ -536,7 +565,9 @@ describe('useAchievements', () => {
     });
 
     it('should manually save achievements', async () => {
-      const { result } = renderHook(() => useAchievements(mockPet, { autoSave: false }));
+      const { result } = renderHook(() =>
+        useAchievements(mockPet, { autoSave: false })
+      );
 
       await act(async () => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -581,7 +612,7 @@ describe('useAchievements', () => {
 
       expect(Array.isArray(nextAchievements)).toBe(true);
       expect(nextAchievements.length).toBeLessThanOrEqual(3);
-      
+
       nextAchievements.forEach(achievement => {
         expect(achievement.progress).toBeGreaterThanOrEqual(0);
         expect(achievement.remaining).toBeGreaterThan(0);
@@ -601,7 +632,7 @@ describe('useAchievements', () => {
           type: 'test',
           result: 'win',
           timestamp: Date.now(),
-          duration: 30
+          duration: 30,
         });
       });
 
@@ -614,7 +645,9 @@ describe('useAchievements', () => {
       expect(result.current.achievementState.progress.totalGames).toBe(0);
       expect(result.current.notifications).toEqual([]);
       expect(result.current.error).toBeNull();
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('ai-pet-buddy-achievements');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'ai-pet-buddy-achievements'
+      );
     });
   });
 

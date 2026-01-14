@@ -16,7 +16,7 @@ const mockNotification: NotificationType = {
   description: 'You started your journey!',
   icon: '🌟',
   rarity: 'common',
-  timestamp: Date.now()
+  timestamp: Date.now(),
 };
 
 const mockLegendaryNotification: NotificationType = {
@@ -26,7 +26,7 @@ const mockLegendaryNotification: NotificationType = {
   description: 'You achieved legendary status!',
   icon: '👑',
   rarity: 'legendary',
-  timestamp: Date.now()
+  timestamp: Date.now(),
 };
 
 describe('AchievementNotification', () => {
@@ -68,7 +68,9 @@ describe('AchievementNotification', () => {
 
       expect(screen.getByText('New Title Earned!')).toBeInTheDocument();
       expect(screen.getByText('Legend')).toBeInTheDocument();
-      expect(screen.getByText('You achieved legendary status!')).toBeInTheDocument();
+      expect(
+        screen.getByText('You achieved legendary status!')
+      ).toBeInTheDocument();
       expect(screen.getByText('legendary')).toBeInTheDocument();
       const crownIcons = screen.getAllByText('👑');
       expect(crownIcons.length).toBeGreaterThan(0); // Should have icons
@@ -180,7 +182,7 @@ describe('AchievementNotification', () => {
       );
 
       const notification = container.querySelector('.achievement-notification');
-      
+
       // Should have base class and type/rarity classes
       expect(notification).toHaveClass('achievement-notification');
       expect(notification).toHaveClass('achievement-notification--common');
@@ -191,7 +193,7 @@ describe('AchievementNotification', () => {
   describe('Cleanup', () => {
     it('should clear timers on unmount', () => {
       const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-      
+
       const { unmount } = render(
         <AchievementNotification
           notification={mockNotification}

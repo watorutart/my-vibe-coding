@@ -9,29 +9,39 @@ interface PetDisplayProps {
 const PetDisplay: React.FC<PetDisplayProps> = ({ pet }) => {
   const getExpressionEmoji = (expression: Pet['expression']) => {
     switch (expression) {
-      case 'happy': return '😊';
-      case 'excited': return '🤩';
-      case 'sad': return '😢';
-      case 'tired': return '😴';
-      default: return '😐';
+      case 'happy':
+        return '😊';
+      case 'excited':
+        return '🤩';
+      case 'sad':
+        return '😢';
+      case 'tired':
+        return '😴';
+      default:
+        return '😐';
     }
   };
 
   const getAccessoryIcon = (type: string | undefined) => {
     if (!type) return null;
     switch (type) {
-      case 'hat': return '🎩';
-      case 'ribbon': return '🎀';
-      case 'glasses': return '👓';
-      case 'necklace': return '📿';
-      default: return '✨'; // デフォルトアイコンまたはnull
+      case 'hat':
+        return '🎩';
+      case 'ribbon':
+        return '🎀';
+      case 'glasses':
+        return '👓';
+      case 'necklace':
+        return '📿';
+      default:
+        return '✨'; // デフォルトアイコンまたはnull
     }
   };
 
   return (
     <div className="pet-display">
       <div className="pet-container">
-        <div 
+        <div
           className={`pet-body ${pet.expression}`}
           style={{ backgroundColor: pet.color || '#FF6B6B' }} // カスタマイズされた色を使用、なければデフォルト
         >
@@ -45,11 +55,12 @@ const PetDisplay: React.FC<PetDisplayProps> = ({ pet }) => {
             </div>
           </div>
           <div className="pet-accessories">
-            {pet.accessories && pet.accessories.map(acc => (
-              <div key={acc.id} className={`accessory ${acc.type}`}>
-                {getAccessoryIcon(acc.type)}
-              </div>
-            ))}
+            {pet.accessories &&
+              pet.accessories.map(acc => (
+                <div key={acc.id} className={`accessory ${acc.type}`}>
+                  {getAccessoryIcon(acc.type)}
+                </div>
+              ))}
           </div>
           <div className="pet-wings">
             <div className="wing left-wing"></div>

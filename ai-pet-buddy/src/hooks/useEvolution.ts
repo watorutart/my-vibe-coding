@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import type { EvolutionEvent, EvolutionProgress } from '../types/Evolution';
 import type { Pet } from '../types/Pet';
 import {
-    calculateEvolutionProgress,
-    checkEvolutionRequirements,
-    createInitialEvolutionProgress,
-    EVOLUTION_STAGES,
-    evolvepet,
-    getCurrentEvolutionStage,
-    getNextEvolutionStage,
-    syncProgressWithPet
+  calculateEvolutionProgress,
+  checkEvolutionRequirements,
+  createInitialEvolutionProgress,
+  EVOLUTION_STAGES,
+  evolvepet,
+  getCurrentEvolutionStage,
+  getNextEvolutionStage,
+  syncProgressWithPet,
 } from '../utils/evolutionEngine';
 
 export interface UseEvolutionReturn {
@@ -50,20 +50,26 @@ export function useEvolution(
   const [evolutionProgress, setEvolutionProgress] = useState<EvolutionProgress>(
     () => syncProgressWithPet(pet, initialProgress)
   );
-  
-  const [latestEvolutionEvent, setLatestEvolutionEvent] = useState<EvolutionEvent | null>(null);
+
+  const [latestEvolutionEvent, setLatestEvolutionEvent] =
+    useState<EvolutionEvent | null>(null);
 
   // 現在の進化ステージを計算（プログレスを基に）
-  const currentStage = EVOLUTION_STAGES.find((stage) => stage.id === evolutionProgress.currentStage) || EVOLUTION_STAGES[0];
-  
+  const currentStage =
+    EVOLUTION_STAGES.find(
+      stage => stage.id === evolutionProgress.currentStage
+    ) || EVOLUTION_STAGES[0];
+
   // 次の進化ステージを計算
   const nextStage = getNextEvolutionStage(pet, evolutionProgress);
-  
+
   // 次の進化までの進捗率を計算
   const progressToNext = calculateEvolutionProgress(pet, evolutionProgress);
-  
+
   // 進化要件をチェック
-  const evolutionRequirements = nextStage ? checkEvolutionRequirements(pet, nextStage) : null;
+  const evolutionRequirements = nextStage
+    ? checkEvolutionRequirements(pet, nextStage)
+    : null;
   const canEvolveNext = evolutionRequirements?.canEvolve ?? false;
 
   /**
@@ -76,22 +82,24 @@ export function useEvolution(
     }
 
     const result = evolvepet(pet, evolutionProgress);
-    
+
     if (result.event) {
       // ペットの状態を更新
       onPetUpdate(result.pet);
-      
+
       // 進化プログレスを更新
       setEvolutionProgress(result.progress);
-      
+
       // 最新の進化イベントを設定
       setLatestEvolutionEvent(result.event);
-      
-      console.log(`🎉 進化成功: ${result.event.fromStage} → ${result.event.toStage}`);
-      
+
+      console.log(
+        `🎉 進化成功: ${result.event.fromStage} → ${result.event.toStage}`
+      );
+
       return result.event;
     }
-    
+
     return null;
   }, [pet, evolutionProgress, canEvolveNext, onPetUpdate]);
 
@@ -136,6 +144,6 @@ export function useEvolution(
     latestEvolutionEvent,
     triggerEvolution,
     resetEvolutionProgress,
-    getEvolutionHistory
+    getEvolutionHistory,
   };
 }

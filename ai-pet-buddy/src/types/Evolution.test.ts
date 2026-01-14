@@ -1,10 +1,9 @@
-
 import { describe, it, expect } from 'vitest';
-import type { 
-  EvolutionStage, 
-  EvolutionProgress, 
-  EvolutionRequirements, 
-  EvolutionEvent 
+import type {
+  EvolutionStage,
+  EvolutionProgress,
+  EvolutionRequirements,
+  EvolutionEvent,
 } from './Evolution';
 
 describe('Evolution Types', () => {
@@ -17,14 +16,14 @@ describe('Evolution Types', () => {
         requiredStats: {
           happiness: 0,
           energy: 0,
-          health: 0
+          health: 0,
         },
         appearance: {
           emoji: '🐣',
           color: '#FFD700',
-          size: 'small'
+          size: 'small',
         },
-        unlockMessage: 'Your pet has been born!'
+        unlockMessage: 'Your pet has been born!',
       };
 
       expect(stage.id).toBe('baby');
@@ -41,19 +40,19 @@ describe('Evolution Types', () => {
         requiredStats: {
           happiness: 80,
           energy: 70,
-          health: 90
+          health: 90,
         },
         appearance: {
           emoji: '🐾',
           color: '#4CAF50',
           size: 'large',
-          effects: ['sparkle', 'glow']
+          effects: ['sparkle', 'glow'],
         },
         unlockMessage: 'Your pet has evolved into an adult!',
         bonuses: {
           statMultiplier: 1.2,
-          experienceBonus: 1.5
-        }
+          experienceBonus: 1.5,
+        },
       };
 
       expect(stage.bonuses).toBeDefined();
@@ -73,9 +72,9 @@ describe('Evolution Types', () => {
           {
             stageId: 'baby',
             timestamp: new Date('2023-01-01'),
-            level: 1
-          }
-        ]
+            level: 1,
+          },
+        ],
       };
 
       expect(progress.currentStageId).toBe('baby');
@@ -88,7 +87,7 @@ describe('Evolution Types', () => {
         currentStageId: 'ultimate',
         availableStages: ['baby', 'child', 'adult', 'ultimate'],
         progressToNext: 100,
-        evolutionHistory: []
+        evolutionHistory: [],
       };
 
       expect(progress.nextStageId).toBeUndefined();
@@ -103,10 +102,10 @@ describe('Evolution Types', () => {
         statsMet: {
           happiness: true,
           energy: false,
-          health: true
+          health: true,
         },
         canEvolve: false,
-        missingRequirements: ['energy too low']
+        missingRequirements: ['energy too low'],
       };
 
       expect(requirements.canEvolve).toBe(false);
@@ -120,10 +119,10 @@ describe('Evolution Types', () => {
         statsMet: {
           happiness: true,
           energy: true,
-          health: true
+          health: true,
         },
         canEvolve: true,
-        missingRequirements: []
+        missingRequirements: [],
       };
 
       expect(requirements.canEvolve).toBe(true);
@@ -142,8 +141,8 @@ describe('Evolution Types', () => {
         petStats: {
           happiness: 75,
           energy: 80,
-          health: 85
-        }
+          health: 85,
+        },
       };
 
       expect(event.type).toBe('level_up');
@@ -153,8 +152,14 @@ describe('Evolution Types', () => {
     });
 
     it('should support different evolution trigger types', () => {
-      const triggers = ['level_up', 'stat_threshold', 'time_based', 'special_action', 'manual'] as const;
-      
+      const triggers = [
+        'level_up',
+        'stat_threshold',
+        'time_based',
+        'special_action',
+        'manual',
+      ] as const;
+
       triggers.forEach(trigger => {
         const event: EvolutionEvent = {
           type: trigger,
@@ -162,7 +167,7 @@ describe('Evolution Types', () => {
           toStage: 'stage2',
           timestamp: new Date(),
           petLevel: 1,
-          petStats: { happiness: 50, energy: 50, health: 50 }
+          petStats: { happiness: 50, energy: 50, health: 50 },
         };
 
         expect(event.type).toBe(trigger);
@@ -172,8 +177,12 @@ describe('Evolution Types', () => {
 
   describe('Type Safety', () => {
     it('should enforce size enum values', () => {
-      const validSizes: Array<'small' | 'medium' | 'large'> = ['small', 'medium', 'large'];
-      
+      const validSizes: Array<'small' | 'medium' | 'large'> = [
+        'small',
+        'medium',
+        'large',
+      ];
+
       validSizes.forEach(size => {
         const stage: EvolutionStage = {
           id: 'test',
@@ -181,7 +190,7 @@ describe('Evolution Types', () => {
           requiredLevel: 1,
           requiredStats: { happiness: 0, energy: 0, health: 0 },
           appearance: { emoji: '🐾', color: '#000', size },
-          unlockMessage: 'Test'
+          unlockMessage: 'Test',
         };
 
         expect(stage.appearance.size).toBe(size);
@@ -199,9 +208,9 @@ describe('Evolution Types', () => {
           {
             stageId: 'test',
             timestamp: now,
-            level: 1
-          }
-        ]
+            level: 1,
+          },
+        ],
       };
 
       expect(progress.lastEvolutionTime).toBeInstanceOf(Date);

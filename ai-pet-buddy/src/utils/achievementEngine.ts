@@ -1,7 +1,7 @@
 /**
  * @file achievementEngine.ts
  * @description Core achievement checking and badge/title management engine
- * 
+ *
  * Provides functions to check achievement conditions, update progress,
  * and manage badge/title unlocking based on game data and pet statistics.
  */
@@ -12,12 +12,12 @@ import type {
   Title,
   AchievementProgress,
   AchievementState,
-  AchievementNotification
+  AchievementNotification,
 } from '../types/Achievement';
-import { 
-  PREDEFINED_BADGES, 
-  PREDEFINED_TITLES, 
-  DEFAULT_ACHIEVEMENT_PROGRESS 
+import {
+  PREDEFINED_BADGES,
+  PREDEFINED_TITLES,
+  DEFAULT_ACHIEVEMENT_PROGRESS,
 } from '../types/Achievement';
 
 // Game data interface for achievement checking
@@ -58,13 +58,13 @@ export function initializeAchievementState(): AchievementState {
   const badges: Badge[] = PREDEFINED_BADGES.map(badgeTemplate => ({
     ...badgeTemplate,
     unlocked: false,
-    progress: 0
+    progress: 0,
   }));
 
   const titles: Title[] = PREDEFINED_TITLES.map(titleTemplate => ({
     ...titleTemplate,
     unlocked: false,
-    active: false
+    active: false,
   }));
 
   // Unlock beginner trainer title by default
@@ -79,7 +79,7 @@ export function initializeAchievementState(): AchievementState {
     badges,
     titles,
     progress: { ...DEFAULT_ACHIEVEMENT_PROGRESS },
-    newlyUnlocked: []
+    newlyUnlocked: [],
   };
 }
 
@@ -94,11 +94,11 @@ export function updateGameProgress(
 
   // Update game statistics
   updatedProgress.totalGames += 1;
-  
+
   if (gameData.result === 'win') {
     updatedProgress.totalWins += 1;
     updatedProgress.currentWinStreak += 1;
-    
+
     if (updatedProgress.currentWinStreak > updatedProgress.maxWinStreak) {
       updatedProgress.maxWinStreak = updatedProgress.currentWinStreak;
     }
@@ -126,7 +126,7 @@ export function updateCareProgress(
   if (careData.statsAfter.happiness > updatedProgress.maxHappiness) {
     updatedProgress.maxHappiness = careData.statsAfter.happiness;
   }
-  
+
   if (careData.statsAfter.energy > updatedProgress.maxEnergy) {
     updatedProgress.maxEnergy = careData.statsAfter.energy;
   }
@@ -160,7 +160,7 @@ export function updateEvolutionProgress(
   evolutionData: { timestamp: number }
 ): AchievementProgress {
   const updatedProgress = { ...progress };
-  
+
   updatedProgress.evolutionCount += 1;
   updatedProgress.lastPlayDate = evolutionData.timestamp;
 
@@ -177,7 +177,9 @@ export function updateSessionProgress(
   const updatedProgress = { ...progress };
 
   // Calculate session duration in minutes
-  const sessionDuration = Math.ceil((sessionData.endTime - sessionData.startTime) / 60000);
+  const sessionDuration = Math.ceil(
+    (sessionData.endTime - sessionData.startTime) / 60000
+  );
   updatedProgress.totalPlaytime += sessionDuration;
 
   // Update consecutive days
@@ -264,7 +266,11 @@ export function calculateAchievementProgress(
   progress: AchievementProgress,
   pet: Pet
 ): number {
-  const { currentValue } = checkAchievementRequirement(requirement, progress, pet);
+  const { currentValue } = checkAchievementRequirement(
+    requirement,
+    progress,
+    pet
+  );
   const progressRatio = currentValue / requirement.value;
   return Math.min(progressRatio, 1); // Cap at 100%
 }
@@ -275,7 +281,10 @@ export function calculateAchievementProgress(
 export function checkAchievements(
   achievementState: AchievementState,
   pet: Pet
-): { updatedState: AchievementState; notifications: AchievementNotification[] } {
+): {
+  updatedState: AchievementState;
+  notifications: AchievementNotification[];
+} {
   const updatedState = { ...achievementState };
   const notifications: AchievementNotification[] = [];
   const newlyUnlocked: string[] = [];
@@ -300,7 +309,7 @@ export function checkAchievements(
 
     const updatedBadge = {
       ...badge,
-      progress: newProgress
+      progress: newProgress,
     };
 
     if (met && !badge.unlocked) {
@@ -316,7 +325,7 @@ export function checkAchievements(
         description: badge.description,
         icon: badge.icon,
         rarity: badge.rarity,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
 
@@ -341,7 +350,7 @@ export function checkAchievements(
         ...title,
         unlocked: true,
         unlockedAt: Date.now(),
-        active: false // Don't auto-activate, let user choose
+        active: false, // Don't auto-activate, let user choose
       };
 
       newlyUnlocked.push(title.id);
@@ -353,7 +362,7 @@ export function checkAchievements(
         description: title.description,
         icon: title.icon,
         rarity: title.rarity,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       return updatedTitle;
@@ -378,7 +387,7 @@ export function activateTitle(
 
   updatedState.titles = achievementState.titles.map(title => ({
     ...title,
-    active: title.id === titleId && title.unlocked
+    active: title.id === titleId && title.unlocked,
   }));
 
   return updatedState;
@@ -389,9 +398,13 @@ export function activateTitle(
  */
 export function getAchievementSummary(achievementState: AchievementState) {
   const totalBadges = achievementState.badges.length;
-  const unlockedBadges = achievementState.badges.filter(badge => badge.unlocked).length;
+  const unlockedBadges = achievementState.badges.filter(
+    badge => badge.unlocked
+  ).length;
   const totalTitles = achievementState.titles.length;
-  const unlockedTitles = achievementState.titles.filter(title => title.unlocked).length;
+  const unlockedTitles = achievementState.titles.filter(
+    title => title.unlocked
+  ).length;
   const activeTitle = achievementState.titles.find(title => title.active);
 
   const badgeProgress = totalBadges > 0 ? unlockedBadges / totalBadges : 0;
@@ -401,19 +414,19 @@ export function getAchievementSummary(achievementState: AchievementState) {
     badges: {
       total: totalBadges,
       unlocked: unlockedBadges,
-      progress: badgeProgress
+      progress: badgeProgress,
     },
     titles: {
       total: totalTitles,
       unlocked: unlockedTitles,
       progress: titleProgress,
-      active: activeTitle
+      active: activeTitle,
     },
     overall: {
       totalAchievements: totalBadges + totalTitles,
       unlockedAchievements: unlockedBadges + unlockedTitles,
-      progress: (badgeProgress + titleProgress) / 2
-    }
+      progress: (badgeProgress + titleProgress) / 2,
+    },
   };
 }
 
@@ -424,7 +437,12 @@ export function getNextAchievements(
   achievementState: AchievementState,
   pet: Pet,
   limit: number = 3
-): Array<{ badge?: Badge; title?: Title; progress: number; remaining: number }> {
+): Array<{
+  badge?: Badge;
+  title?: Title;
+  progress: number;
+  remaining: number;
+}> {
   const incompleteAchievements: Array<{
     badge?: Badge;
     title?: Title;
@@ -451,7 +469,7 @@ export function getNextAchievements(
       incompleteAchievements.push({
         badge,
         progress,
-        remaining
+        remaining,
       });
     });
 
@@ -474,7 +492,7 @@ export function getNextAchievements(
       incompleteAchievements.push({
         title,
         progress,
-        remaining
+        remaining,
       });
     });
 

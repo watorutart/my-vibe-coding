@@ -1,7 +1,7 @@
 /**
  * @file OfflineIndicator.tsx
  * @description オフライン状態表示コンポーネント
- * 
+ *
  * ネットワーク切断時にユーザーに状況を知らせるインジケーターを提供します。
  * オフライン継続時間の表示と再接続の試行機能を含みます。
  */
@@ -33,7 +33,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
   lastOnline,
   hasPendingSync = false,
   onRetry,
-  className = ''
+  className = '',
 }) => {
   const [isRetrying, setIsRetrying] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -83,7 +83,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
     if (isRetrying) return;
 
     setIsRetrying(true);
-    
+
     try {
       // ネットワーク状態をチェック
       if (navigator.onLine) {
@@ -131,7 +131,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
             インターネット接続を確認してください
           </div>
         </div>
-        
+
         <div className="offline-indicator__actions">
           <button
             className="offline-indicator__retry-button"
@@ -147,13 +147,15 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
               '再接続'
             )}
           </button>
-          
+
           <button
             className="offline-indicator__details-button"
             onClick={toggleDetails}
             aria-label="詳細を表示"
           >
-            <span className={`offline-indicator__chevron ${showDetails ? 'offline-indicator__chevron--up' : ''}`}>
+            <span
+              className={`offline-indicator__chevron ${showDetails ? 'offline-indicator__chevron--up' : ''}`}
+            >
               ▼
             </span>
           </button>
@@ -167,24 +169,30 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
             <strong>オフライン時間:</strong>
             <span>{formatDuration(offlineDuration)}</span>
           </div>
-          
+
           {lastOnline && (
             <div className="offline-indicator__detail-item">
               <strong>最後の接続:</strong>
               <span>{formatLastOnline(lastOnline)}</span>
             </div>
           )}
-          
+
           <div className="offline-indicator__detail-item">
             <strong>状態:</strong>
-            <span className={`offline-indicator__status ${hasPendingSync ? 'offline-indicator__status--warning' : 'offline-indicator__status--offline'}`}>
-              {hasPendingSync ? '同期待ちのデータがあります' : 'ローカルモードで動作中'}
+            <span
+              className={`offline-indicator__status ${hasPendingSync ? 'offline-indicator__status--warning' : 'offline-indicator__status--offline'}`}
+            >
+              {hasPendingSync
+                ? '同期待ちのデータがあります'
+                : 'ローカルモードで動作中'}
             </span>
           </div>
-          
+
           {/* オフライン機能の説明 */}
           <div className="offline-indicator__offline-features">
-            <div className="offline-indicator__feature-title">オフラインでも利用可能:</div>
+            <div className="offline-indicator__feature-title">
+              オフラインでも利用可能:
+            </div>
             <ul className="offline-indicator__feature-list">
               <li>ペットとの基本的な交流</li>
               <li>ローカルデータの閲覧</li>
@@ -192,7 +200,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
               <li>ゲームの一部機能</li>
             </ul>
           </div>
-          
+
           {hasPendingSync && (
             <div className="offline-indicator__sync-info">
               <div className="offline-indicator__sync-title">
@@ -206,13 +214,13 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
           )}
         </div>
       )}
-      
+
       {/* プログレスバー（オフライン時間の視覚化） */}
       <div className="offline-indicator__progress">
-        <div 
+        <div
           className="offline-indicator__progress-bar"
           style={{
-            width: `${Math.min(100, (offlineDuration / (5 * 60 * 1000)) * 100)}%`
+            width: `${Math.min(100, (offlineDuration / (5 * 60 * 1000)) * 100)}%`,
           }}
         />
       </div>

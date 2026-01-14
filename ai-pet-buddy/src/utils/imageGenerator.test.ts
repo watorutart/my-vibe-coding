@@ -11,19 +11,24 @@ import {
   resizeImage,
   adjustImageQuality,
   DEFAULT_SCREENSHOT_OPTIONS,
-  DEFAULT_WATERMARK_CONFIG
+  DEFAULT_WATERMARK_CONFIG,
 } from './imageGenerator';
-import type { StatsCardData, WatermarkConfig, ScreenshotOptions } from '../types/Share';
+import type {
+  StatsCardData,
+  WatermarkConfig,
+  ScreenshotOptions,
+} from '../types/Share';
 
 // html2canvasをモック
 vi.mock('html2canvas', () => ({
-  default: vi.fn()
+  default: vi.fn(),
 }));
 
 const mockHtml2Canvas = vi.mocked(html2canvas);
 
 // 1x1 透明PNGのbase64データ
-const MOCK_IMAGE_DATA_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+const MOCK_IMAGE_DATA_URL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
 // モック画像データ
 const mockStatsData: StatsCardData = {
@@ -34,7 +39,7 @@ const mockStatsData: StatsCardData = {
   gameWinRate: 0.75,
   achievementCount: 5,
   specialTitle: 'Champion',
-  birthDate: new Date('2024-01-01')
+  birthDate: new Date('2024-01-01'),
 };
 
 describe('imageGenerator', () => {
@@ -50,7 +55,7 @@ describe('imageGenerator', () => {
       fillText: vi.fn(),
       strokeText: vi.fn(),
       createLinearGradient: vi.fn(() => ({
-        addColorStop: vi.fn()
+        addColorStop: vi.fn(),
       })),
       beginPath: vi.fn(),
       moveTo: vi.fn(),
@@ -70,14 +75,14 @@ describe('imageGenerator', () => {
       lineWidth: 1,
       shadowColor: '',
       shadowBlur: 0,
-      shadowOffsetY: 0
+      shadowOffsetY: 0,
     };
 
     mockCanvas = {
       width: 0,
       height: 0,
       getContext: vi.fn(() => mockContext),
-      toDataURL: vi.fn(() => MOCK_IMAGE_DATA_URL)
+      toDataURL: vi.fn(() => MOCK_IMAGE_DATA_URL),
     };
 
     mockImage = {
@@ -85,7 +90,7 @@ describe('imageGenerator', () => {
       height: 100,
       onload: null as any,
       onerror: null as any,
-      src: ''
+      src: '',
     };
 
     // グローバルオブジェクトをモック
@@ -95,10 +100,13 @@ describe('imageGenerator', () => {
           return mockCanvas;
         }
         return {};
-      })
+      }),
     });
 
-    vi.stubGlobal('Image', vi.fn(() => mockImage));
+    vi.stubGlobal(
+      'Image',
+      vi.fn(() => mockImage)
+    );
 
     // html2canvas のモック実装
     mockHtml2Canvas.mockResolvedValue(mockCanvas);
@@ -127,7 +135,7 @@ describe('imageGenerator', () => {
         allowTaint: true,
         removeContainer: true,
         imageTimeout: 15000,
-        logging: false
+        logging: false,
       });
 
       expect(result).toBe(MOCK_IMAGE_DATA_URL);
@@ -139,7 +147,7 @@ describe('imageGenerator', () => {
         height: 500,
         scale: 1,
         backgroundColor: '#ffffff',
-        quality: 0.8
+        quality: 0.8,
       };
 
       const result = await captureElement(mockElement, customOptions);
@@ -152,7 +160,7 @@ describe('imageGenerator', () => {
         allowTaint: true,
         removeContainer: true,
         imageTimeout: 15000,
-        logging: false
+        logging: false,
       });
 
       expect(result).toBe(MOCK_IMAGE_DATA_URL);
@@ -162,13 +170,17 @@ describe('imageGenerator', () => {
       const error = new Error('Canvas error');
       mockHtml2Canvas.mockRejectedValue(error);
 
-      await expect(captureElement(mockElement)).rejects.toThrow('Screenshot capture failed: Canvas error');
+      await expect(captureElement(mockElement)).rejects.toThrow(
+        'Screenshot capture failed: Canvas error'
+      );
     });
 
     it('should handle unknown errors', async () => {
       mockHtml2Canvas.mockRejectedValue('Unknown error');
 
-      await expect(captureElement(mockElement)).rejects.toThrow('Screenshot capture failed: Unknown error');
+      await expect(captureElement(mockElement)).rejects.toThrow(
+        'Screenshot capture failed: Unknown error'
+      );
     });
   });
 
@@ -196,7 +208,7 @@ describe('imageGenerator', () => {
         position: 'top-left',
         opacity: 0.5,
         fontSize: '20px',
-        color: '#ff0000'
+        color: '#ff0000',
       };
 
       const promise = addWatermark(MOCK_IMAGE_DATA_URL, customConfig);
@@ -216,13 +228,16 @@ describe('imageGenerator', () => {
 
     it('should handle different watermark positions', async () => {
       const positions: Array<WatermarkConfig['position']> = [
-        'top-left', 'top-right', 'bottom-left', 'bottom-right'
+        'top-left',
+        'top-right',
+        'bottom-left',
+        'bottom-right',
       ];
 
       for (const position of positions) {
         const config: WatermarkConfig = {
           text: 'Test',
-          position
+          position,
         };
 
         const promise = addWatermark(MOCK_IMAGE_DATA_URL, config);
@@ -247,7 +262,9 @@ describe('imageGenerator', () => {
       const promise = addWatermark('invalid-url');
       mockImage.onerror();
 
-      await expect(promise).rejects.toThrow('Failed to load image for watermark');
+      await expect(promise).rejects.toThrow(
+        'Failed to load image for watermark'
+      );
     });
 
     it('should handle drawing errors', async () => {
@@ -258,7 +275,9 @@ describe('imageGenerator', () => {
       const promise = addWatermark(MOCK_IMAGE_DATA_URL);
       mockImage.onload();
 
-      await expect(promise).rejects.toThrow('Watermark addition failed: Drawing error');
+      await expect(promise).rejects.toThrow(
+        'Watermark addition failed: Drawing error'
+      );
     });
   });
 
@@ -320,7 +339,7 @@ describe('imageGenerator', () => {
     it('should handle stats without special title', async () => {
       const statsWithoutTitle: StatsCardData = {
         ...mockStatsData,
-        specialTitle: undefined
+        specialTitle: undefined,
       };
 
       await generateStatsCard(statsWithoutTitle);
@@ -335,7 +354,9 @@ describe('imageGenerator', () => {
     it('should handle canvas context creation failure', async () => {
       mockCanvas.getContext.mockReturnValue(null);
 
-      await expect(generateStatsCard(mockStatsData)).rejects.toThrow('Failed to get canvas context');
+      await expect(generateStatsCard(mockStatsData)).rejects.toThrow(
+        'Failed to get canvas context'
+      );
     });
 
     it('should calculate days since birth correctly', async () => {
@@ -432,7 +453,9 @@ describe('imageGenerator', () => {
       const promise = resizeImage(MOCK_IMAGE_DATA_URL, 200, 200);
       mockImage.onload();
 
-      await expect(promise).rejects.toThrow('Image resize failed: Drawing error');
+      await expect(promise).rejects.toThrow(
+        'Image resize failed: Drawing error'
+      );
     });
   });
 
@@ -468,7 +491,10 @@ describe('imageGenerator', () => {
         mockImage.onload();
         await promise;
 
-        expect(mockCanvas.toDataURL).toHaveBeenCalledWith(`image/${format}`, 0.8);
+        expect(mockCanvas.toDataURL).toHaveBeenCalledWith(
+          `image/${format}`,
+          0.8
+        );
         vi.clearAllMocks();
       }
     });
@@ -486,7 +512,9 @@ describe('imageGenerator', () => {
       const promise = adjustImageQuality('invalid-url');
       mockImage.onerror();
 
-      await expect(promise).rejects.toThrow('Failed to load image for quality adjustment');
+      await expect(promise).rejects.toThrow(
+        'Failed to load image for quality adjustment'
+      );
     });
 
     it('should handle drawing errors', async () => {
@@ -497,7 +525,9 @@ describe('imageGenerator', () => {
       const promise = adjustImageQuality(MOCK_IMAGE_DATA_URL);
       mockImage.onload();
 
-      await expect(promise).rejects.toThrow('Image quality adjustment failed: Drawing error');
+      await expect(promise).rejects.toThrow(
+        'Image quality adjustment failed: Drawing error'
+      );
     });
   });
 
